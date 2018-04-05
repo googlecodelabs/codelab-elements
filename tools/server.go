@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// The server command starts a simple static file server using current work dir
+// as the root directory.
 package main
 
 import (
@@ -21,7 +23,7 @@ import (
 	"os"
 )
 
-var addr = flag.String("addr", "localhost:8080", "Server address to bind to")
+var addr = flag.String("addr", "localhost:8080", "Server address to bind to.")
 
 func main() {
 	flag.Parse()
