@@ -1,7 +1,10 @@
-load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_binary", "closure_js_library", "closure_js_test")
+load("//tools:defs.bzl",
+     "closure_js_library", "closure_js_binary", "closure_js_test")
 
 package(default_visibility = ["//visibility:public"])
 
+# All static artifacts needed for various demo files.
+# Used by //tools:server target.
 filegroup(
     name = "demo_files",
     srcs = glob([
@@ -10,39 +13,45 @@ filegroup(
     ]),
 )
 
+# A playground HelloElement.
 closure_js_library(
     name = "hello_lib",
     srcs = ["hello.js"],
     convention = "GOOGLE",
 )
 
+# Compiled version of HelloElement, suitable for distribution.
 closure_js_binary(
     name = "hello_bin",
-    compilation_level = "ADVANCED",
-    defs = [
-        "--assume_function_wrapper",
-        "--new_type_inf",
-        "--rewrite_polyfills=false",
-    ],
-    dependency_mode = "STRICT",
     entry_points = ["googlecodelabs.HelloElement"],
-    language = "ECMASCRIPT5_STRICT",
-    output_wrapper = "(function(){%output%}).call(this);",
     deps = [":hello_lib"],
 )
 
+# A few tests for HelloElement.
+# The following closure_js_test expands into something like this:
+#
+#    js_test(
+#        name = "hello_test",
+#        srcs = ["hello_test.js"],
+#        browsers = [
+#            # For experimental purposes only. Eventually you should
+#            # create your own browser definitions.
+#            "@io_bazel_rules_webtesting//browsers:chromium-local",
+#        ],
+#        data = ["@polyfill//:custom_elements"],
+#        entry_points = ["googlecodelabs.hello_test"],
+#        suppress = ["JSC_EXTRA_REQUIRE_WARNING"],
+#        deps = [
+#            ":hello_lib",
+#            "@io_bazel_rules_closure//closure/library:testing",
+#        ],
+#    )
+#
+# Additionally, a gen_hello_test.html file is generated,
+# declaring the hello_test_bin.js script source.
 closure_js_test(
     name = "hello_test",
     srcs = ["hello_test.js"],
-    data = [
-        "@polyfill//:custom_elements",
-        "@polyfill//:native_shim",
-    ],
     entry_points = ["googlecodelabs.hello_test"],
-    html = "hello_test.html",
-    suppress = ["JSC_EXTRA_REQUIRE_WARNING"],
-    deps = [
-        ":hello_lib",
-        "@io_bazel_rules_closure//closure/library:testing",
-    ],
+    deps = [":hello_lib"],
 )

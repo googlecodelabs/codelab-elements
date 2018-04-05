@@ -4,7 +4,7 @@ filegroup(
     name = "custom_elements",
     srcs = [
         "custom-elements.min.js",
-	"custom-elements.min.js.map",
+        "custom-elements.min.js.map",
     ]
 )
 

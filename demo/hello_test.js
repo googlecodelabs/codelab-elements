@@ -23,9 +23,16 @@ goog.require('goog.testing.asserts');
 goog.require('goog.testing.jsunit');
 
 testSuite({
-  testHello() {
+  testHelloEquals() {
+    const x = 6;
+    assertEquals(6, x);
+  },
+
+  testHelloUpgraded() {
     const div = document.createElement('div');
     div.innerHTML = "<hello-element>static</hello-element>";
     document.body.appendChild(div);
-  }
+    let text = div.textContent;
+    assert(`"${text}" does not end with 'upgraded!'`, text.endsWith("upgraded!"));
+  },
 });
