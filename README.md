@@ -51,6 +51,14 @@ with debug enabled:
 
     bazel test -s --verbose_failures --test_output=all --test_arg=-debug demo/hello_test
 
+### Manual inspection from a browser
+
+To browse things around manually with a real browser, execute the following:
+
+    bazel run //tools:server
+
+and navigate to http://localhost:8080.
+
 ## Notes
 
 This is not an official Google product.
