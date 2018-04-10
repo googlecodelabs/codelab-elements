@@ -25,6 +25,12 @@ def closure_js_library(**kwargs):
   for non-test JS source files.
   """
   kwargs.setdefault("convention", "GOOGLE")
+  suppress = kwargs.pop("suppress", [])
+  suppress.append("JSC_NTI_INVALID_INDEX_TYPE")
+  suppress.append("checkTypes")
+  suppress.append("newCheckTypes")
+  suppress.append("newCheckTypesCompatibility")
+  kwargs.update(dict(suppress=suppress))
   _closure_js_library_alias(**kwargs)
 
 def closure_js_binary(**kwargs):

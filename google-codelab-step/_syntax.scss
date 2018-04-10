@@ -1,0 +1,37 @@
+pre, code {
+  font-family: 'Source Code Pro', Helvetica, Arial;
+  font-size: inherit;
+  border-radius: 3px;
+  overflow-x: auto;
+}
+code {
+  color: #333;
+  background-color: rgba(0, 0, 0, 0.08);
+  padding: 0.1em 0.3em;
+}
+pre {
+  display: block;
+  color: white;
+  background-color: #28323f;
+  padding: 14px;
+  -webkit-text-size-adjust: none;
+  line-height: 1.4;
+}
+pre > code {
+  padding: 0;
+  background-color: transparent;
+}
+code em {
+  color: #97C8F2;
+}
+pre .str, code .str { color: #65B042; } /* string  - green */
+pre .kwd, code .kwd { color: #E28964; } /* keyword - dark pink */
+pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
+pre .typ, code .typ { color: #89bdff; } /* type - light blue */
+pre .lit, code .lit { color: #3387CC; } /* literal - blue */
+pre .pun, code .pun { color: #fff; } /* punctuation - white */
+pre .pln, code .pln { color: #fff; } /* plaintext - white */
+pre .tag, code .tag { color: #89bdff; } /* html/xml tag    - light blue */
+pre .atn, code .atn { color: #bdb76b; } /* html/xml attribute name  - khaki */
+pre .atv, code .atv { color: #65B042; } /* html/xml attribute value - green */
+pre .dec, code .dec { color: #3387CC; } /* decimal - blue */
