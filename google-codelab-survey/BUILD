@@ -1,0 +1,30 @@
+load("//tools:defs.bzl",
+     "closure_js_library", "closure_js_binary", "closure_js_test")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "google_codelab_survey_files",
+    srcs = glob([
+        "*.html",
+        "*.png",
+    ]) + [
+        ":google_codelab_survey_bin",
+    ],
+)
+
+# Codelab survey.
+closure_js_library(
+    name = "google_codelab_survey",
+    srcs = ["google_codelab_survey.js"],
+    deps = [
+        "@io_bazel_rules_closure//closure/library"
+    ],
+)
+
+# Compiled version of CodelabSurvey element, suitable for distribution.
+closure_js_binary(
+    name = "google_codelab_survey_bin",
+    entry_points = ["googlecodelabs.CodelabSurvey"],
+    deps = [":google_codelab_survey"],
+)

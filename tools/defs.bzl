@@ -39,6 +39,9 @@ def closure_js_binary(**kwargs):
       "--assume_function_wrapper",
       "--new_type_inf",
       "--rewrite_polyfills=false",
+      "--jscomp_warning=newCheckTypes",
+      "--jscomp_off=newCheckTypesExtraChecks",
+      "--hide_warnings_for=closure/goog",
   ])
   _closure_js_binary_alias(**kwargs)
 

@@ -1,0 +1,18 @@
+{namespace CodelabSurveyRenderer}
+
+/**
+ * Renders a material component radio button for a codelab survey.
+ * @param radioGroupName {string} The name of the radio group.
+ * @param radioId {string} The id for the radio input.
+ * @param radioTitle {string} The visible radio text.
+ */
+{template .RadioButton}
+<div class="mdc-radio">
+  <input class="mdc-radio__native-control" type="radio" id="{$radioId}" name="{$radioGroupName}" checked>
+  <div class="mdc-radio__background">
+    <div class="mdc-radio__outer-circle"></div>
+    <div class="mdc-radio__inner-circle"></div>
+  </div>
+</div>
+<label id="{$radioId}-label" for="{$radioId}">{$radioTitle}</label>
+{/template}
