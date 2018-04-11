@@ -16,18 +16,49 @@
 
 goog.module('googlecodelabs.CodelabStep');
 
+const Templates = goog.require('googlecodelabs.CodelabStep.Templates');
 const dom = goog.require('goog.dom');
+const soy = goog.require('goog.soy');
+
+/** @const {string} */
+const LABEL_ATTR = 'label';
+
+/** @const {string} */
+const STEP_ATTR = 'step';
 
 /**
  * @extends {HTMLElement}
+ * @suppress {reportUnknownTypes}
  */
 class CodelabStep extends HTMLElement {
   constructor() {
     super();
 
+    /**
+     * @private {?Element}
+     */
+    this.instructions_ = null;
+
+    /**
+     * @private {?Element}
+     */
+    this.inner_ = null;
+
     /** @private {boolean} */
     this.hasSetup_ = false;
+
+    /**
+     * 
+     */
+    this.step_ = 0;
+    this.label_ = '';
+
+    /**
+     * @private {?Element}
+     */
+    this.title_ = null;
   }
+
   /**
    * @export
    * @override
@@ -39,26 +70,78 @@ class CodelabStep extends HTMLElement {
   }
 
   /**
+   * @return {!Array<string>}
+   * @export
+   */
+  static get observedAttributes() {
+    return [LABEL_ATTR, STEP_ATTR];
+  }
+
+  /**
+   * @param {string} attr
+   * @param {?string} oldValue
+   * @param {?string} newValue
+   * @param {?string} namespace
+   * @export
+   * @override
+   */
+  attributeChangedCallback(attr, oldValue, newValue, namespace) {
+    if (attr === LABEL_ATTR || attr === STEP_ATTR) {
+      this.updateTitle_();
+    }
+  }
+
+  /**
+   * @private
+   */
+  updateTitle_() {
+    if (this.hasAttribute(LABEL_ATTR)) {
+      this.label_ = this.getAttribute(LABEL_ATTR);
+    }
+
+    if (this.hasAttribute(STEP_ATTR)) {
+      this.step_ = this.getAttribute(STEP_ATTR);
+    }
+
+    if (!this.title_) {
+      return;
+    }
+
+    const title = soy.renderAsElement(Templates.title, {
+      step: this.step_,
+      label: this.label_
+    });
+
+    dom.replaceNode(title, this.title_);
+    this.title_ = title;
+  }
+
+  /**
    * @private
    */
   setupDom_() {
-    //const instructions = dom.createElement('div');
-    let inner = document.createElement('div'); //dom.createElement('div');
-    dom.removeChildren(this);
+    this.instructions_ = dom.createElement('div');
+    this.instructions_.classList.add('instructions');
+    this.inner_ = dom.createElement('div');
+    this.inner_.classList.add('inner');
 
-    /*const children = dom.getChildren(this);
+    const title = soy.renderAsElement(Templates.title, {
+      step: this.step_,
+      label: this.label_
+    });
+    this.title_ = title;
+    this.inner_.appendChild(title);
+
+    const children = Array.from(dom.getChildren(this));
+    console.log(children);
     children.forEach((c) => {
-      dom.appendChild(inner, (c));
-    });*/
+      dom.appendChild(this.inner_, (c));
+    });
 
-    //console.log( this.instructions_);
-    console.log(inner);
-
-    //dom.appendChild(this.instructions_, this.inner_);
-    //dom.appendChild(this, this.instructions_);
+    dom.appendChild(this.instructions_, this.inner_);
+    dom.appendChild(this, this.instructions_);
 
     this.hasSetup_ = true;
-    console.log('miii');
   }
 }
 

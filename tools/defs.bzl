@@ -27,6 +27,7 @@ def closure_js_library(**kwargs):
   kwargs.setdefault("convention", "GOOGLE")
   suppress = kwargs.pop("suppress", [])
   suppress.append("JSC_NTI_INVALID_INDEX_TYPE")
+  suppress.append("JSC_NTI_UNKNOWN_EXPR_TYPE")
   suppress.append("checkTypes")
   suppress.append("newCheckTypes")
   suppress.append("newCheckTypesCompatibility")
@@ -40,11 +41,17 @@ def closure_js_binary(**kwargs):
   kwargs.setdefault("compilation_level", "ADVANCED")
   kwargs.setdefault("dependency_mode", "STRICT")
   kwargs.setdefault("language", "ECMASCRIPT5_STRICT")
-  kwargs.setdefault("output_wrapper", "(function(){%output%}).call(this);")
   kwargs.setdefault("defs", [
-      "--assume_function_wrapper",
-      "--new_type_inf",
-      "--rewrite_polyfills=false",
+    "--assume_function_wrapper",
+    "--rewrite_polyfills=false",
+    "--new_type_inf",
+    "--export_local_property_definitions",
+    "--language_out=ES5_STRICT",
+    "--isolation_mode=IIFE",
+    "--generate_exports",
+    "--jscomp_warning=newCheckTypes",
+    "--jscomp_off=newCheckTypesExtraChecks",
+    "--hide_warnings_for=closure/goog",
   ])
   _closure_js_binary_alias(**kwargs)
 

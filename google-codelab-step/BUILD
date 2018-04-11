@@ -1,5 +1,6 @@
 load("//tools:defs.bzl",
      "closure_js_library", "closure_js_binary", "closure_js_test")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_template_library")
 load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary", "sass_library")
 
 package(default_visibility = ["//visibility:public"])
@@ -19,9 +20,9 @@ filegroup(
 closure_js_library(
     name = "google_codelab_step",
     srcs = ["google_codelab_step.js"],
-    convention = "GOOGLE",
     deps = [
-        "@io_bazel_rules_closure//closure/library:library"
+        "@io_bazel_rules_closure//closure/library",
+        ":google_codelab_step_soy",
     ],
 )
 
@@ -43,4 +44,9 @@ sass_binary(
     deps = [
         ":syntax",
     ]
+)
+
+closure_js_template_library(
+    name = "google_codelab_step_soy",
+    srcs = ["google_codelab_step.soy"]
 )
