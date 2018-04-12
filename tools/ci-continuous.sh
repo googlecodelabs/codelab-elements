@@ -26,7 +26,11 @@ BAZEL_FLAGS="--color=no \
        --show_task_finish \
        --show_timestamps \
        --remote_http_cache=https://storage.googleapis.com/codelab-elements-ci \
-       --google_default_credentials"
+       --google_default_credentials \
+       --spawn_strategy=remote \
+       --genrule_strategy=remote \
+       --strategy=Javac=remote \
+       --strategy=Closure=remote"
 
 # TODO(#2): Use more sensitive build/test targets when CI is working.
 bazel build -s $BAZEL_FLAGS //demo:hello_test
