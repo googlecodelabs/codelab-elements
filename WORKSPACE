@@ -45,6 +45,14 @@ load(
 web_test_repositories()
 browser_repositories(chromium = True)
 
+prettify_ver = "2013-03-04"
+new_http_archive(
+    name = "prettify",
+    build_file = "third_party/BUILD.prettify",
+    strip_prefix = "code-prettify-{v}".format(v=prettify_ver),
+    url = "https://github.com/google/code-prettify/archive/{v}.zip".format(v=prettify_ver),
+)
+
 new_http_archive(
     name = "polyfill",
     build_file = "third_party/BUILD.polyfill",
