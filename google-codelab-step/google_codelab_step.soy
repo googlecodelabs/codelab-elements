@@ -1,0 +1,10 @@
+{namespace googlecodelabs.CodelabStep.Templates}
+
+/**
+ * Renders the step title
+ */
+{template .title}
+  {@param step: string}
+  {@param label: string}
+  <h2 id="title">{$step}. {$label}</h2>
+{/template}
