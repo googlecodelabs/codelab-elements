@@ -16,17 +16,50 @@
 
 goog.module('googlecodelabs.CodelabSurvey');
 
+const Templates = goog.require('googlecodelabs.CodelabSurvey.Templates');
+const dom = goog.require('goog.dom');
+const soy = goog.require('goog.soy');
+
+
 /**
  * @extends {HTMLElement}
  */
 class CodelabSurvey extends HTMLElement {
+
+  constructor() {
+    super();
+
+    /**
+     * The name of the survey
+     * @private {string}
+     */
+    this.surveyName_ = this.getAttribute('survey-id') || '';
+  }
+
   /**
    * @export
    * @override
    */
   connectedCallback() {
-    console.log("CodelabSurvey: connected");
-    this.innerHTML = "CodelabSurvey connected, HTML has been upgraded!";
+    this.updateDom_();
+  }
+
+  updateDom_() {
+    const paperRadioGroupEl = this.querySelector('paper-radio-group');
+    if (paperRadioGroupEl) {
+      const polymerRadioEls = paperRadioGroupEl.querySelectorAll(
+        'paper-radio-button');
+      dom.removeNode(paperRadioGroupEl);
+      polymerRadioEls.forEach(radioEl => {
+        const title = radioEl.textContent;
+        const updatedRadioEl = soy.renderAsElement(Templates.radioButton, {
+          radioGroupName: this.surveyName_,
+          radioId: title.replace(/\s+/g, '-').toLowerCase(),
+          radioTitle: title
+        });
+        this.appendChild(updatedRadioEl);
+      });
+    }
   }
 }
 

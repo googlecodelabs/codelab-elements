@@ -20,7 +20,8 @@ closure_js_library(
     name = "google_codelab_survey",
     srcs = ["google_codelab_survey.js"],
     deps = [
-        "@io_bazel_rules_closure//closure/library"
+        "@io_bazel_rules_closure//closure/library",
+        ":google_codelab_survey_soy",
     ],
 )
 
@@ -31,7 +32,14 @@ closure_js_binary(
     deps = [":google_codelab_survey"],
 )
 
+closure_js_test(
+    name = "google_codelab_survey_test",
+    srcs = ["google_codelab_survey_test.js"],
+    entry_points = ["googlecodelabs.CodelabSurveyTest"],
+    deps = [":google_codelab_survey"],
+)
+
 closure_js_template_library(
     name = "google_codelab_survey_soy",
-    srcs = ["google_codelab_survey_renderer.soy"]
+    srcs = ["google_codelab_survey.soy"]
 )
