@@ -1,5 +1,7 @@
 load("//tools:defs.bzl",
-     "closure_js_library", "closure_js_binary", "closure_js_test")
+    "closure_js_library", "closure_js_binary", "closure_js_test")
+load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_template_library")
+
 
 package(default_visibility = ["//visibility:public"])
 
@@ -27,4 +29,9 @@ closure_js_binary(
     name = "google_codelab_survey_bin",
     entry_points = ["googlecodelabs.CodelabSurvey"],
     deps = [":google_codelab_survey"],
+)
+
+closure_js_template_library(
+    name = "google_codelab_survey_soy",
+    srcs = ["google_codelab_survey_renderer.soy"]
 )
