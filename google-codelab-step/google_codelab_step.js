@@ -139,7 +139,7 @@ class CodelabStep extends HTMLElement {
 
     const codeElements = this.inner_.querySelectorAll('code');
     codeElements.forEach((el) => {
-      const code = window['prettyPrintOne'](el.innerHTML);
+      const code = window['prettyPrintOne'](el.textContent);
       el.innerHTML = code;
     });
 
