@@ -1,0 +1,219 @@
+<!--
+Copyright (c) 2015 Google Inc.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+-->
+
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>codelab demo</title>
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+    <link rel="stylesheet" href="google_codelab_scss_bin.css">
+    <link rel="stylesheet" href="/google-codelab-step/google_codelab_step_scss_bin.css">
+</head>
+
+<body>
+    <google-codelab title="Awesome codelab" feedback-link="http://example.org" last-updated="2015-01-28">
+        <google-codelab-step label="One" duration="10">
+            Step 1
+        </google-codelab-step>
+        <google-codelab-step label="Two" duration="15">
+            Step 2
+        </google-codelab-step>
+        <google-codelab-step label="Three" duration="15">
+            Step 3
+        </google-codelab-step>
+        <google-codelab-step label="Adding an ad" duration="10">
+                <p>Your sample <code>article.amp.html</code> page should be as follows:</p>
+        <pre><code>&lt;!doctype html&gt;
+        &lt;html ⚡ lang=&#34;en&#34;&gt;
+          &lt;head&gt;
+            &lt;meta charset=&#34;utf-8&#34; /&gt;
+            &lt;meta name=&#34;viewport&#34; content=&#34;width=device-width,minimum-scale=1,initial-scale=1&#34;&gt;
+        
+            &lt;link rel=&#34;canonical&#34; href=&#34;/article.html&#34;&gt;
+            &lt;link rel=&#34;shortcut icon&#34; href=&#34;amp_favicon.png&#34;&gt;
+        
+            &lt;title&gt;News Article&lt;/title&gt;
+        
+            &lt;style amp-boilerplate&gt;body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}&lt;/style&gt;&lt;noscript&gt;&lt;style amp-boilerplate&gt;body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}&lt;/style&gt;&lt;/noscript&gt;
+            &lt;style amp-custom&gt;
+              body {
+                width: auto;
+                margin: 0;
+                padding: 0;
+              }
+        
+              header {
+                background: Tomato;
+                color: white;
+                font-size: 2em;
+                text-align: center;
+              }
+        
+              h1 {
+                margin: 0;
+                padding: 0.5em;
+                background: white;
+                box-shadow: 0px 3px 5px grey;
+              }
+        
+              p {
+                padding: 0.5em;
+                margin: 0.5em;
+              }
+            &lt;/style&gt;
+            &lt;script async src=&#34;https://cdn.ampproject.org/v0.js&#34;&gt;&lt;/script&gt;
+            &lt;script type=&#34;application/ld+json&#34;&gt;
+            {
+             &#34;@context&#34;: &#34;http://schema.org&#34;,
+             &#34;@type&#34;: &#34;NewsArticle&#34;,
+             &#34;mainEntityOfPage&#34;:{
+               &#34;@type&#34;:&#34;WebPage&#34;,
+               &#34;@id&#34;:&#34;https://example.com/my-article.html&#34;
+             },
+             &#34;headline&#34;: &#34;My First AMP Article&#34;,
+             &#34;image&#34;: {
+               &#34;@type&#34;: &#34;ImageObject&#34;,
+               &#34;url&#34;: &#34;https://example.com/article_thumbnail1.jpg&#34;,
+               &#34;height&#34;: 800,
+               &#34;width&#34;: 800
+             },
+             &#34;datePublished&#34;: &#34;2015-02-05T08:00:00+08:00&#34;,
+             &#34;dateModified&#34;: &#34;2015-02-05T09:20:00+08:00&#34;,
+             &#34;author&#34;: {
+               &#34;@type&#34;: &#34;Person&#34;,
+               &#34;name&#34;: &#34;John Doe&#34;
+             },
+             &#34;publisher&#34;: {
+               &#34;@type&#34;: &#34;Organization&#34;,
+               &#34;name&#34;: &#34;⚡ AMP Times&#34;,
+               &#34;logo&#34;: {
+                 &#34;@type&#34;: &#34;ImageObject&#34;,
+                 &#34;url&#34;: &#34;https://example.com/amptimes_logo.jpg&#34;,
+                 &#34;width&#34;: 600,
+                 &#34;height&#34;: 60
+               }
+             },
+             &#34;description&#34;: &#34;My first experience in an AMPlified world&#34;
+            }
+            &lt;/script&gt;
+          &lt;/head&gt;
+          &lt;body&gt;
+            &lt;header&gt;
+              News Site
+            &lt;/header&gt;
+            &lt;article&gt;
+              &lt;h1&gt;Article Name&lt;/h1&gt;
+        
+              &lt;p&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam egestas tortor sapien, non tristique ligula accumsan eu.&lt;/p&gt;
+        
+              &lt;amp-img src=&#34;mountains.jpg&#34; layout=&#34;responsive&#34; width=&#34;266&#34; height=&#34;150&#34;&gt;&lt;/amp-img&gt;
+            &lt;/article&gt;
+          &lt;/body&gt;
+        &lt;/html&gt;</code></pre>
+        <p>The above is a simple page, the most interesting fact of this page is that it passes both AMP validation and the Schema.org search engine meta data validation. If this page were deployed on a news website it would be eligible for inclusion in the new Google search carousel dedicated to AMP content so it&#39;s a great starting point for our work.</p>
+        <p>Before we alter the page let&#39;s open up the Chrome Developer Tools. When working on a website (especially a mobile focused website) it is usually a good idea to simulate a mobile experience when testing in the browser. <strong>Start</strong> by opening the <a href="https://developer.chrome.com/devtools/docs/console" target="_blank">Developer Console</a> in Chrome via <code>Menu &gt; More Tools &gt; Developer Tools</code>:</p>
+        <p>Now inspect the JavaScript output in the developer console. Make sure you have the Console tab selected:</p>
+        <p>Now click the device simulation button in the developer console. It is represented by a phone and tablet sitting next one another:</p>
+        <p>In the menu that appears, set the device to &#34;Nexus 5X&#34;:</p>
+        <p>Now we can start working on the page itself. Let&#39;s try <strong>adding</strong> an ad to our AMP article!</p>
+        <p>All ads in AMP are constructed using the <code>amp-ad</code> component. Using this component we can configure our ads in several ways such as the width, height and layout mode. However, many ad platforms will require additional configuration such as the account ID for the ad network, which ad should be served or options for targeting the advertising. For <code>amp-ad</code> we simply fill in the various options required as HTML attributes.</p>
+        <p>Take a look at this example of a <strong>Double Click</strong> ad:</p>
+        <pre><code>&lt;amp-ad
+          width=&#34;300&#34;
+          height=&#34;250&#34;
+          type=&#34;doubleclick&#34;
+          data-slot=&#34;/35096353/amptesting/image/static&#34;&gt;
+        &lt;/amp-ad&gt;</code></pre>
+        <p>As you can see this is a very simple configuration. Take note of the <code>type</code> attribute, this attribute informs the amp-ad component of which ad platform you want to use. In this case we wanted <strong>Double Click&#39;s</strong> platform and therefore the type value was <code>doubleclick</code>.</p>
+        <p>The <code>data-slot</code> attribute is more unique. Any attributes starting with <code>data-</code> in amp-ad are vendor specific attributes. This means that not all vendors will necessarily require this particular attribute nor will they necessarily react if it is supplied. For example, compare the above <strong>Double Click</strong> example with a test advertisement from the <strong>A9</strong> platform:</p>
+        <pre><code>&lt;amp-ad
+          width=&#34;300&#34;
+          height=&#34;250&#34;
+          type=&#34;a9&#34;
+          data-aax_size=&#34;300x250&#34;
+          data-aax_pubname=&#34;test123&#34;
+          data-aax_src=&#34;302&#34;&gt;
+        &lt;/amp-ad&gt;</code></pre>
+        <p>Try <strong>adding</strong> both of the above examples into your article just after the <code>&lt;header&gt;</code> tag. <strong>Refresh</strong> the page and you should see two testing ads have appeared:</p>
+        <aside class="warning"><p><strong>Important</strong>: You may have some errors in your developer console such as ‘Mixed Content&#39; or ‘XMLHttpRequest cannot load&#39;. The former is likely related to the A9 advertisement as not all the content it loads is secure. This is a noteable requirement for all ads served on AMP.</p>
+        </aside>
+        <p>Let&#39;s explore some more options available to use with Double Click. Try <strong>adding</strong> these two geotargeting ad configurations to your page:</p>
+        <pre><code>&lt;amp-ad
+          width=&#34;300&#34;
+          height=&#34;250&#34;
+          type=&#34;doubleclick&#34;
+          data-slot=&#34;/35096353/amptesting/geo/uk&#34;&gt;
+          &lt;div fallback&gt;No ad appeared because you&#39;re not browsing from the UK!&lt;/div&gt;
+        &lt;/amp-ad&gt;
+        
+        &lt;amp-ad
+          width=&#34;300&#34;
+          height=&#34;250&#34;
+          type=&#34;doubleclick&#34;
+          data-slot=&#34;/35096353/amptesting/geo/us&#34;&gt;
+          &lt;div fallback&gt;No ad appeared because you&#39;re not browsing from the US!&lt;/div&gt;
+        &lt;/amp-ad&gt;</code></pre>
+        <p>Unfortunately the geotargeting cannot be controlled from the code of the page itself. However, these test adverts have already been configured in the Double Click dashboard to only show in particular countries, specifically the United Kingdom and the United States of America.</p>
+        <p><strong>Refresh</strong> the page and take a look. The following screenshot was captured from Australia, so neither advert is loading:</p>
+        <p>The above geotargeting example demonstrates how amp-ad is flexible enough for all sorts of ad platform features. </p>
+        <aside class="special"><p><strong>Note</strong>: You might notice that inside these amp-ad tags are additional div tags with an attribute named fallback on them. Can you guess what the fallback attribute denotes? It informs AMP&#39;s loading system to only show the contents of that element when the parent element fails to load successfully. Meaning the parent element falls back on the child element -- hence the term ‘fallback&#39;.</p>
+        </aside>
+        <p>The following are the currently supported ad networks:</p>
+        <ul>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/a9.md" target="_blank">A9</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/adblade.md" target="_blank">Adblade</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/adform.md" target="_blank">Adform</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/adreactor.md" target="_blank">AdReactor</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/google/adsense.md" target="_blank">AdSense</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/adtech.md" target="_blank">AdTech</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/criteo.md" target="_blank">Criteo</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/dotandads.md" target="_blank">Dot and Media</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/google/doubleclick.md" target="_blank">Doubleclick</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/flite.md" target="_blank">Flite</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/industrybrains.md" target="_blank">Industrybrains</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/openx.md" target="_blank">OpenX</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/plista.md" target="_blank">plista</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/smartadserver.md" target="_blank">Smart AdServer</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/yieldmo.md" target="_blank">Yieldmo</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/revcontent.md" target="_blank">Revcontent</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/triplelift.md" target="_blank">TripleLift</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/teads.md" target="_blank">Teads</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/imobile.md" target="_blank">I-Mobile</a></li>
+        <li><a href="https://github.com/ampproject/amphtml/blob/master/ads/webediads.md" target="_blank">Webediads</a></li>
+        </ul>
+        <p>Be sure to check out the documentation page for the <a href="https://www.ampproject.org/docs/reference/amp-ad.html" target="_blank">AMP Ad component</a> for information on the latest supported ad platforms.</p>
+        <p>In the next chapter we&#39;ll explore more advanced AMP components and how to include them in our AMP documents.</p>
+        <aside class="special"><p><strong>Note</strong>: No ad network provided JavaScript is allowed to run inside the AMP document. Instead the AMP runtime loads an iframe from a different origin (via iframe sandbox) as the AMP document and executes the ad network&#39;s JS inside that iframe sandbox.</p>
+        </aside>
+        <aside class="warning"><p><strong>Important</strong>: The specification of amp-ad is likely to significantly evolve over time. The current approach is designed to bootstrap the format to be able to show ads.</p>
+        </aside>
+        
+        
+              </google-codelab-step>
+        <google-codelab-step label="Four" duration="15">
+            Step 4
+        </google-codelab-step>
+        <google-codelab-step label="Five" duration="15">
+            Step 5
+        </google-codelab-step>
+    </google-codelab>
+    <script src="/external/polyfill/src/native-shim.js"></script>
+    <script src="/external/polyfill/custom-elements.min.js"></script>
+    <script src="/google-codelab-step/google_codelab_step_bin.js"></script>
+    <script src="google_codelab_bin.js"></script>
+</body>
+
+</html>

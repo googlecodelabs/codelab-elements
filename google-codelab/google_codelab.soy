@@ -1,0 +1,48 @@
+{namespace googlecodelabs.Codelab.Templates}
+
+/**
+ * Renders the main structure
+ */
+{template .structure}
+  <div id="drawer">Drawer</div>
+  <div id="main">
+    <div id="codelab-title">
+      <div id="codelab-nav-buttons">
+        <button>Arrow</button>
+        <button>Hamburger</button>
+      </div>
+    </div>
+    <div id="steps"></div>
+    <div id="controls">
+      <div id="fabs">
+        <a href="#" id="previous-step">Previous Step</a>
+        <a href="#" id="next-step">Next Step</a>
+      </div>
+    </div>
+  </div>
+{/template}
+
+
+/**
+ * Renders the title
+ */
+{template .title}
+  {@param title: string}
+  <h1 class="title">{$title}</h1>
+{/template}
+
+
+/**
+ * Renders the time remaining
+ */
+{template .timeRemaining}
+  {@param time: number}
+  <div id="time-remaining" title="Time remaining">
+   <i>icon</i> 
+   {if $time == 1}
+    {$time} min remaining
+   {else}
+    {$time} mins remaining
+   {/if}
+  </div>
+{/template}
