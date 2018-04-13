@@ -8,15 +8,17 @@
   <div id="main">
     <div id="codelab-title">
       <div id="codelab-nav-buttons">
-        <button>Arrow</button>
-        <button>Hamburger</button>
+        <a href="#">Arrow</a>
+        <a href="#">Hamburger</a>
       </div>
     </div>
     <div id="steps"></div>
     <div id="controls">
       <div id="fabs">
         <a href="#" id="previous-step">Previous Step</a>
+        <div class="spacer"></div>
         <a href="#" id="next-step">Next Step</a>
+        <a href="#" id="done" hidden>Done</a>
       </div>
     </div>
   </div>
@@ -45,4 +47,16 @@
     {$time} mins remaining
    {/if}
   </div>
+{/template}
+
+/**
+ * Renders the drawer
+ */
+{template .drawer}
+  {@param steps: list<string>}
+  <ol>
+    {for $step in $steps}
+      <li><a href="#{index($step)}"><span>{$step}</span></a></li>
+    {/for}
+  </ol>
 {/template}
