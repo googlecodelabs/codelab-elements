@@ -1,0 +1,18 @@
+{namespace googlecodelabs.CodelabSurvey.Templates}
+
+/**
+ * Renders a material component radio button for a codelab survey.
+ */
+{template .radioButton}
+  {@param radioGroupName: string}
+  {@param radioId: string}
+  {@param radioTitle: string}
+  <div class="mdc-radio">
+    <input class="mdc-radio__native-control" type="radio" id="{$radioId}" name="{$radioGroupName}">
+    <div class="mdc-radio__background">
+      <div class="mdc-radio__outer-circle"></div>
+      <div class="mdc-radio__inner-circle"></div>
+    </div>
+  </div>
+  <label id="{$radioId}-label" for="{$radioId}">{$radioTitle}</label>
+{/template}
