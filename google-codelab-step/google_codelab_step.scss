@@ -32,7 +32,7 @@ google-codelab[theme="minimal"] google-codelab-step .instructions .inner {
 }
 
 @media (max-width: 800px) {
-  .instructions {
+  google-codelab .instructions {
     margin: 0 0 16px 0;
   }
 }

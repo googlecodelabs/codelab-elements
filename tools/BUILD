@@ -33,5 +33,6 @@ go_binary(
         "//google-codelab-step:google_codelab_step_files",
         "@polyfill//:custom_elements",
         "@polyfill//:native_shim",
+        "@prettify//:prettify",
     ],
 )

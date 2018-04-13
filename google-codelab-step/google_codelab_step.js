@@ -132,7 +132,14 @@ class CodelabStep extends HTMLElement {
       label: this.label_,
     });
     this.title_ = title;
+    
     dom.insertChildAt(this.inner_, title, 0);
+
+    const codeElements = this.inner_.querySelectorAll('code');
+    codeElements.forEach((el) => {
+      const code = window['prettyPrintOne'](el.textContent);
+      el.innerHTML = code;
+    });
 
     dom.appendChild(this.instructions_, this.inner_);
     dom.appendChild(this, this.instructions_);
