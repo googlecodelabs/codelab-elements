@@ -11,10 +11,10 @@ http_archive(
     ],
 )
 
-rules_closure_ver = "f4d0633f14570313b94822223039ebda0f398102"
+rules_closure_ver = "dbb96841cc0a5fb2664c37822803b06dab20c7d1"
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "8e615c1c282ba680e667549e242cfcc0643846ee7c0c8c816bee077b3edda567",
+    sha256 = "6c493fc2ebc7b05be63171e8d5d57ebe5a73e8b0c57a14f477147af3f4dba1c2",
     strip_prefix = "rules_closure-{v}".format(v=rules_closure_ver),
     url = "https://github.com/bazelbuild/rules_closure/archive/{v}.zip".format(v=rules_closure_ver),
 )
