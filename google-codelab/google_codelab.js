@@ -314,15 +314,11 @@ class Codelab extends HTMLElement {
       return;
     }
 
-    try {
-      selected = parseInt(selected, 10);
-    } catch (e) {
-      return;
-    }
+    selected = Math.min(Math.max(0, parseInt(selected, 10)), this.steps_.length - 1);
 
-    selected = Math.min(Math.max(0, selected), this.steps_.length - 1);
-
-    if (this.currentSelectedStep_ === selected) {
+    if (this.currentSelectedStep_ === selected || isNaN(selected)) {
+      // Either the current step is already selected or an invalid option was provided
+      // do nothing and return.
       return;
     }
 
@@ -339,13 +335,14 @@ class Codelab extends HTMLElement {
 
       this.transitionEventHandler_.removeAll();
       if (this.stepsContainer_) {
-        this.stepsContainer_.scrollTo(0, 0);
+        this.stepsContainer_.scrollTop = 0;
       }
 
       const transitionInInitialStyle = {};
       const transitionInFinalStyle = {
         transform: 'translate3d(0, 0, 0)'
       };
+
       const transitionOutInitialStyle = {
         transform: 'translate3d(0, 0, 0)'
       };
@@ -365,24 +362,29 @@ class Codelab extends HTMLElement {
         transitionOutFinalStyle['transform'] = 'translate3d(100%, 0, 0)';
       }
 
+      const animationProperties = [{
+        property: 'transform',
+        duration: ANIMATION_DURATION,
+        delay: 0,
+        timing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+      }];
+
       this.transitionIn_ = new Transition(stepToSelect, ANIMATION_DURATION,
-          transitionInInitialStyle, transitionInFinalStyle, [{
-            property: 'transform', duration: ANIMATION_DURATION, delay: 0, timing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-          }]);
+          transitionInInitialStyle, transitionInFinalStyle, animationProperties);
       this.transitionOut_ = new Transition(currentStep, ANIMATION_DURATION,
-        transitionOutInitialStyle, transitionOutFinalStyle, [{
-          property: 'transform', duration: ANIMATION_DURATION, delay: 0, timing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-        }]);
+        transitionOutInitialStyle, transitionOutFinalStyle, animationProperties);
 
       this.transitionIn_.play();
       this.transitionOut_.play();
 
-      this.transitionEventHandler_.listenOnce(this.transitionIn_, [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
+      this.transitionEventHandler_.listenOnce(this.transitionIn_,
+            [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
         stepToSelect.setAttribute(SELECTED_ATTR, '');
         stepToSelect.removeAttribute(ANIMATING_ATTR);
       });
 
-      this.transitionEventHandler_.listenOnce(this.transitionOut_, [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
+      this.transitionEventHandler_.listenOnce(this.transitionOut_,
+            [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
         currentStep.removeAttribute(SELECTED_ATTR);
       });
     }
