@@ -18,6 +18,8 @@ goog.module('googlecodelabs.Codelab');
 
 const EventHandler = goog.require('goog.events.EventHandler');
 const Templates = goog.require('googlecodelabs.Codelab.Templates');
+const Transition = goog.require('goog.fx.css3.Transition');
+const TransitionEventType = goog.require('goog.fx.Transition.EventType');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
@@ -55,6 +57,12 @@ const LABEL_ATTR = 'label';
 /** @const {string} */
 const DONT_SET_HISTORY_ATTR = 'dsh';
 
+/** @const {string} */
+const ANIMATING_ATTR = 'animating';
+
+/** @const {number} Page transition time in seconds */
+const ANIMATION_DURATION = .5;
+
 /**
  * @extends {HTMLElement}
  */
@@ -90,8 +98,17 @@ class Codelab extends HTMLElement {
     /** @private {!EventHandler} */
     this.eventHandler_ = new EventHandler();
 
+    /** @private {!EventHandler} */
+    this.transitionEventHandler_ = new EventHandler();
+
     /** @private {boolean} */
     this.hasSetup_ = false;
+
+    /** @private {?Transition} */
+    this.transitionIn_ = null;
+
+    /** @private {?Transition} */
+    this.transitionOut_ = null;
   }
   /**
    * @export
@@ -118,6 +135,7 @@ class Codelab extends HTMLElement {
    */
   disconnectedCallback() {
     this.eventHandler_.removeAll();
+    this.transitionEventHandler_.removeAll();
   }
 
   /**
@@ -302,13 +320,73 @@ class Codelab extends HTMLElement {
       return;
     }
 
-    if (this.currentSelectedStep_ !== -1) {
-      this.steps_[this.currentSelectedStep_].removeAttribute(SELECTED_ATTR);
-    }
-
     selected = Math.min(Math.max(0, selected), this.steps_.length - 1);
 
-    this.steps_[selected].setAttribute(SELECTED_ATTR, '');
+    if (this.currentSelectedStep_ === selected) {
+      return;
+    }
+
+    if (this.currentSelectedStep_ === -1) {
+      // No previous selected step, so select the correct step with no animation
+      this.steps_[selected].setAttribute(SELECTED_ATTR, '');
+    } else {
+      if (this.transitionIn_) {
+        this.transitionIn_.stop();
+      }
+      if (this.transitionOut_) {
+        this.transitionOut_.stop();
+      }
+
+      this.transitionEventHandler_.removeAll();
+      if (this.stepsContainer_) {
+        this.stepsContainer_.scrollTo(0, 0);
+      }
+
+      const transitionInInitialStyle = {};
+      const transitionInFinalStyle = {
+        transform: 'translate3d(0, 0, 0)'
+      };
+      const transitionOutInitialStyle = {
+        transform: 'translate3d(0, 0, 0)'
+      };
+      const transitionOutFinalStyle = {};
+
+      const stepToSelect = this.steps_[selected];
+      const currentStep = this.steps_[this.currentSelectedStep_];
+      stepToSelect.setAttribute(ANIMATING_ATTR, '');
+
+      if (this.currentSelectedStep_ < selected) {
+        // Move new step in from the right
+        transitionInInitialStyle['transform'] = 'translate3d(100%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(-100%, 0, 0)';
+      } else {
+        // Move new step in from the left
+        transitionInInitialStyle['transform'] = 'translate3d(-100%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(100%, 0, 0)';
+      }
+
+      this.transitionIn_ = new Transition(stepToSelect, ANIMATION_DURATION,
+          transitionInInitialStyle, transitionInFinalStyle, [{
+            property: 'transform', duration: ANIMATION_DURATION, delay: 0, timing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+          }]);
+      this.transitionOut_ = new Transition(currentStep, ANIMATION_DURATION,
+        transitionOutInitialStyle, transitionOutFinalStyle, [{
+          property: 'transform', duration: ANIMATION_DURATION, delay: 0, timing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+        }]);
+
+      this.transitionIn_.play();
+      this.transitionOut_.play();
+
+      this.transitionEventHandler_.listenOnce(this.transitionIn_, [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
+        stepToSelect.setAttribute(SELECTED_ATTR, '');
+        stepToSelect.removeAttribute(ANIMATING_ATTR);
+      });
+
+      this.transitionEventHandler_.listenOnce(this.transitionOut_, [TransitionEventType.FINISH, TransitionEventType.STOP], () => {
+        currentStep.removeAttribute(SELECTED_ATTR);
+      });
+    }
+
     this.currentSelectedStep_ = selected;
 
     if (this.nextStepBtn_ && this.prevStepBtn_ && this.doneBtn_) {

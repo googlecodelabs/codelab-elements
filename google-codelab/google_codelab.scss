@@ -94,15 +94,27 @@ google-codelab #steps {
   overflow-x: hidden;
   flex-direction: column;
   padding-top: 32px;
+  position: relative;
+  flex-grow: 1;
 }
 
 google-codelab google-codelab-step {
   display: none;
   width: 100%;
+  transform: translate3d(0, 0, 0);
 }
 
+google-codelab google-codelab-step[animating],
 google-codelab google-codelab-step[selected] {
   display: block;
+  transform-origin: 0 50% 0;
+  animation-fill-mode: both;
+}
+
+google-codelab google-codelab-step[animating] {
+  pointer-events: none;
+  position: absolute;
+  top: 32px;
 }
 
 google-codelab #drawer ol {
