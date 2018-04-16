@@ -26,11 +26,7 @@ def closure_js_library(**kwargs):
   """
   kwargs.setdefault("convention", "GOOGLE")
   suppress = kwargs.pop("suppress", [])
-  suppress.append("JSC_NTI_INVALID_INDEX_TYPE")
   suppress.append("JSC_NTI_UNKNOWN_EXPR_TYPE")
-  suppress.append("checkTypes")
-  suppress.append("newCheckTypes")
-  suppress.append("newCheckTypesCompatibility")
   kwargs.update(dict(suppress=suppress))
   _closure_js_library_alias(**kwargs)
 
@@ -148,9 +144,9 @@ def js_test(name,
       css = css,
       debug = True,
       defs = [
-          "--new_type_inf",
           "--rewrite_polyfills=false",
           "--jscomp_off=analyzerChecks",
+          "--export_local_property_definitions",
       ],
       language = "ECMASCRIPT_2015",
       dependency_mode = "LOOSE",
