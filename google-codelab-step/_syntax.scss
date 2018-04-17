@@ -16,6 +16,9 @@ pre {
   padding: 14px;
   -webkit-text-size-adjust: none;
   line-height: 1.4;
+  float: left;
+  clear: both;
+  width: 100%;
 }
 pre > code {
   padding: 0;
