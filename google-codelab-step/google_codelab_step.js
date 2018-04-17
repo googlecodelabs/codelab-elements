@@ -124,18 +124,21 @@ class CodelabStep extends HTMLElement {
     this.instructions_.classList.add('instructions');
     this.inner_ = dom.createElement('div');
     this.inner_.classList.add('inner');
+    this.inner_.innerHTML = this.innerHTML;
+    dom.removeChildren(this);
 
     const title = soy.renderAsElement(Templates.title, {
       step: this.step_,
-      label: this.label_
+      label: this.label_,
     });
     this.title_ = title;
-    this.inner_.appendChild(title);
 
-    const children = Array.from(dom.getChildren(this));
-    console.log(children);
-    children.forEach((c) => {
-      dom.appendChild(this.inner_, (c));
+    dom.insertChildAt(this.inner_, title, 0);
+
+    const codeElements = this.inner_.querySelectorAll('pre code');
+    codeElements.forEach((el) => {
+      const code = window['prettyPrintOne'](el.innerHTML);
+      el.innerHTML = code;
     });
 
     dom.appendChild(this.instructions_, this.inner_);

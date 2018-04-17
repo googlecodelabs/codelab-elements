@@ -29,9 +29,11 @@ go_binary(
         "//demo:demo_files",
         "//demo:hello_bin",
         "//demo:hello_test",
+        "//google-codelab:google_codelab_files",
         "//google-codelab-step:google_codelab_step_files",
         "//google-codelab-survey:google_codelab_survey_files",
         "@polyfill//:custom_elements",
         "@polyfill//:native_shim",
+        "@prettify//:prettify",
     ],
 )
