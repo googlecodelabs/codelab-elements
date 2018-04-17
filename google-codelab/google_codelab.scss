@@ -50,9 +50,11 @@ google-codelab #codelab-title h1 {
   margin: 0 8px;
   font-family: 'Roboto', 'Noto', sans-serif;
   flex-grow: 1;
+  flex-shrink: 1;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  width: 0;
 }
 
 google-codelab #codelab-title #time-remaining {
@@ -85,7 +87,6 @@ google-codelab #codelab-nav-buttons #menu {
   justify-content: center;
   align-items: center;
 }
- 
 
 google-codelab #controls {
   position: absolute;
