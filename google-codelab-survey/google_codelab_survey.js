@@ -22,6 +22,12 @@ const soy = goog.require('goog.soy');
 
 
 /**
+ * The prefix for all survey keys in local storage
+ */
+const STORAGE_KEY_PREFIX = 'codelab-survey-';
+
+
+/**
  * @extends {HTMLElement}
  */
 class CodelabSurvey extends HTMLElement {
