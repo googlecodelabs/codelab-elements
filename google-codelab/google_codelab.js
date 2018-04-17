@@ -359,9 +359,6 @@ class Codelab extends HTMLElement {
       }
 
       this.transitionEventHandler_.removeAll();
-      if (this.stepsContainer_) {
-        this.stepsContainer_.scrollTop = 0;
-      }
 
       const transitionInInitialStyle = {};
       const transitionInFinalStyle = {
@@ -377,14 +374,16 @@ class Codelab extends HTMLElement {
       const currentStep = this.steps_[this.currentSelectedStep_];
       stepToSelect.setAttribute(ANIMATING_ATTR, '');
 
+      currentStep.scrollTop = 0;
+
       if (this.currentSelectedStep_ < selected) {
         // Move new step in from the right
-        transitionInInitialStyle['transform'] = 'translate3d(100%, 0, 0)';
-        transitionOutFinalStyle['transform'] = 'translate3d(-100%, 0, 0)';
+        transitionInInitialStyle['transform'] = 'translate3d(110%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(-110%, 0, 0)';
       } else {
         // Move new step in from the left
-        transitionInInitialStyle['transform'] = 'translate3d(-100%, 0, 0)';
-        transitionOutFinalStyle['transform'] = 'translate3d(100%, 0, 0)';
+        transitionInInitialStyle['transform'] = 'translate3d(-110%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(110%, 0, 0)';
       }
 
       const animationProperties = [{
