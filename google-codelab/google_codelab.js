@@ -208,7 +208,6 @@ class Codelab extends HTMLElement {
         });
 
         this.eventHandler_.listen(document.body, events.EventType.CLICK, (e) => {
-          console.log('blah');
           if (this.hasAttribute(DRAWER_OPEN_ATTR)) {
             this.removeAttribute(DRAWER_OPEN_ATTR);
           }
