@@ -63,6 +63,9 @@ const ANIMATING_ATTR = 'animating';
 /** @const {number} Page transition time in seconds */
 const ANIMATION_DURATION = .5;
 
+/** @const {string} */
+const DRAWER_OPEN_ATTR = 'drawer--open';
+
 /**
  * @extends {HTMLElement}
  */
@@ -171,6 +174,7 @@ class Codelab extends HTMLElement {
       this.eventHandler_.listen(this.prevStepBtn_, events.EventType.CLICK,
         (e) => {
           e.preventDefault();
+          e.stopPropagation();
           const step = parseInt(this.getAttribute(SELECTED_ATTR), 10);
           this.setAttribute(SELECTED_ATTR, step - 1);
         });
@@ -179,16 +183,35 @@ class Codelab extends HTMLElement {
       this.eventHandler_.listen(this.nextStepBtn_, events.EventType.CLICK,
         (e) => {
           e.preventDefault();
+          e.stopPropagation();
           const step = parseInt(this.getAttribute(SELECTED_ATTR), 10);
           this.setAttribute(SELECTED_ATTR, step + 1);
         });
     }
 
     if (this.drawer_) {
-      const ul = this.drawer_.querySelector('ol');
-      if (ul) {
-        this.eventHandler_.listen(ul, events.EventType.CLICK,
+      this.eventHandler_.listen(this.drawer_, events.EventType.CLICK,
           (e) => this.handleDrawerClick_(e));
+    }
+
+    if (this.titleContainer_) {
+      const menuBtn = this.titleContainer_.querySelector('#menu');
+      if (menuBtn) {
+        this.eventHandler_.listen(menuBtn, events.EventType.CLICK, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (this.hasAttribute(DRAWER_OPEN_ATTR)) {
+            this.removeAttribute(DRAWER_OPEN_ATTR);
+          } else {
+            this.setAttribute(DRAWER_OPEN_ATTR, '');
+          }
+        });
+
+        this.eventHandler_.listen(document.body, events.EventType.CLICK, (e) => {
+          if (this.hasAttribute(DRAWER_OPEN_ATTR)) {
+            this.removeAttribute(DRAWER_OPEN_ATTR);
+          }
+        });
       }
     }
 
@@ -230,6 +253,7 @@ class Codelab extends HTMLElement {
    */
   handleDrawerClick_(e) {
     e.preventDefault();
+    e.stopPropagation();
     let target = /** @type {!Element} */ (e.target);
 
     while (target !== this.drawer_) {
@@ -334,9 +358,6 @@ class Codelab extends HTMLElement {
       }
 
       this.transitionEventHandler_.removeAll();
-      if (this.stepsContainer_) {
-        this.stepsContainer_.scrollTop = 0;
-      }
 
       const transitionInInitialStyle = {};
       const transitionInFinalStyle = {
@@ -352,14 +373,16 @@ class Codelab extends HTMLElement {
       const currentStep = this.steps_[this.currentSelectedStep_];
       stepToSelect.setAttribute(ANIMATING_ATTR, '');
 
+      currentStep.scrollTop = 0;
+
       if (this.currentSelectedStep_ < selected) {
         // Move new step in from the right
-        transitionInInitialStyle['transform'] = 'translate3d(100%, 0, 0)';
-        transitionOutFinalStyle['transform'] = 'translate3d(-100%, 0, 0)';
+        transitionInInitialStyle['transform'] = 'translate3d(110%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(-110%, 0, 0)';
       } else {
         // Move new step in from the left
-        transitionInInitialStyle['transform'] = 'translate3d(-100%, 0, 0)';
-        transitionOutFinalStyle['transform'] = 'translate3d(100%, 0, 0)';
+        transitionInInitialStyle['transform'] = 'translate3d(-110%, 0, 0)';
+        transitionOutFinalStyle['transform'] = 'translate3d(110%, 0, 0)';
       }
 
       const animationProperties = [{

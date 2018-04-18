@@ -37,9 +37,23 @@ sass_library(
     srcs = ["google_codelab.scss"],
 )
 
+sass_library(
+    name = "google_codelab_drawer_scss",
+    srcs = ["_drawer.scss"],
+)
+
+sass_library(
+    name = "google_codelab_steps_scss",
+    srcs = ["_steps.scss"],
+)
+
 sass_binary(
     name = "google_codelab_scss_bin",
     src = "google_codelab.scss",
+    deps = [
+        ":google_codelab_drawer_scss",
+        ":google_codelab_steps_scss",
+    ]
 )
 
 closure_js_template_library(
