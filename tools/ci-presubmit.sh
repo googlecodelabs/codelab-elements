@@ -27,5 +27,5 @@ BAZEL_FLAGS="--color=no \
        --show_timestamps"
 
 # TODO(#2): Use more sensitive build/test targets when CI is working.
-bazel build -s $BAZEL_FLAGS //demo:hello_test
-bazel test -s $BAZEL_FLAGS --test_output=all --test_arg=-debug //demo:hello_test
+bazel build -s $BAZEL_FLAGS ...
+bazel test -s $BAZEL_FLAGS --test_output=all --test_arg=-debug ...
