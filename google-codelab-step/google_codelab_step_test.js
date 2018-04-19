@@ -17,13 +17,77 @@
 goog.module('googlecodelabs.CodelabStepTest');
 goog.setTestOnly();
 
-const CodelabSurvey = goog.require('googlecodelabs.CodelabStep');
+const CodelabStep = goog.require('googlecodelabs.CodelabStep');
+const MockControl = goog.require('goog.testing.MockControl');
 const testSuite = goog.require('goog.testing.testSuite');
 goog.require('goog.testing.asserts');
 goog.require('goog.testing.jsunit');
 
+let mockControl;
+
+/**
+ * @param {string} s
+ * @return {string}
+ */
+window['prettyPrintOne'] = (s) => {return s;};
+
 testSuite({
-  testMoo() {
-      assertTrue(false);
+  setUp() {
+    mockControl = new MockControl();
+  },
+
+  tearDown() {
+    mockControl.$resetAll();
+    mockControl.$tearDown();
+  },
+
+  testDomIsSetUpCorrectly() {
+    const codelabStep = new CodelabStep();
+    codelabStep.innerHTML = '<h1>Test</h1>';
+
+    document.body.appendChild(codelabStep);
+
+    assertNotUndefined(codelabStep.querySelector('.instructions'));
+    assertNotUndefined(codelabStep.querySelector('.inner'));
+    assertNotUndefined(codelabStep.querySelector('h2.step-title'));
+    assertEquals('Test', codelabStep.querySelector('h1').innerHTML);
+
+    document.body.removeChild(codelabStep);
+  },
+
+  testCodePrettyprint() {
+    const mockPrettyPrint = mockControl.createMethodMock(window, 'prettyPrintOne');
+    mockPrettyPrint('Code').$returns('MockCodeTest').$once();
+
+    mockControl.$replayAll();
+
+    const codelabStep = new CodelabStep();
+    codelabStep.innerHTML = '<h1>Testing</h1><pre><code>Code</code></pre>';
+    document.body.appendChild(codelabStep);
+
+    mockControl.$verifyAll();
+
+    assertNotEquals(-1, codelabStep.innerHTML.indexOf('<code>MockCodeTest</code>'));
+
+    document.body.removeChild(codelabStep);
+  },
+
+  testUpdateTitle() {
+    const codelabStep = new CodelabStep();
+
+    document.body.appendChild(codelabStep);
+    
+    let title = codelabStep.querySelector('h2.step-title');
+    assertEquals('0. ', title.textContent);
+
+    codelabStep.setAttribute('step', '3');
+    title = codelabStep.querySelector('h2.step-title');
+    assertEquals('3. ', title.textContent);
+
+    codelabStep.setAttribute('label', 'test label');
+    title = codelabStep.querySelector('h2.step-title');
+    assertEquals('3. test label', title.textContent);
+
+    document.body.removeChild(codelabStep);
   }
 });
