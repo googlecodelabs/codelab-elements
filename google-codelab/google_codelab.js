@@ -259,7 +259,7 @@ class Codelab extends HTMLElement {
       }
     }
 
-    this.eventHandler_.listen(window, events.EventType.POPSTATE, (e) => {
+    this.eventHandler_.listen(dom.getWindow(), events.EventType.POPSTATE, (e) => {
       this.handlePopStateChanged_(e);
     });
 
@@ -340,10 +340,14 @@ class Codelab extends HTMLElement {
    */
   handleKeyDown_(e) {
     if (e.keyCode == KeyCodes.LEFT) {
-      document.activeElement.blur();
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
       this.selectPrevious();
     } else if (e.keyCode == KeyCodes.RIGHT) {
-      document.activeElement.blur();
+      if (document.activeElement) {
+        document.activeElement.blur();
+      }
       this.selectNext();
     }
   }
