@@ -130,6 +130,12 @@ google-codelab #fabs .spacer {
   -webkit-tap-highlight-color: transparent;
   text-decoration: none;
   color: #fff;
+  transform: scale(1, 1);
+  transition: transform 300ms ease-in-out;
+}
+
+google-codelab #fabs a[disappear] {
+  transform: scale(0, 0);
 }
 
 #done {
