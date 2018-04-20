@@ -17,6 +17,7 @@
 goog.module('googlecodelabs.Codelab');
 
 const EventHandler = goog.require('goog.events.EventHandler');
+const KeyCodes = goog.require('goog.events.KeyCodes');
 const Templates = goog.require('googlecodelabs.Codelab.Templates');
 const Transition = goog.require('goog.fx.css3.Transition');
 const TransitionEventType = goog.require('goog.fx.Transition.EventType');
@@ -60,6 +61,15 @@ const DONT_SET_HISTORY_ATTR = 'dsh';
 /** @const {string} */
 const ANIMATING_ATTR = 'animating';
 
+/** @const {string} */
+const NO_TOOLBAR_ATTR = 'no-toolbar';
+
+/** @const {string} */
+const NO_ARROWS_ATTR = 'no-arrows';
+
+/** @const {string} */
+const DISAPPEAR_ATTR = 'disappear';
+
 /** @const {number} Page transition time in seconds */
 const ANIMATION_DURATION = .5;
 
@@ -88,6 +98,9 @@ class Codelab extends HTMLElement {
 
     /** @private {?Element} */
     this.prevStepBtn_ = null;
+
+    /** @private {?Element} */
+    this.controls_ = null;
 
     /** @private {?Element} */
     this.doneBtn_ = null;
@@ -126,6 +139,8 @@ class Codelab extends HTMLElement {
 
     this.showSelectedStep_();
     this.updateTitle_();
+    this.toggleArrows_();
+    this.toggleToolbar_();
 
     window.requestAnimationFrame(() => {
       document.body.removeAttribute('unresolved');
@@ -147,7 +162,7 @@ class Codelab extends HTMLElement {
    */
   static get observedAttributes() {
     return [TITLE_ATTR, ENVIRONMENT_ATTR, CATEGORY_ATTR, FEEDBACK_LINK_ATTR,
-        SELECTED_ATTR, LAST_UPDATED_ATTR];
+        SELECTED_ATTR, LAST_UPDATED_ATTR, NO_TOOLBAR_ATTR, NO_ARROWS_ATTR];
   }
 
   /**
@@ -166,7 +181,35 @@ class Codelab extends HTMLElement {
       case SELECTED_ATTR:
         this.showSelectedStep_();
         break;
+      case NO_TOOLBAR_ATTR:
+        this.toggleToolbar_();
+        break;
+      case NO_ARROWS_ATTR:
+        this.toggleArrows_();
+        break;
     }
+  }
+
+  /**
+   * @export
+   */
+  selectNext() {
+    this.setAttribute(SELECTED_ATTR, this.currentSelectedStep_ + 1);
+  }
+
+  /**
+   * @export
+   */
+  selectPrevious() {
+    this.setAttribute(SELECTED_ATTR, this.currentSelectedStep_ - 1);
+  }
+
+  /**
+   * @export
+   * @param {number} index 
+   */
+  select(index) {
+    this.setAttribute(SELECTED_ATTR, index);
   }
 
   addEvents_() {
@@ -175,8 +218,7 @@ class Codelab extends HTMLElement {
         (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const step = parseInt(this.getAttribute(SELECTED_ATTR), 10);
-          this.setAttribute(SELECTED_ATTR, step - 1);
+          this.selectPrevious();
         });
     }
     if (this.nextStepBtn_) {
@@ -184,14 +226,16 @@ class Codelab extends HTMLElement {
         (e) => {
           e.preventDefault();
           e.stopPropagation();
-          const step = parseInt(this.getAttribute(SELECTED_ATTR), 10);
-          this.setAttribute(SELECTED_ATTR, step + 1);
+          this.selectNext();
         });
     }
 
     if (this.drawer_) {
       this.eventHandler_.listen(this.drawer_, events.EventType.CLICK,
           (e) => this.handleDrawerClick_(e));
+
+      this.eventHandler_.listen(this.drawer_, events.EventType.KEYDOWN,
+            (e) => this.handleDrawerKeyDown_(e));
     }
 
     if (this.titleContainer_) {
@@ -218,6 +262,90 @@ class Codelab extends HTMLElement {
     this.eventHandler_.listen(window, events.EventType.POPSTATE, (e) => {
       this.handlePopStateChanged_(e);
     });
+
+    this.eventHandler_.listen(document.body, events.EventType.KEYDOWN, (e) => {
+      this.handleKeyDown_(e);
+    });
+  }
+
+  /**
+   * @private
+   */
+  toggleToolbar_() {
+    if (!this.titleContainer_) {
+      return;
+    }
+
+    if (this.hasAttribute(NO_TOOLBAR_ATTR)) {
+      this.titleContainer_.setAttribute(HIDDEN_ATTR, '');
+    } else {
+      this.titleContainer_.removeAttribute(HIDDEN_ATTR);
+    }
+  }
+
+  /**
+   * @private
+   */
+  toggleArrows_() {
+    if (!this.controls_) {
+      return;
+    }
+
+    if (this.hasAttribute(NO_ARROWS_ATTR)) {
+      this.controls_.setAttribute(HIDDEN_ATTR, '');
+    } else {
+      this.controls_.removeAttribute(HIDDEN_ATTR);
+    }
+  }
+
+  /**
+   * 
+   * @param {!events.BrowserEvent} e 
+   */
+  handleDrawerKeyDown_(e) {
+    if (!this.drawer_) {
+      return;
+    }
+
+    const focused = this.drawer_.querySelector(':focus');
+    let li;
+    if (focused) {
+      li = /** @type {!Element} */ (focused.parentNode);
+    } else {
+      li = this.drawer_.querySelector(`[${SELECTED_ATTR}]`);
+    }
+
+    if (!li) {
+      return;
+    }
+
+    let next;
+    if (e.keyCode == KeyCodes.UP) {
+      next = dom.getPreviousElementSibling(li);
+    } else if (e.keyCode == KeyCodes.DOWN) {
+      next = dom.getNextElementSibling(li);
+    }
+
+    if (next) {
+      const a = next.querySelector('a');
+      if (a) {
+        a.focus();
+      }
+    }
+  }
+
+  /**
+   * 
+   * @param {!events.BrowserEvent} e 
+   */
+  handleKeyDown_(e) {
+    if (e.keyCode == KeyCodes.LEFT) {
+      document.activeElement.blur();
+      this.selectPrevious();
+    } else if (e.keyCode == KeyCodes.RIGHT) {
+      document.activeElement.blur();
+      this.selectNext();
+    }
   }
 
   /**
@@ -348,7 +476,8 @@ class Codelab extends HTMLElement {
 
     if (this.currentSelectedStep_ === -1) {
       // No previous selected step, so select the correct step with no animation
-      this.steps_[selected].setAttribute(SELECTED_ATTR, '');
+      const stepToSelect = this.steps_[selected];
+      stepToSelect.setAttribute(SELECTED_ATTR, '');
     } else {
       if (this.transitionIn_) {
         this.transitionIn_.stop();
@@ -416,16 +545,16 @@ class Codelab extends HTMLElement {
 
     if (this.nextStepBtn_ && this.prevStepBtn_ && this.doneBtn_) {
       if (selected === 0) {
-        this.prevStepBtn_.setAttribute(HIDDEN_ATTR, '');
+        this.prevStepBtn_.setAttribute(DISAPPEAR_ATTR, '');
       } else {
-        this.prevStepBtn_.removeAttribute(HIDDEN_ATTR);
+        this.prevStepBtn_.removeAttribute(DISAPPEAR_ATTR);
       }
       if (selected === this.steps_.length - 1) {
-        this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
-        this.doneBtn_.removeAttribute(HIDDEN_ATTR);
+        this.nextStepBtn_.setAttribute(DISAPPEAR_ATTR, '');
+        this.doneBtn_.removeAttribute(DISAPPEAR_ATTR);
       } else {
-        this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
-        this.doneBtn_.setAttribute(HIDDEN_ATTR, '');
+        this.nextStepBtn_.removeAttribute(DISAPPEAR_ATTR);
+        this.doneBtn_.setAttribute(DISAPPEAR_ATTR, '');
       }
     }
 
@@ -467,9 +596,10 @@ class Codelab extends HTMLElement {
     this.drawer_ = this.querySelector('#drawer');
     this.titleContainer_ = this.querySelector('#codelab-title');
     this.stepsContainer_ = this.querySelector('#steps');
-    this.prevStepBtn_ = this.querySelector('#fabs #previous-step');
-    this.nextStepBtn_ = this.querySelector('#fabs #next-step');
-    this.doneBtn_ = this.querySelector('#fabs #done');
+    this.controls_ = this.querySelector('#controls');
+    this.prevStepBtn_ = this.querySelector('#controls #previous-step');
+    this.nextStepBtn_ = this.querySelector('#controls #next-step');
+    this.doneBtn_ = this.querySelector('#controls #done');
 
     this.steps_.forEach((step) => dom.appendChild(this.stepsContainer_, step));
     this.setupSteps_();

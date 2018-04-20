@@ -34,9 +34,11 @@ google-codelab #drawer ol li a {
   -webkit-font-smoothing: antialiased;
 }
 
+google-codelab #drawer ol li a:active,
 google-codelab #drawer ol li a:focus {
   background: #c6c6c6;
   -webkit-tap-highlight-color: transparent;
+  outline: 0;
 }
 
 google-codelab #drawer ol li span:before {
