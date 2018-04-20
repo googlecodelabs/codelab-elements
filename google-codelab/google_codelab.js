@@ -550,11 +550,11 @@ class Codelab extends HTMLElement {
         this.prevStepBtn_.removeAttribute(DISAPPEAR_ATTR);
       }
       if (selected === this.steps_.length - 1) {
-        this.nextStepBtn_.setAttribute(DISAPPEAR_ATTR, '');
-        this.doneBtn_.removeAttribute(DISAPPEAR_ATTR);
+        this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
+        this.doneBtn_.removeAttribute(HIDDEN_ATTR);
       } else {
-        this.nextStepBtn_.removeAttribute(DISAPPEAR_ATTR);
-        this.doneBtn_.setAttribute(DISAPPEAR_ATTR, '');
+        this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
+        this.doneBtn_.setAttribute(HIDDEN_ATTR, '');
       }
     }
 
