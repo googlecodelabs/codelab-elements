@@ -77,6 +77,22 @@ const ANIMATION_DURATION = .5;
 const DRAWER_OPEN_ATTR = 'drawer--open';
 
 /**
+ * Fired when the codelab steps have been fully initialized.
+ */
+const CODELAB_READY_EVENT = 'google-codelab-ready';
+
+/**
+ * Fired when user advances a codelab step or goes backwards.
+ * detail {{index: Number}}
+ */
+const CODELAB_STEP_EVENT = 'google-codelab-step';
+
+/**
+ * Fired when user reaches the last step of the codelab.
+ */
+const CODELAB_COMPLETE_EVENT = 'google-codelab-complete';
+
+/**
  * @extends {HTMLElement}
  */
 class Codelab extends HTMLElement {
@@ -144,6 +160,7 @@ class Codelab extends HTMLElement {
 
     window.requestAnimationFrame(() => {
       document.body.removeAttribute('unresolved');
+      this.fireEvent_(CODELAB_READY_EVENT);
     });
   }
 
@@ -463,9 +480,6 @@ class Codelab extends HTMLElement {
     if (this.hasAttribute(SELECTED_ATTR)) {
       selected = this.getAttribute(SELECTED_ATTR);
     } else {
-      if (document.location.hash) {
-        selected = document.location.hash.substring(1);
-      }
       this.setAttribute(SELECTED_ATTR, selected);
       return;
     }
@@ -477,6 +491,10 @@ class Codelab extends HTMLElement {
       // do nothing and return.
       return;
     }
+
+    this.fireEvent_(CODELAB_STEP_EVENT, {
+      index: selected
+    });
 
     if (this.currentSelectedStep_ === -1) {
       // No previous selected step, so select the correct step with no animation
@@ -556,6 +574,7 @@ class Codelab extends HTMLElement {
       if (selected === this.steps_.length - 1) {
         this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
         this.doneBtn_.removeAttribute(HIDDEN_ATTR);
+        this.fireEvent_(CODELAB_COMPLETE_EVENT);
       } else {
         this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
         this.doneBtn_.setAttribute(HIDDEN_ATTR, '');
@@ -591,11 +610,48 @@ class Codelab extends HTMLElement {
 
   /**
    * @private
+   * @return {string}
+   */
+  getHomeUrl_() {
+    let index;
+    let parts = location.search.substring(1).split('&');
+    for (let i = 0; i < parts.length; i++) {
+      let param = parts[i].split('=');
+      if (param[0] === 'index') {
+        index = param[1];
+        break;
+      }
+    }
+    // decode and extract index name from the search param
+    // default index is 'index'
+    index = index ? decodeURIComponent(index) : '';
+    index = index.replace(/[^a-z0-9\-]+/ig, '');
+    if (index === 'index') {
+      index = '';
+    }
+
+    return index;
+  }
+
+  /**
+   * 
+   * @param {string} eventName 
+   * @param {!Object=} detail 
+   */
+  fireEvent_(eventName, detail={}) {
+    const event = new CustomEvent(eventName, detail);
+    this.dispatchEvent(event);
+  }
+
+  /**
+   * @private
    */
   setupDom_() {
     this.steps_ = Array.from(this.querySelectorAll('google-codelab-step'));
 
-    soy.renderElement(this, Templates.structure);
+    soy.renderElement(this, Templates.structure, {
+      homeUrl: this.getHomeUrl_()
+    });
     
     this.drawer_ = this.querySelector('#drawer');
     this.titleContainer_ = this.querySelector('#codelab-title');
@@ -609,6 +665,10 @@ class Codelab extends HTMLElement {
     this.setupSteps_();
     this.renderDrawer_();
 
+    if (document.location.hash) {
+      this.setAttribute(SELECTED_ATTR, document.location.hash.substring(1));
+    }
+    
     this.hasSetup_ = true;
   }
 }
