@@ -599,7 +599,7 @@ class Codelab extends HTMLElement {
 
     this.updateTimeRemaining_();
     if (!this.hasAttribute(DONT_SET_HISTORY_ATTR)) {
-      this.updateHistoryState(`#${selected}`);
+      this.updateHistoryState(`#${selected}`, !!document.location.hash);
     }
   }
 
