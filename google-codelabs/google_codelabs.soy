@@ -1,0 +1,34 @@
+{namespace googlecodelabs.Codelabs.Templates}
+
+/**
+ * Renders the card
+ */
+{template .card}
+  {@param title: string}
+  {@param category: string}
+  {@param duration: string}
+  {@param updated: string}
+  <div class="card-header">
+    <span>{$category}</span>
+    <span>{$duration} min</span>
+  </div>
+  <div class="card-description">
+    {$title}
+  </div>
+  <div class="card-footer">
+    Start
+    {$updated}
+  </div>
+{/template}
+
+
+{template .sortby}
+  <div class="sort-by-inner">
+    <a href="#" id="sortby-a-z" selected>A-Z</a>
+    <a href="#" id="sortby-recent">Recent</a>
+    <a href="#" id="sortby-duration">Duration</a>
+  </div>
+  <div class="sort-by-inner">
+    Category
+  </div>
+{/template}
