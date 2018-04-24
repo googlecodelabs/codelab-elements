@@ -37,8 +37,15 @@ const STORAGE_KEY_PREFIX = 'codelab-survey-';
  */
 const SURVEY_ID_ATTR = 'survey-id';
 
+
 /** @const {string} */
 const DEFAULT_SURVEY_NAME = 'default-codelabs-survey';
+
+
+/** @enum {string} */
+const Selectors = {
+  'OPTIONS_WRAPPER': '.mdc-radio__wrapper'
+};
 
 
 /**
@@ -79,7 +86,8 @@ class CodelabSurvey extends HTMLElement {
   }
 
   bindEvents_() {
-    const surveyQuestions = document.querySelectorAll('.mdc-radio__wrapper');
+    const surveyQuestions = document.querySelectorAll(
+      Selectors.OPTIONS_WRAPPER);
     surveyQuestions.forEach(el => {
       this.eventHandler_.listen(el, events.EventType.CLICK, (e) => {
         this.handleSurveyClick_(e.currentTarget);
@@ -89,10 +97,12 @@ class CodelabSurvey extends HTMLElement {
 
   handleSurveyClick_(surveyQuestionEl) {
     const labelEl = surveyQuestionEl.querySelector('label');
+    const inputEl = surveyQuestionEl.querySelector('input');
     const answer = labelEl.textContent;
-    const question = surveyQuestionEl.querySelector('input').name;
 
-    if (question) {
+    if (inputEl) {
+      inputEl.checked = true;
+      const question = inputEl.name;
       this.storedData_[this.surveyName_][question] = answer;
       this.storage_.set(
         this.storageKey_, JSON.stringify(this.storedData_[this.surveyName_]));
