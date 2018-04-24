@@ -16,26 +16,18 @@
 
 goog.module('googlecodelabs.Codelabs');
 
+const Cards = goog.require('googlecodelabs.Codelabs.Cards');
 const EventHandler = goog.require('goog.events.EventHandler');
 const Templates = goog.require('googlecodelabs.Codelabs.Templates');
 const dom = goog.require('goog.dom');
+const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
 
 /** @const {string} */
 const CATEGORY_ATTR = 'category';
 
 /** @const {string} */
-const TITLE_ATTR = 'title';
-
-/** @const {string} */
-const DURATION_ATTR = 'duration';
-
-/** @const {string} */
-const UPDATED_ATTR = 'updated';
-
-/** @const {string} */
-const TAGS_ATTR = 'tags';
-
+const SORT_ATTR = 'sort';
 
 /**
  * @extends {HTMLElement}
@@ -49,6 +41,12 @@ class Codelabs extends HTMLElement {
 
     /** @private {boolean} */
     this.hasSetup_ = false;
+
+    /** @private {?Cards} */
+    this.cards_ = null;
+
+    /** @private {?Element} */
+    this.sortBy_ = null;
   }
 
   /**
@@ -76,30 +74,33 @@ class Codelabs extends HTMLElement {
   }
 
   /**
-   * @return {!Array<string>}
-   * @export
-   */
-  static get observedAttributes() {
-    return [];
-  }
-
-  /**
-   * @param {string} attr
-   * @param {?string} oldValue
-   * @param {?string} newValue
-   * @param {?string} namespace
-   * @export
-   * @override
-   */
-  attributeChangedCallback(attr, oldValue, newValue, namespace) {
-    console.log(attr);
-  }
-
-  /**
    * @private
    */
   addEvents_() {
-    console.log('moo');
+    if (this.sortBy_) {
+      this.eventHandler_.listen(this.sortBy_, events.EventType.CLICK,
+        (e) => {
+          e.preventDefault();
+          this.handleSortByClick_(e);
+        });
+    }
+  }
+
+  /**
+   * @param {!Event} e
+   * @private
+   */
+  handleSortByClick_(e) {
+    const target = /** @type {!Element} */ (e.target);
+    const sort = target.getAttribute(SORT_ATTR);
+    if (this.cards_) {
+      this.cards_.setAttribute(SORT_ATTR, sort);
+    }
+    const selected = this.querySelector('[selected]');
+    if (selected) {
+      selected.removeAttribute('selected');
+    }
+    target.setAttribute('selected', '');
   }
 
   /**
@@ -107,32 +108,38 @@ class Codelabs extends HTMLElement {
    */
   setupDom_() {
     const mainInner = this.querySelector('main .main-inner');
+    if (!mainInner) {
+      return;
+    }
+    
     const list = this.querySelector('main ul');
-    const cards = dom.createElement('cards');
+    let cards = new Cards();
     const categories = [];
     if (list) {
       [...list.querySelectorAll('a')].forEach((link) => {
-        const category = link.getAttribute(CATEGORY_ATTR);
-        const info = {
-          category: category,
-          title: link.getAttribute(TITLE_ATTR),
-          duration: link.getAttribute(DURATION_ATTR),
-          updated: link.getAttribute(UPDATED_ATTR),
-          tags: link.getAttribute(TAGS_ATTR)
-        };
-        soy.renderElement(link, Templates.card, info);
-        link.classList.add('card');
-        dom.appendChild(cards, link);
-        categories.push(category);
+        cards.addCard(link);
       });
       dom.removeNode(list);
+      dom.appendChild(mainInner, cards);
+    } else {
+      cards = mainInner.querySelector('google-codelabs-cards');
     }
 
-    const sortBy = soy.renderAsElement(Templates.sortby);
-    sortBy.setAttribute('id', 'sort-by');
+    if (cards) {
+      [...cards.querySelectorAll('.card')].forEach((card) => {
+        const category = card.getAttribute(CATEGORY_ATTR);
+        if (category) {
+          categories.push(category);
+        }
+      });
+      const sortBy = soy.renderAsElement(Templates.sortby);
+      sortBy.setAttribute('id', 'sort-by');
+      dom.insertSiblingBefore(sortBy, cards);
 
-    dom.appendChild(mainInner, sortBy);
-    dom.appendChild(mainInner, cards);
+      this.sortBy_ = sortBy;
+      this.cards_ = /** @type {!Cards} */ (cards);
+    }
+
     this.hasSetup_ = true;
   }
 }

@@ -15,10 +15,20 @@ filegroup(
     ],
 )
 
-# Codelab step.
+# Codelabs
 closure_js_library(
     name = "google_codelabs",
     srcs = ["google_codelabs.js"],
+    deps = [
+        "@io_bazel_rules_closure//closure/library",
+        ":google_codelabs_soy",
+        ":google_codelabs_cards",
+    ]
+)
+
+closure_js_library(
+    name = "google_codelabs_cards",
+    srcs = ["google_codelabs_cards.js"],
     deps = [
         "@io_bazel_rules_closure//closure/library",
         ":google_codelabs_soy",
@@ -33,6 +43,11 @@ closure_js_binary(
 )
 
 sass_library(
+    name = "cards_scss",
+    srcs = ["_cards.scss"],
+)
+
+sass_library(
     name = "google_codelab_scss",
     srcs = ["google_codelab.scss"],
 )
@@ -41,6 +56,7 @@ sass_binary(
     name = "google_codelabs_scss_bin",
     src = "google_codelabs.scss",
     deps = [
+        ":cards_scss",
     ]
 )
 

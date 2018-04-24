@@ -162,44 +162,4 @@ footer .footerbar a {
   color: currentcolor;
 }
 
-cards {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin-bottom: 24px;
-}
-
-cards .card {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  flex: 1 0 330px;
-  margin: 0 16px 16px 0;
-  background-color: #fff;
-  max-width: 330px;
-}
-
-cards .card:nth-of-type(3n) {
-  margin-right: 0;
-}
-
-cards .card .card-header {
-  display: flex;
-  justify-content: space-between;
-  align-content: center;
-  padding: 16px;
-}
-
-cards .card .card-description {
-  padding: 16px 32px;
-  flex: 1 0 auto;
-  color: #3C4043
-}
-
-cards .card .card-footer {
-  display: flex;
-  align-content: center;
-  justify-content: space-between;
-  border-top: 1px solid #DADCE0;
-  padding: 8px 16px;
-}
+@import "cards";
