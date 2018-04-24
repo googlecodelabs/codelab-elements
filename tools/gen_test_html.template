@@ -1,4 +1,6 @@
 <!doctype html>
+<html>
+<head>
 <!--
 Copyright (c) 2018 Google Inc.
 
@@ -14,7 +16,8 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-
+</head>
+<body>
 <!--
 This is a template of the default test file used for running JS tests
 declared with js_test or closure_js_test rules.
@@ -27,3 +30,5 @@ declared with js_test or closure_js_test rules.
   var CLOSURE_UNCOMPILED_DEFINES = {};
 </script>
 <script src="{{TEST_FILE_JS}}"></script>
+</body>
+</html>

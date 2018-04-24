@@ -48,9 +48,13 @@ class CodelabStep extends HTMLElement {
     this.hasSetup_ = false;
 
     /**
-     * 
+     * @private {string}
      */
-    this.step_ = 0;
+    this.step_ = '0';
+
+    /**
+     * @private {string}
+     */
     this.label_ = '';
 
     /**
@@ -64,9 +68,7 @@ class CodelabStep extends HTMLElement {
    * @override
    */
   connectedCallback() {
-    if (!this.hasSetup_) {
-      this.setupDom_();
-    }
+    this.setupDom_();
   }
 
   /**
@@ -120,6 +122,10 @@ class CodelabStep extends HTMLElement {
    * @private
    */
   setupDom_() {
+    if (this.hasSetup_) {
+      return;
+    }
+
     this.instructions_ = dom.createElement('div');
     this.instructions_.classList.add('instructions');
     this.inner_ = dom.createElement('div');

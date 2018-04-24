@@ -4,21 +4,22 @@
  * Renders the main structure
  */
 {template .structure}
+  {@param homeUrl: string}
   <div id="drawer">Drawer</div>
   <div id="main">
     <div id="codelab-title">
       <div id="codelab-nav-buttons">
-        <a href="#">Arrow</a>
-        <a href="#">Hamburger</a>
+        <a href="{$homeUrl}" id="arrow-back"><i class="material-icons">arrow_back</i></a>
+        <a href="#" id="menu"><i class="material-icons">menu</i></a>
       </div>
     </div>
     <div id="steps"></div>
     <div id="controls">
       <div id="fabs">
-        <a href="#" id="previous-step">Previous Step</a>
+        <a href="#" id="previous-step" title="Previous step"><i class="material-icons">chevron_left</i></a>
         <div class="spacer"></div>
-        <a href="#" id="next-step">Next Step</a>
-        <a href="#" id="done" hidden>Done</a>
+        <a href="#" id="next-step" title="Next step"><i class="material-icons">chevron_right</i></a>
+        <a href="{$homeUrl}" id="done" hidden title="Codelab complete"><i class="material-icons">check</i></a>
       </div>
     </div>
   </div>
@@ -40,7 +41,7 @@
 {template .timeRemaining}
   {@param time: number}
   <div id="time-remaining" title="Time remaining">
-   <i>icon</i> 
+   <i class="material-icons">access_time</i>
    {if $time == 1}
     {$time} min remaining
    {else}
@@ -48,6 +49,7 @@
    {/if}
   </div>
 {/template}
+
 
 /**
  * Renders the drawer

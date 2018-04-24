@@ -50,3 +50,10 @@ closure_js_template_library(
     name = "google_codelab_step_soy",
     srcs = ["google_codelab_step.soy"]
 )
+
+closure_js_test(
+    name = "google_codelab_step_test",
+    srcs = ["google_codelab_step_test.js"],
+    entry_points = ["googlecodelabs.CodelabStepTest"],
+    deps = [":google_codelab_step"],
+)
