@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-goog.module('googlecodelabs.Codelabs.Cards');
+goog.module('googlecodelabs.CodelabIndex.Cards');
 
-const Templates = goog.require('googlecodelabs.Codelabs.Templates');
+const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
 const soy = goog.require('goog.soy');
 
 /** @const {string} */
@@ -165,12 +165,24 @@ class Cards extends HTMLElement {
   }
 
   /**
+   * 
+   * @param {string} category 
+   * @returns {string}
+   */
+  normalizeCategory_(category) {
+    return category.toLowerCase()
+        .replace(/\s+/g, '-')           // Replace spaces with -
+        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .trim().split(',').shift();
+  }
+
+  /**
    * @param {!Element} link
    * @export
    */
   addCard(link) {
     const info = {
-      category: (link.getAttribute(CATEGORY_ATTR) || '').toLowerCase(),
+      category: this.normalizeCategory_(link.getAttribute(CATEGORY_ATTR) || ''),
       title: link.getAttribute(TITLE_ATTR) || '',
       duration: parseInt(link.getAttribute(DURATION_ATTR), 10) || 0,
       updated: this.prettyDate_(link.getAttribute(UPDATED_ATTR)) || '',
@@ -196,6 +208,6 @@ class Cards extends HTMLElement {
   };
 }
 
-window.customElements.define('google-codelabs-cards', Cards);
+window.customElements.define('google-codelab-index-cards', Cards);
 
 exports = Cards;

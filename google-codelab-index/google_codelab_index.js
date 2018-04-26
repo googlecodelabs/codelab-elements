@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-goog.module('googlecodelabs.Codelabs');
+goog.module('googlecodelabs.CodelabIndex');
 
-const Cards = goog.require('googlecodelabs.Codelabs.Cards');
+const Cards = goog.require('googlecodelabs.CodelabIndex.Cards');
 const EventHandler = goog.require('goog.events.EventHandler');
-const Templates = goog.require('googlecodelabs.Codelabs.Templates');
+const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
 const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
@@ -32,7 +32,7 @@ const SORT_ATTR = 'sort';
 /**
  * @extends {HTMLElement}
  */
-class Codelabs extends HTMLElement {
+class CodelabIndex extends HTMLElement {
   constructor() {
     super();
 
@@ -144,6 +144,6 @@ class Codelabs extends HTMLElement {
   }
 }
 
-window.customElements.define('google-codelabs', Codelabs);
+window.customElements.define('google-codelab-index', CodelabIndex);
 
-exports = Codelabs;
+exports = CodelabIndex;

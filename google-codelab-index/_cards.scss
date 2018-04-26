@@ -1,12 +1,12 @@
 
-google-codelabs-cards {
+google-codelab-index-cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
     margin-bottom: 24px;
 }
 
-google-codelabs-cards .card {
+google-codelab-index-cards .card {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -16,18 +16,18 @@ google-codelabs-cards .card {
   max-width: 330px;
 }
 
-google-codelabs-cards .card:nth-of-type(3n) {
+google-codelab-index-cards .card:nth-of-type(3n) {
   margin-right: 0;
 }
 
-google-codelabs-cards .card .card-header {
+google-codelab-index-cards .card .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 16px;
 }
 
-google-codelabs-cards .card-header .category-icon {
+google-codelab-index-cards .card-header .category-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -37,23 +37,23 @@ google-codelabs-cards .card-header .category-icon {
   background-repeat: no-repeat;
 }
 
-google-codelabs-cards .card-header .card-duration {
+google-codelab-index-cards .card-header .card-duration {
   display: flex;
   align-items: center;
   color: #FFFFFF;
 }
 
-google-codelabs-cards .card-header .card-duration img {
+google-codelab-index-cards .card-header .card-duration img {
   margin-right: 4px;
 }
 
-google-codelabs-cards .card .card-description {
+google-codelab-index-cards .card .card-description {
   padding: 16px 32px;
   flex: 1 0 auto;
   color: #3C4043
 }
 
-google-codelabs-cards .card .card-footer {
+google-codelab-index-cards .card .card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,7 +61,7 @@ google-codelabs-cards .card .card-footer {
   padding: 8px 16px;
 }
 
-google-codelabs-cards .card .card-start {
+google-codelab-index-cards .card .card-start {
   color: #5c5c5c;
   line-height: 1;
   letter-spacing: 0.01em;
@@ -84,78 +84,16 @@ google-codelabs-cards .card .card-start {
   justify-content: center;
 }
 
-google-codelabs-cards .card .card-updated {
+google-codelab-index-cards .card .card-updated {
   font-size: 12px;
   color: #9AA0A6;
   line-height: 16px;
 }
 
-.web-bg {
-    background-color: #1A73E8;
-}
-
-.web-icon {
-    background-image: url(//codelabs.developers.google.com/images/icons/web.svg);
-}
-
-google-codelabs-cards .card .web-start {
-  color: #1A73E8;
-}
-
-google-codelabs-cards .card .web-start:hover {
-  background: rgba(26, 115, 232, 0.1)
-}
-
-.android-bg {
-  background-color: #71B958;
-}
-
-google-codelabs-cards .card .android-start {
-  color: #71B958;
-}
-
-google-codelabs-cards .card .android-start:hover {
-  background: rgba(113, 185, 88, 0.1);
-}
-
-.android-icon {
-  background-image: url(//codelabs.developers.google.com/images/icons/android.svg);
-}
-
-.firebase-bg {
-  background-color: #E37400;
-}
-
-.firebase-icon {
-  background-image: url(//codelabs.developers.google.com/images/icons/firebase.png);
-}
-
-google-codelabs-cards .card .firebase-start {
-  color: #E37400;
-}
-
-google-codelabs-cards .card .firebase-start:hover {
-  background: rgba(227, 116, 0, 0.1);
-}
-
-.apps-bg {
-  background-color: #D93025;
-}
-
-.apps-icon {
-  background-image: url(//codelabs.developers.google.com/images/icons/apps.png);
-}
-
-google-codelabs-cards .card .apps-start {
-  color: #D93025;
-}
-
-google-codelabs-cards .card .apps-start:hover {
-  background: rgba(217, 48, 37, 0.1);
-}
+@import "categories";
 
 @media (min-width: 768px) {
-  google-codelabs-cards .card {
+  google-codelab-index-cards .card {
     min-height: 250px;
   }
 }

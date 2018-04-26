@@ -6,40 +6,45 @@ load("@io_bazel_rules_sass//sass:sass.bzl", "sass_binary", "sass_library")
 package(default_visibility = ["//visibility:public"])
 
 filegroup(
-    name = "google_codelabs_files",
+    name = "google_codelab_index_files",
     srcs = glob([
         "*.html",
     ]) + [
-        ":google_codelabs_scss_bin",
-        ":google_codelabs_bin",
+        ":google_codelab_index_scss_bin",
+        ":google_codelab_index_bin",
     ],
 )
 
 # Codelabs
 closure_js_library(
-    name = "google_codelabs",
-    srcs = ["google_codelabs.js"],
+    name = "google_codelab_index",
+    srcs = ["google_codelab_index.js"],
     deps = [
         "@io_bazel_rules_closure//closure/library",
-        ":google_codelabs_soy",
-        ":google_codelabs_cards",
+        ":google_codelab_index_soy",
+        ":google_codelab_index_cards",
     ]
 )
 
 closure_js_library(
-    name = "google_codelabs_cards",
-    srcs = ["google_codelabs_cards.js"],
+    name = "google_codelab_index_cards",
+    srcs = ["google_codelab_index_cards.js"],
     deps = [
         "@io_bazel_rules_closure//closure/library",
-        ":google_codelabs_soy",
+        ":google_codelab_index_soy",
     ]
 )
 
 # Compiled version of GoogleCodelabStep element, suitable for distribution.
 closure_js_binary(
-    name = "google_codelabs_bin",
-    entry_points = ["googlecodelabs.Codelabs"],
-    deps = [":google_codelabs"],
+    name = "google_codelab_index_bin",
+    entry_points = ["googlecodelabs.CodelabIndex"],
+    deps = [":google_codelab_index"],
+)
+
+sass_library(
+    name = "categories_scss",
+    srcs = ["_categories.scss"],
 )
 
 sass_library(
@@ -53,14 +58,15 @@ sass_library(
 )
 
 sass_binary(
-    name = "google_codelabs_scss_bin",
-    src = "google_codelabs.scss",
+    name = "google_codelab_index_scss_bin",
+    src = "google_codelab_index.scss",
     deps = [
         ":cards_scss",
+        ":categories_scss",
     ]
 )
 
 closure_js_template_library(
-    name = "google_codelabs_soy",
-    srcs = ["google_codelabs.soy"]
+    name = "google_codelab_index_soy",
+    srcs = ["google_codelab_index.soy"]
 )
