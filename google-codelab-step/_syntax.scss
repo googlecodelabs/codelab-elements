@@ -1,12 +1,12 @@
 pre, code {
   font-family: 'Source Code Pro', Helvetica, Arial;
   font-size: inherit;
-  border-radius: 3px;
+  border-radius: 4px;
   overflow-x: auto;
+  overflow-y: visible;
 }
 code {
-  color: #333;
-  background-color: rgba(0, 0, 0, 0.08);
+  background-color: #E8EAEd;
   padding: 0.1em 0.3em;
 }
 pre {
@@ -24,14 +24,37 @@ pre > code {
 code em {
   color: #97C8F2;
 }
-pre .str, code .str { color: #65B042; } /* string  - green */
-pre .kwd, code .kwd { color: #E28964; } /* keyword - dark pink */
-pre .com, code .com { color: #AEAEAE; font-style: italic; } /* comment - gray */
-pre .typ, code .typ { color: #89bdff; } /* type - light blue */
-pre .lit, code .lit { color: #3387CC; } /* literal - blue */
-pre .pun, code .pun { color: #fff; } /* punctuation - white */
-pre .pln, code .pln { color: #fff; } /* plaintext - white */
-pre .tag, code .tag { color: #89bdff; } /* html/xml tag    - light blue */
-pre .atn, code .atn { color: #bdb76b; } /* html/xml attribute name  - khaki */
-pre .atv, code .atv { color: #65B042; } /* html/xml attribute value - green */
-pre .dec, code .dec { color: #3387CC; } /* decimal - blue */
+pre .str, code .str { color: #34A853; } /* string  - green */
+pre .kwd, code .kwd { color: #F538A0; } /* keyword - dark pink */
+pre .com, code .com { color: #BDC1C6; font-style: italic; } /* comment - gray */
+pre .typ, code .typ { color: #24C1E0; } /* type - light blue */
+pre .lit, code .lit { color: #4285F4; } /* literal - blue */
+pre .pun, code .pun { color: #F8F9FA; } /* punctuation - white */
+pre .pln, code .pln { color: #F8F9FA; } /* plaintext - white */
+pre .tag, code .tag { color: #24C1E0; } /* html/xml tag    - light blue */
+pre .atn, code .atn { color: #EDA912; } /* html/xml attribute name  - khaki */
+pre .atv, code .atv { color: #34A853; } /* html/xml attribute value - green */
+pre .dec, code .dec { color: #5195EA; } /* decimal - blue */
+
+paper-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  box-sizing: border-box;
+  min-width: 5.14em;
+  margin: 0 0.29em;
+  background: transparent;
+  -webkit-tap-highlight-color: transparent;
+  font: inherit;
+  text-transform: uppercase;
+  outline-width: 0;
+  border-radius: 3px;
+  user-select: none;
+  cursor: pointer;
+  z-index: 0;
+  padding: 0.7em 0.57em;
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+}

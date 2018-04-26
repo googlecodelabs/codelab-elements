@@ -29,6 +29,9 @@ const soy = goog.require('goog.soy');
 const TITLE_ATTR = 'title';
 
 /** @const {string} */
+const CODELAB_TITLE_ATTR = 'codelab-title';
+
+/** @const {string} */
 const ENVIRONMENT_ATTR = 'environment';
 
 /** @const {string} */
@@ -178,8 +181,9 @@ class Codelab extends HTMLElement {
    * @export
    */
   static get observedAttributes() {
-    return [TITLE_ATTR, ENVIRONMENT_ATTR, CATEGORY_ATTR, FEEDBACK_LINK_ATTR,
-        SELECTED_ATTR, LAST_UPDATED_ATTR, NO_TOOLBAR_ATTR, NO_ARROWS_ATTR];
+    return [TITLE_ATTR, CODELAB_TITLE_ATTR, ENVIRONMENT_ATTR, CATEGORY_ATTR,
+        FEEDBACK_LINK_ATTR, SELECTED_ATTR, LAST_UPDATED_ATTR, NO_TOOLBAR_ATTR,
+        NO_ARROWS_ATTR];
   }
 
   /**
@@ -193,6 +197,13 @@ class Codelab extends HTMLElement {
   attributeChangedCallback(attr, oldValue, newValue, namespace) {
     switch (attr) {
       case TITLE_ATTR:
+        if (this.hasAttribute(TITLE_ATTR)) {
+          const title = this.getAttribute(TITLE_ATTR);
+          this.removeAttribute(TITLE_ATTR);
+          this.setAttribute(CODELAB_TITLE_ATTR, title);
+        }
+        break;
+      case CODELAB_TITLE_ATTR:
         this.updateTitle_();
         break;
       case SELECTED_ATTR:
@@ -424,7 +435,7 @@ class Codelab extends HTMLElement {
    * @private
    */
   updateTitle_() {
-    const title = this.getAttribute(TITLE_ATTR);
+    const title = this.getAttribute(CODELAB_TITLE_ATTR);
     if (!title || !this.titleContainer_) {
       return;
     }
@@ -524,8 +535,6 @@ class Codelab extends HTMLElement {
       const currentStep = this.steps_[this.currentSelectedStep_];
       stepToSelect.setAttribute(ANIMATING_ATTR, '');
 
-      currentStep.scrollTop = 0;
-
       if (this.currentSelectedStep_ < selected) {
         // Move new step in from the right
         transitionInInitialStyle['transform'] = 'translate3d(110%, 0, 0)';
@@ -591,6 +600,7 @@ class Codelab extends HTMLElement {
         }
         if (i === selected) {
           step.setAttribute(SELECTED_ATTR, '');
+          step.scrollIntoViewIfNeeded();
         } else {
           step.removeAttribute(SELECTED_ATTR);
         }
@@ -599,13 +609,14 @@ class Codelab extends HTMLElement {
 
     this.updateTimeRemaining_();
     if (!this.hasAttribute(DONT_SET_HISTORY_ATTR)) {
-      this.updateHistoryState(`#${selected}`, !!document.location.hash);
+      this.updateHistoryState(`#${selected}`, true);
     }
   }
 
   renderDrawer_() {
+    const feedback = this.getAttribute(FEEDBACK_LINK_ATTR);
     const steps = this.steps_.map((step) => step.getAttribute(LABEL_ATTR));
-    soy.renderElement(this.drawer_, Templates.drawer, {steps});
+    soy.renderElement(this.drawer_, Templates.drawer, {steps, feedback});
   }
 
   /**

@@ -9,6 +9,7 @@ filegroup(
     name = "google_codelab_files",
     srcs = glob([
         "*.html",
+        "img/**",
     ]) + [
         ":google_codelab_scss_bin",
         ":google_codelab_bin",
