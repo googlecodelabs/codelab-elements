@@ -29,12 +29,17 @@
 
 
 {template .sortby}
-  <div class="sort-by-inner">
+  {@param categories: list<string>}
+  <div id="sort-by-tabs" class="sort-by-inner">
     <a href="#" sort="alpha" selected>A-Z</a>
     <a href="#" sort="recent">Recent</a>
     <a href="#" sort="duration">Duration</a>
   </div>
   <div class="sort-by-inner">
-    Category
+    <select>
+    {foreach $category in $categories}
+      <option value="{$category}">{$category}</option>
+    {/foreach}
+    </select>
   </div>
 {/template}

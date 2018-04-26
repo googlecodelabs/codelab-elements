@@ -44,6 +44,16 @@ a {
   z-index: 10000;
 }
 
+#toolbar .site-width {
+  display: flex;
+  align-items: center;
+}
+
+#toolbar .logo {
+  display: flex;
+  align-items: center;
+}
+
 #toolbar .logo-icon {
   margin-right: 16px;
   width: 30px;
@@ -55,6 +65,39 @@ a {
   height: 36px;
   margin-top: 5px;
 }
+
+#toolbar #searchbar {
+  background-color: #546E7A;
+  transition: background-color 400ms cubic-bezier(0, 0, 0.2, 1);
+  flex-grow: 1;
+}
+
+#toolbar #searchbar input {
+  border: 0;
+  background: none;
+  outline: 0;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 40px;
+  height: 40px;
+  padding: 0 40px;
+}
+
+#toolbar #searchbar input::-webkit-input-placeholder {
+  color: rgba(255,255,255,.5);
+}
+#toolbar #searchbar input::-moz-placeholder {
+  color: rgba(255,255,255,.5);
+}
+#toolbar #searchbar input:-ms-input-placeholder {
+  color: rgba(255,255,255,.5);
+}
+#toolbar #searchbar input:-moz-placeholder {
+  color: rgba(255,255,255,.5);
+}
+
 
 .site-width {
   margin: 0 auto;
@@ -97,9 +140,10 @@ h2 {
 #sort-by .sort-by-inner {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
 }
 
-#sort-by a {
+#sort-by-tabs a {
   color: #98999a;
   text-transform: uppercase;
   line-height: 48px;
@@ -110,11 +154,11 @@ h2 {
   border-bottom: 2px solid transparent;
 }
 
-#sort-by a:hover {
+#sort-by-tabs a:hover {
   background-color: #e0e0e0;
 }
 
-#sort-by a[selected] {
+#sort-by-tabs a[selected] {
   color: #616161;
   border-bottom: 2px solid #616161;
 }
@@ -163,3 +207,9 @@ footer .footerbar a {
 }
 
 @import "cards";
+
+@media (min-width: 768px) {
+  #toolbar .logo-devs {
+    margin: 5px 32px 0 0;
+  }
+}

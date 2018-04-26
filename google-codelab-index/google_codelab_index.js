@@ -78,11 +78,14 @@ class CodelabIndex extends HTMLElement {
    */
   addEvents_() {
     if (this.sortBy_) {
-      this.eventHandler_.listen(this.sortBy_, events.EventType.CLICK,
-        (e) => {
-          e.preventDefault();
-          this.handleSortByClick_(e);
-        });
+      const tabs = this.sortBy_.querySelector('#sort-by-tabs');
+      if (tabs) {
+        this.eventHandler_.listen(tabs, events.EventType.CLICK,
+          (e) => {
+            e.preventDefault();
+            this.handleSortByClick_(e);
+          });
+      }
     }
   }
 
@@ -114,7 +117,6 @@ class CodelabIndex extends HTMLElement {
     
     const list = this.querySelector('main ul');
     let cards = new Cards();
-    const categories = [];
     if (list) {
       [...list.querySelectorAll('a')].forEach((link) => {
         cards.addCard(link);
@@ -126,13 +128,19 @@ class CodelabIndex extends HTMLElement {
     }
 
     if (cards) {
+      const categories = new Set();
       [...cards.querySelectorAll('.card')].forEach((card) => {
         const category = card.getAttribute(CATEGORY_ATTR);
         if (category) {
-          categories.push(category);
+          category.split(',').forEach((c) => {
+            categories.add(c.trim());
+          });
         }
       });
-      const sortBy = soy.renderAsElement(Templates.sortby);
+
+      const sortBy = soy.renderAsElement(Templates.sortby, {
+        categories: Array.from(categories).sort()
+      });
       sortBy.setAttribute('id', 'sort-by');
       dom.insertSiblingBefore(sortBy, cards);
 
