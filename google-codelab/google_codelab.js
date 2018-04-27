@@ -26,7 +26,8 @@ const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
 
 /** 
- * @deprecated Title causes the bowser to display a tooltip over the whole codelab. Use codelab-title instead.
+ * Deprecated. Title causes the bowser to display a tooltip over the whole codelab.
+ * Use codelab-title instead.
  * @const {string}
  */
 const TITLE_ATTR = 'title';
