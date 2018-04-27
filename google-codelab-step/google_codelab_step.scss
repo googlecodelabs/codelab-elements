@@ -1,3 +1,17 @@
+$google-material-blue-600: #1A73E8;
+$google-material-blue-800: #185ABC;
+$google-material-green-600: #1E8E3E;
+$google-material-grey-900: #212124;
+$google-material-grey-800: #3C4043;
+$google-material-grey-700: #5f6368;
+$google-material-grey-600: #80868B;
+$google-material-grey-300: #DADCE0;
+$google-material-grey-100: #F1F3F4;
+
+$google-codelab-step-background: #fff;
+$google-codelab-step-link-color: $google-material-blue-600;
+
+
 google-codelab-step {
   line-height: 24px;
   display: block;
@@ -8,6 +22,7 @@ google-codelab-step {
 }
 
 google-codelab-step h2.step-title {
+  font-family: 'Google Sans', Arial, sans-serif !important;
   font-size: 28px !important;
   font-weight: 400 !important;
   line-height: 1em !important;
@@ -15,12 +30,13 @@ google-codelab-step h2.step-title {
 }
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions {
-  box-shadow: 1px 1px 16px #ccc;
-  background: #fff;
+  box-shadow: 0px 1px 2px 0px rgba(60, 64, 67, 0.3), 0px 2px 6px 2px rgba(60, 64, 67, 0.15);
+  background: $google-codelab-step-background;
   max-width: 800px;
   font-size: 14px;
   margin: 0 auto;
   margin-bottom: 32px;
+  border-radius: 4px;
 }
 
 google-codelab-step .instructions .inner {
@@ -39,7 +55,7 @@ google-codelab[theme="minimal"] google-codelab-step .instructions .inner {
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions a,
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions a:visited {
-  color: #0097A7;
+  color: $google-codelab-step-link-color;
 }
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions h2,
@@ -78,6 +94,7 @@ google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside {
   padding: 0.5em 1em;
   margin: 2em 0;
   border-left: 4px solid;
+  border-radius: 4px;
 }
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside p {
@@ -86,35 +103,37 @@ google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside p 
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside.note,
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside.notice {
-  border-color: #fca;
-  background: #fed;
-  color: #842;
+  border-color: #EA8600;
+  background: #FEF7E0;
+  color: $google-material-grey-900;
 }
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside.tip,
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside.special {
-  border-color: #6a6;
-  background: #ded;
-  color: #464;
+  border-color: #137333;
+  background: #E6F4EA;
+  color: $google-material-grey-900;
 }
 
 google-codelab:not([theme="minimal"]) google-codelab-step .instructions aside.warning {
-  border-color: #DB8A61;
-  background: #fed;
-  color: #842;
+  border-color: #EA8600;
+  background: #FEF7E0;
+  color: $google-material-grey-900;
 }
 
 google-codelab-step .instructions aside.callout {
-  background-color: #f4f8fa;
+  background-color: #E8F0FE;
   margin: 20px 0;
   padding: 15px;
-  border-left: 3px solid #4f7dc9;
+  border-left: 3px solid $google-material-blue-800;
+  border-radius: 4px;
+  color: $google-material-grey-900;
   font-size: 14px;
   line-height: 1.5;
 }
 
 google-codelab-step aside.callout b {
-  color: #4f7dc9;
+  color: $google-material-blue-800;
 }
 
 google-codelab-step .instructions ul.checklist {
@@ -122,7 +141,7 @@ google-codelab-step .instructions ul.checklist {
   padding: 0 0 0 1em;
 }
 
-google-codelab-step .instructions ul.checklist li {
+google-codelab-step .instructions ::content ul.checklist li {
   padding-left: 24px;
   background-size: 20px;
   background-repeat: no-repeat;
@@ -142,18 +161,44 @@ google-codelab-step .instructions strong {
   font-weight: 600;
 }
 
+google-codelab-step .instructions paper-button {
+  border-radius: 4px;
+  color: #FFFFFF;
+  font-family: 'Google Sans', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .6px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  padding-right: 16px;
+  padding-top: 6px;
+  text-transform: none;
+}
+
 google-codelab-step .instructions paper-button a {
   text-decoration: none;
   color: inherit !important;
 }
 
+google-codelab-step a paper-button {
+  /* The text-decoration styling doesn't apply to inline blocks.
+     We use this trick to remove underline when paper-button
+     is wrapped in the anchor element. */
+  display: inline-block;
+}
+
 google-codelab-step .instructions paper-button.colored {
-  background-color: #0F9D58;
-  color: #fff;
+  background-color: $google-material-green-600;
 }
 
 google-codelab-step .instructions paper-button.red {
-  background-color: #DB4437;
+  background-color: #D93025;
+}
+
+google-codelab-step .instructions iron-icon {
+  padding-right: 8px;
+  max-height: 16px;
+  max-width: 16px;
 }
 
 google-codelab-step .instructions img {

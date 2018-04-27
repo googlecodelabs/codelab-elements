@@ -16,10 +16,10 @@
     <div id="steps"></div>
     <div id="controls">
       <div id="fabs">
-        <a href="#" id="previous-step" title="Previous step"><i class="material-icons">chevron_left</i></a>
+        <a href="#" id="previous-step" title="Previous step">Back</a>
         <div class="spacer"></div>
-        <a href="#" id="next-step" title="Next step"><i class="material-icons">chevron_right</i></a>
-        <a href="{$homeUrl}" id="done" hidden title="Codelab complete"><i class="material-icons">check</i></a>
+        <a href="#" id="next-step" title="Next step">Next</a>
+        <a href="{$homeUrl}" id="done" hidden title="Codelab complete">Done</a>
       </div>
     </div>
   </div>
@@ -56,9 +56,18 @@
  */
 {template .drawer}
   {@param steps: list<string>}
-  <ol>
-    {for $step in $steps}
-      <li><a href="#{index($step)}"><span>{$step}</span></a></li>
-    {/for}
-  </ol>
+  {@param? feedback: string}
+  <div class="steps">
+    <ol>
+      {for $step in $steps}
+        <li><a href="#{index($step)}"><span class="step"><span>{$step}</span></span></a></li>
+      {/for}
+    </ol>
+  </div>
+  {if $feedback}
+  <div class="metadata">
+    Did you find a mistake?
+    <a target="_blank" href="{$feedback}">Please file a bug</a>.
+  </div>
+  {/if}
 {/template}
