@@ -136,14 +136,14 @@ google-codelab #drawer ol li[selected] a:after {
 }
 
 
-google-codelab #drawer #metadata {
+google-codelab #drawer .metadata {
   color: #777;
   font-size: 0.7em;
   padding: 16px;
   flex-shrink: 0;
 }
 
-google-codelab #drawer #metadata a {
+google-codelab #drawer .metadata a {
   color: currentcolor;
   margin-left: 4px;
 }
