@@ -3,7 +3,7 @@ google-codelab-index-cards {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-start;
-    margin-bottom: 24px;
+    margin: 0 -8px 24px -8px;
 }
 
 google-codelab-index-cards .card {
@@ -11,14 +11,17 @@ google-codelab-index-cards .card {
   display: flex;
   flex-direction: column;
   flex: 1 0 330px;
-  margin: 0 16px 16px 0;
+  margin: 0 8px 16px 8px;
   background-color: #fff;
-  max-width: 330px;
+  max-width: 328px;
+  flex-basis: 328px;
+  flex-grow: 0;
+  flex-shrink: 0;
 }
 
-google-codelab-index-cards .card:nth-of-type(3n) {
+/*google-codelab-index-cards .card:nth-of-type(3n) {
   margin-right: 0;
-}
+}*/
 
 google-codelab-index-cards .card .card-header {
   display: flex;
@@ -99,9 +102,12 @@ google-codelab-index-cards .card .card-updated {
 }
 
 @media (max-width: 1136px) and (min-width: 767px) {
+  google-codelab-index-cards {
+    margin: 0 -1% 24px -1%;
+  }
   google-codelab-index-cards .card {
-      flex: 0 0 32%;
-      margin: 0 2% 2% 0;
+      flex: 0 0 29%;
+      margin: 0 1% 2% 1%;
       min-height: 200px;
   }
 }
@@ -110,6 +116,7 @@ google-codelab-index-cards .card .card-updated {
   google-codelab-index-cards {
     flex-direction: column;
     align-items: center;
+    margin: 0;
   }
 
   google-codelab-index-cards .card {
