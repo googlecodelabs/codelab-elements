@@ -171,6 +171,14 @@ class CodelabSurvey extends HTMLElement {
   normalizeIdAttr_(id) {
     return id.replace(/\s+/g, '-').toLowerCase();
   }
+
+  /**
+   * @export
+   * @override
+   */
+  disconnectedCallback() {
+    this.eventHandler_.removeAll();
+  }
 }
 
 window.customElements.define('google-codelab-survey', CodelabSurvey);
