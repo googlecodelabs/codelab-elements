@@ -28,24 +28,21 @@ $webIcon: 'web.svg';
       background-color: $color;
     }
 
-    @if $icon {
-      .#{$name}-icon {
+    .#{$name}-icon {
+      @if $icon {
         background-image: url(//codelabs.developers.google.com/images/icons/#{$icon});
-      }
-    } @else {
-      .#{$name}-icon {
+      } @else {
         opacity: 0;
       }
     }
     
     google-codelab-index-cards .card .#{$name}-start {
       color: $color;
-    }
-    
-    google-codelab-index-cards .card .#{$name}-start:hover, 
-    google-codelab-index-cards .card .#{$name}-start:active {
-      background: rgba($color, 0.1);
-    }
+        &:hover, 
+        &:active {
+          background: rgba($color, 0.1);
+        }
+    }    
 }
 
 @include colorize-card('default', #5F6368);

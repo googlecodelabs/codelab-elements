@@ -172,7 +172,7 @@ class Cards extends HTMLElement {
   normalizeCategory_(category) {
     return category.toLowerCase()
         .replace(/\s+/g, '-')           // Replace spaces with -
-        .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+        .replace(/--+/g, '-')         // Replace multiple - with single -
         .trim().split(',').shift();
   }
 
