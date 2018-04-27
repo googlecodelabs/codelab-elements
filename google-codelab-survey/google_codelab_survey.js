@@ -38,13 +38,19 @@ const STORAGE_KEY_PREFIX = 'codelab-survey-';
 const SURVEY_ID_ATTR = 'survey-id';
 
 
+/**
+ * The upgraded id (to prevent FUOC).
+ */
+const SURVEY_UPGRADED_ATTR = 'upgraded';
+
+
 /** @const {string} */
 const DEFAULT_SURVEY_NAME = 'default-codelabs-survey';
 
 
 /** @enum {string} */
 const Selectors = {
-  'OPTIONS_WRAPPER': '.mdc-radio__wrapper'
+  'OPTIONS_WRAPPER': '.survey-option'
 };
 
 
@@ -99,7 +105,6 @@ class CodelabSurvey extends HTMLElement {
     const labelEl = surveyQuestionEl.querySelector('label');
     const inputEl = surveyQuestionEl.querySelector('input');
     const answer = labelEl.textContent;
-
     if (inputEl) {
       inputEl.checked = true;
       const question = inputEl.name;
@@ -114,6 +119,8 @@ class CodelabSurvey extends HTMLElement {
     if (storedData) {
       this.storedData_[this.surveyName_] = /** @type {!Object} */ (
         JSON.parse(storedData));
+    } else {
+      this.storedData_[this.surveyName_] = {};
     }
   }
 
@@ -130,7 +137,7 @@ class CodelabSurvey extends HTMLElement {
         polymerRadioEls.forEach(radioEl => {
           const title = radioEl.textContent;
           surveyOptions.push({
-            radioId: this.normalizeIdField_(title),
+            radioId: this.normalizeIdAttr_(title),
             radioTitle: title
           });
         });
@@ -147,20 +154,21 @@ class CodelabSurvey extends HTMLElement {
       this.appendChild(updatedDom);
     }
     this.setAnsweredQuestions_();
+    this.setAttribute(SURVEY_UPGRADED_ATTR, '');
   }
 
   setAnsweredQuestions_() {
     const surveyData = this.storedData_[this.surveyName_];
     if (surveyData) {
       Object.keys(surveyData).forEach(key => {
-        const id = this.normalizeIdField_(surveyData[key]);
+        const id = this.normalizeIdAttr_(surveyData[key]);
         const inp = this.querySelector(`[id="${id}"]`);
         if (inp) inp.checked = true;
       });
     }
   }
 
-  normalizeIdField_(id) {
+  normalizeIdAttr_(id) {
     return id.replace(/\s+/g, '-').toLowerCase();
   }
 }

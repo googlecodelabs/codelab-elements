@@ -12,7 +12,7 @@
       <h4>{$surveyQuestion.question}</h4>
       {if length($surveyQuestion.options)}
         {for $option in $surveyQuestion.options}
-          <div class="mdc-radio__wrapper">
+          <div class="mdc-radio__wrapper survey-option">
             <div class="mdc-radio">
               <input class="mdc-radio__native-control" type="radio" id="{$option.radioId}" name="{$surveyQuestion.question}">
               <div class="mdc-radio__background">
