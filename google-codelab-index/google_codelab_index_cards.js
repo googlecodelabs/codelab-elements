@@ -52,6 +52,9 @@ const SORT_RECENT = 'recent';
 /** @const {string} */
 const SORT_DURATION = 'duration';
 
+/** @const {string} */
+const HIDDEN_ATTR = 'hidden';
+
 /**
  * @extends {HTMLElement}
  */
@@ -161,13 +164,24 @@ class Cards extends HTMLElement {
    * @private
    */
   filter_() {
-    console.log('filter');
+    const filter = this.normalizeValue_(this.getAttribute(FILTER_ATTR));
+    const cards = [...this.querySelectorAll('.card')];
+    cards.forEach((card) => {
+      const title = this.normalizeValue_(card.getAttribute(TITLE_ATTR));
+      if (!filter || title.indexOf(filter) !== -1) {
+        card.removeAttribute(HIDDEN_ATTR);
+      } else {
+        card.setAttribute(HIDDEN_ATTR, '');
+      }    
+    });
+
+    // TODO: Update url with the filter
   }
 
   /**
-   * 
    * @param {string} category 
-   * @returns {string}
+   * @return {string}
+   * @private
    */
   normalizeCategory_(category) {
     return category.toLowerCase()
@@ -175,6 +189,33 @@ class Cards extends HTMLElement {
         .replace(/--+/g, '-')         // Replace multiple - with single -
         .trim().split(',').shift();
   }
+
+  /**
+   * Trims whitespace and converts to lower case.
+   * @param {string|undefined} v
+   * @return {string}
+   * @private
+   */
+  normalizeValue_(v) {
+    return (v || '').trim().toLowerCase()
+        .replace('\n', '')
+        .replace(/\s+/g, ' ');
+  }
+
+  /**
+   * @param {!Array<string>} strings 
+   * @return {!Array<string>}
+   * @private
+   */
+  /*cleanStrings_(strings) {
+    strings = strings || [];
+    return strings.map((s) => {
+      const v = this.normalizeValue_(s);
+      if (v) {
+        return v;
+      }
+    }).sort();
+  }*/
 
   /**
    * @param {!Element} link

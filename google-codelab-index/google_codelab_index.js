@@ -17,6 +17,7 @@
 goog.module('googlecodelabs.CodelabIndex');
 
 const Cards = goog.require('googlecodelabs.CodelabIndex.Cards');
+const Debouncer = goog.require('goog.async.Debouncer');
 const EventHandler = goog.require('goog.events.EventHandler');
 const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
 const dom = goog.require('goog.dom');
@@ -28,6 +29,15 @@ const CATEGORY_ATTR = 'category';
 
 /** @const {string} */
 const SORT_ATTR = 'sort';
+
+/** @const {string} */
+const FILTER_ATTR = 'filter';
+
+/**
+ * Interval over which to debounce in ms.
+ * @const {number}
+ */
+const SEARCH_DEBOUNCE_INTERVAL = 20;
 
 /**
  * @extends {HTMLElement}
@@ -47,6 +57,22 @@ class CodelabIndex extends HTMLElement {
 
     /** @private {?Element} */
     this.sortBy_ = null;
+
+    /** @private {?Element} */
+    this.search_ = null;
+
+    /** @private {?Element} */
+    this.clearSearchBtn_ = null;
+
+    /** @private {?Element} */
+    this.categoriesSelect_ = null;
+
+    /**
+     * @private {!Debouncer}
+     */
+    this.searchDebouncer_ = new Debouncer(
+      () => this.handleSearchDebounced_(), SEARCH_DEBOUNCE_INTERVAL);
+
   }
 
   /**
@@ -86,6 +112,66 @@ class CodelabIndex extends HTMLElement {
             this.handleSortByClick_(e);
           });
       }
+    }
+
+    if (this.search_) {
+      this.eventHandler_.listen(this.search_, events.EventType.KEYUP,
+        () => this.handleSearch_());
+    }
+
+    if (this.clearSearchBtn_) {
+      this.eventHandler_.listen(this.clearSearchBtn_, events.EventType.CLICK,
+        () => this.clearSearch_());
+    }
+
+    if (this.categoriesSelect_) {
+      this.eventHandler_.listen(this.categoriesSelect_, events.EventType.CHANGE,
+        () => this.selectCategories_());
+    }
+  }
+
+  /**
+   * @private
+   */
+  selectCategories_() {
+    if (this.cards_ && this.categoriesSelect_) {
+      this.cards_.setAttribute(CATEGORY_ATTR, this.categoriesSelect_.value);
+    }
+  }
+
+  /**
+   * @private
+   */
+  clearSearch_() {
+    if (this.search_) {
+      this.search_.value = '';
+    }
+    this.handleSearch_();
+  }
+
+  /**
+   * @private
+   */
+  handleSearch_() {
+    window.requestAnimationFrame(() => this.searchDebouncer_.fire());
+  }
+
+  /**
+   * @private
+   */
+  handleSearchDebounced_() {
+    const search = /** @type {!Element} */ (this.search_);
+    const val = search.value.trim();
+    if (this.clearSearchBtn_) {
+      if (val === '') {
+        this.clearSearchBtn_.setAttribute('hide', '');
+      } else {
+        this.clearSearchBtn_.removeAttribute('hide');
+      }
+    }
+
+    if (this.cards_) {
+      this.cards_.setAttribute(FILTER_ATTR, val);
     }
   }
 
@@ -146,7 +232,11 @@ class CodelabIndex extends HTMLElement {
 
       this.sortBy_ = sortBy;
       this.cards_ = /** @type {!Cards} */ (cards);
+      this.categoriesSelect_ = this.sortBy_.querySelector('#codelab-categories');
     }
+
+    this.search_ = document.querySelector('#search-field');
+    this.clearSearchBtn_ = document.querySelector('#clear-icon');
 
     this.hasSetup_ = true;
   }
