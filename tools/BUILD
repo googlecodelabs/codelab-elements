@@ -30,6 +30,7 @@ go_binary(
         "//demo:hello_bin",
         "//demo:hello_test",
         "//google-codelab:google_codelab_files",
+        "//google-codelab-index:google_codelab_index_files",
         "//google-codelab-step:google_codelab_step_files",
         "//google-codelab-survey:google_codelab_survey_files",
         "@polyfill//:custom_elements",

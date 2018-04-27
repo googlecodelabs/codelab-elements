@@ -1,0 +1,45 @@
+{namespace googlecodelabs.CodelabIndex.Templates}
+
+/**
+ * Renders the card
+ */
+{template .card}
+  {@param title: string}
+  {@param category: string}
+  {@param duration: number}
+  {@param updated: string}
+  <div class="card-header {$category}-bg">
+    <span class="category-icon {$category}-icon"></span>
+    <span class="card-duration">
+      {if $duration}  
+        <img src="//codelabs.developers.google.com/images/schedule.svg">
+        {$duration} min
+      {/if}
+    </span>
+  </div>
+  <div class="card-description">
+    {$title}
+  </div>
+  <div class="card-footer {$category}-footer">
+    <span class="card-start {$category}-start">Start</span>
+    <span class="card-updated">
+      {if $updated}Updated {$updated}{/if}</span>
+  </div>
+{/template}
+
+
+{template .sortby}
+  {@param categories: list<string>}
+  <div id="sort-by-tabs" class="sort-by-inner">
+    <a href="#" sort="alpha" selected>A-Z</a>
+    <a href="#" sort="recent">Recent</a>
+    <a href="#" sort="duration">Duration</a>
+  </div>
+  <div class="sort-by-inner">
+    <select>
+    {foreach $category in $categories}
+      <option value="{$category}">{$category}</option>
+    {/foreach}
+    </select>
+  </div>
+{/template}
