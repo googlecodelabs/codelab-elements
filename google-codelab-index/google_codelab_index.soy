@@ -41,10 +41,10 @@
   </div>
   <div class="sort-by-inner">
     <select id="codelab-categories">
-    <option value=""></option>
-    {foreach $category in $categories}
-      <option value="{$category}">{$category}</option>
-    {/foreach}
+      <option value="">Category</option>
+      {foreach $category in $categories}
+        <option value="{$category}">{$category}</option>
+      {/foreach}
     </select>
   </div>
 {/template}

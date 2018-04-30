@@ -232,14 +232,6 @@ class CodelabIndex extends HTMLElement {
       cards.setAttribute(SORT_ATTR, sort);
     }
 
-    if (url.searchParams.has(FILTER_ATTR)) {
-      const filter = /** @type {string} */ (url.searchParams.get(FILTER_ATTR));
-      cards.setAttribute(FILTER_ATTR, filter);
-      if (this.search_) {
-        this.search_.value = filter;
-      }
-    }
-
     if (list) {
       [...list.querySelectorAll('a')].forEach((link) => {
         cards.addCard(link);
@@ -279,6 +271,14 @@ class CodelabIndex extends HTMLElement {
             option.selected = true;
           }
         });
+      }
+    }
+
+    if (url.searchParams.has(FILTER_ATTR)) {
+      const filter = /** @type {string} */ (url.searchParams.get(FILTER_ATTR));
+      if (this.search_) {
+        this.search_.value = filter;
+        this.handleSearch_();
       }
     }
 

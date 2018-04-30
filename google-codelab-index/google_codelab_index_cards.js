@@ -58,6 +58,9 @@ const SORT_DURATION = 'duration';
 /** @const {string} */
 const HIDDEN_ATTR = 'hidden';
 
+/** @const {string} */
+const NUM_ATTR = 'num';
+
 /**
  * @extends {HTMLElement}
  */
@@ -138,8 +141,18 @@ class Cards extends HTMLElement {
       url.searchParams.set(SORT_ATTR, sort);
     }
 
+    this.setNum_();
+
     const path = `${url.pathname}${url.search}`;
     window.history.replaceState({path}, document.title, path);
+  }
+
+  /**
+   * @private
+   */
+  setNum_() {
+    const num = this.querySelectorAll(`.card:not([${HIDDEN_ATTR}])`).length;
+    this.setAttribute(NUM_ATTR, num);
   }
 
   /**
@@ -253,6 +266,8 @@ class Cards extends HTMLElement {
     } else {
       url.searchParams.delete(FILTER_ATTR);
     }
+
+    this.setNum_();
 
     const path = `${url.pathname}${url.search}`;
     window.history.replaceState({path}, document.title, path);
