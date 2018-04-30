@@ -179,6 +179,23 @@ h2 {
   border-bottom: 2px solid #616161;
 }
 
+#codelab-categories {
+  border: none;
+  background: #fff;
+  padding: 8px;
+  appearance: none;
+  -webkit-appearance:none;
+  font-size: 16px;
+  line-height: 24px;
+  color: #212121;
+  border-radius: 0;
+  position: relative;
+}
+
+#codelab-categories:focus {
+  outline: 0;
+}
+
 footer {
   background-color: #424242;
   font-size: 13px;

@@ -8,6 +8,7 @@
   {@param category: string}
   {@param duration: number}
   {@param updated: string}
+  {@param author: string}
   <div class="card-header {$category}-bg">
     <span class="category-icon {$category}-icon"></span>
     <span class="card-duration">
@@ -23,20 +24,24 @@
   <div class="card-footer {$category}-footer">
     <span class="card-start {$category}-start">Start</span>
     <span class="card-updated">
-      {if $updated}Updated {$updated}{/if}</span>
+      {if $author}<div>{$author}</div>{/if}
+      {if $updated}<div>Updated {$updated}</div>{/if}
+    </span>
   </div>
 {/template}
 
 
 {template .sortby}
+  {@param sort: string}
   {@param categories: list<string>}
   <div id="sort-by-tabs" class="sort-by-inner">
-    <a href="#" sort="alpha" selected>A-Z</a>
-    <a href="#" sort="recent">Recent</a>
-    <a href="#" sort="duration">Duration</a>
+    <a href="#" sort="alpha" {if $sort == 'alpha'}selected{/if}>A-Z</a>
+    <a href="#" sort="recent" {if $sort == 'recent'}selected{/if}>Recent</a>
+    <a href="#" sort="duration" {if $sort == 'duration'}selected{/if}>Duration</a>
   </div>
   <div class="sort-by-inner">
     <select id="codelab-categories">
+    <option value=""></option>
     {foreach $category in $categories}
       <option value="{$category}">{$category}</option>
     {/foreach}
