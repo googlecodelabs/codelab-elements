@@ -117,15 +117,15 @@ class Cards extends HTMLElement {
     const cards = [...this.querySelectorAll('.card')];
     switch (sort) {
       case SORT_DURATION:
-        cards.sort(this.sortDuration_);
+        cards.sort(this.sortDuration_.bind(this));
         break;
       case SORT_RECENT:
-        cards.sort(this.sortRecent_);
+        cards.sort(this.sortRecent_.bind(this));
         break;
       case SORT_ALPHA:
       default:
         sort = SORT_ALPHA;
-        cards.sort(this.sortAlpha_);
+        cards.sort(this.sortAlpha_.bind(this));
         break;
     }
 
@@ -151,12 +151,11 @@ class Cards extends HTMLElement {
   sortDuration_(a, b) {
     const aDuration = parseFloat(a.getAttribute(DURATION_ATTR)) || 0;
     const bDuration = parseFloat(b.getAttribute(DURATION_ATTR)) || 0;
-    if (aDuration < bDuration) {
-      return -1;
-    } else if (bDuration > aDuration) {
-      return 1;
-    } else {
+    const diff = aDuration - bDuration;
+    if (diff === 0) {
       return this.sortRecent_(a, b);
+    } else {
+      return diff;
     }
   }
 
@@ -169,7 +168,12 @@ class Cards extends HTMLElement {
   sortRecent_(a, b) {
     const aUpdated = new Date(a.getAttribute(UPDATED_ATTR) || 0);
     const bUpdated = new Date(b.getAttribute(UPDATED_ATTR) || 0);
-    return bUpdated - aUpdated;
+    const diff = bUpdated - aUpdated;
+    if (diff === 0) {
+      return this.sortAlpha_(a, b);
+    } else {
+      return diff;
+    }
   }
 
   /**
@@ -296,7 +300,7 @@ class Cards extends HTMLElement {
   /**
    * @param {!Array<string>} strings 
    * @return {!Array<string>}
-   * @privatec 
+   * @private
    */
   cleanStrings_(strings) {
     strings = strings || [];
