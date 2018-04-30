@@ -12,7 +12,7 @@ filegroup(
         "*.html",
         "*.png",
     ]) + [
-        "google_codelab_survey_scss_bin",
+        ":google_codelab_survey_scss_bin",
         ":google_codelab_survey_bin",
     ],
 )
