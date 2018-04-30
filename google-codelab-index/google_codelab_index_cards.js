@@ -151,7 +151,13 @@ class Cards extends HTMLElement {
   sortDuration_(a, b) {
     const aDuration = parseFloat(a.getAttribute(DURATION_ATTR)) || 0;
     const bDuration = parseFloat(b.getAttribute(DURATION_ATTR)) || 0;
-    return aDuration - bDuration;
+    if (aDuration < bDuration) {
+      return -1;
+    } else if (bDuration > aDuration) {
+      return 1;
+    } else {
+      return this.sortRecent_(a, b);
+    }
   }
 
   /**
@@ -290,7 +296,7 @@ class Cards extends HTMLElement {
   /**
    * @param {!Array<string>} strings 
    * @return {!Array<string>}
-   * @private
+   * @privatec 
    */
   cleanStrings_(strings) {
     strings = strings || [];
