@@ -91,6 +91,7 @@ class CodelabSurvey extends HTMLElement {
     this.bindEvents_();
   }
 
+  /** @private */
   bindEvents_() {
     const surveyQuestions = document.querySelectorAll(
       Selectors.OPTIONS_WRAPPER);
@@ -101,6 +102,10 @@ class CodelabSurvey extends HTMLElement {
     });
   }
 
+  /**
+   * @param {!Element}
+   * @private
+   */
   handleSurveyClick_(surveyQuestionEl) {
     const labelEl = surveyQuestionEl.querySelector('label');
     const inputEl = surveyQuestionEl.querySelector('input');
@@ -114,6 +119,7 @@ class CodelabSurvey extends HTMLElement {
     }
   }
 
+  /** @private */
   checkStoredData_() {
     const storedData = this.storage_.get(this.storageKey_);
     if (storedData) {
@@ -124,6 +130,7 @@ class CodelabSurvey extends HTMLElement {
     }
   }
 
+  /** @private */
   updateDom_() {
     const radioGroupEls = this.querySelectorAll('paper-radio-group');
     const questionEls = this.querySelectorAll('h4');
@@ -157,17 +164,23 @@ class CodelabSurvey extends HTMLElement {
     this.setAttribute(SURVEY_UPGRADED_ATTR, '');
   }
 
+  /** @private */
   setAnsweredQuestions_() {
     const surveyData = this.storedData_[this.surveyName_];
     if (surveyData) {
       Object.keys(surveyData).forEach(key => {
         const id = this.normalizeIdAttr_(surveyData[key]);
-        const inp = this.querySelector(`[id="${id}"]`);
+        const inp = this.querySelector(`#${id}`);
         if (inp) inp.checked = true;
       });
     }
   }
 
+  /**
+   * @param {string}
+   * @return {string}
+   * @private
+   */
   normalizeIdAttr_(id) {
     return id.replace(/\s+/g, '-').toLowerCase();
   }
