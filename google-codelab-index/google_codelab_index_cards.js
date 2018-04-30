@@ -190,15 +190,15 @@ class Cards extends HTMLElement {
   filter_() {
     const filter = this.normalizeValue_(this.getAttribute(FILTER_ATTR));
     const tags = this.cleanStrings_(
-      (this.getAttribute(TAGS_ATTR) || '').split(','));
+        (this.getAttribute(TAGS_ATTR) || '').split(','));
     const categories = this.cleanStrings_(
-          (this.getAttribute(CATEGORY_ATTR) || '').split(','));
+        (this.getAttribute(CATEGORY_ATTR) || '').split(','));
 
     const cards = [...this.querySelectorAll('.card')];
     cards.forEach((card) => {
       const title = this.normalizeValue_(card.getAttribute(TITLE_ATTR));
       const cardCategories = this.cleanStrings_(
-        (card.getAttribute(CATEGORY_ATTR) || '').split(','));
+          (card.getAttribute(CATEGORY_ATTR) || '').split(','));
       const cardTags = this.cleanStrings_(
           (card.getAttribute(TAGS_ATTR) || '').split(','));
 
@@ -294,7 +294,7 @@ class Cards extends HTMLElement {
    */
   cleanStrings_(strings) {
     strings = strings || [];
-    let a = [];
+    const a = [];
     strings.forEach((s) => {
       const v = this.normalizeValue_(s);
       if (v) {
