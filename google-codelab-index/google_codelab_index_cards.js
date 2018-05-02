@@ -20,7 +20,13 @@ const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
 const soy = goog.require('goog.soy');
 
 /** @const {string} */
+const AUTHOR_ATTR = 'author';
+
+/** @const {string} */
 const CATEGORY_ATTR = 'category';
+
+/** @const {string} */
+const CATEGORY_PARAM = 'cat';
 
 /** @const {string} */
 const TITLE_ATTR = 'title';
@@ -41,9 +47,6 @@ const SORT_ATTR = 'sort';
 const FILTER_ATTR = 'filter';
 
 /** @const {string} */
-const CATEGORIES_ATTR = 'categories';
-
-/** @const {string} */
 const SORT_ALPHA = 'alpha';
 
 /** @const {string} */
@@ -54,6 +57,9 @@ const SORT_DURATION = 'duration';
 
 /** @const {string} */
 const HIDDEN_ATTR = 'hidden';
+
+/** @const {string} */
+const NUM_ATTR = 'num';
 
 /**
  * @extends {HTMLElement}
@@ -69,6 +75,12 @@ class Cards extends HTMLElement {
     } else {
       this.sort_();
     }
+
+    if (this.hasAttribute(FILTER_ATTR) ||
+        this.hasAttribute(CATEGORY_ATTR) ||
+        this.hasAttribute(TAGS_ATTR)) {
+      this.filter_();
+    }
   }
 
   /**
@@ -76,7 +88,7 @@ class Cards extends HTMLElement {
    * @export
    */
   static get observedAttributes() {
-    return [SORT_ATTR, FILTER_ATTR, CATEGORIES_ATTR];
+    return [SORT_ATTR, FILTER_ATTR, CATEGORY_ATTR, TAGS_ATTR];
   }
 
   /**
@@ -88,10 +100,15 @@ class Cards extends HTMLElement {
    * @override
    */
   attributeChangedCallback(attr, oldValue, newValue, namespace) {
-    if (attr === SORT_ATTR) {
-      this.sort_();
-    } else if (attr === FILTER_ATTR) {
-      this.filter_();
+    switch (attr) {
+      case SORT_ATTR:
+        this.sort_();
+        break;
+      case FILTER_ATTR:
+      case CATEGORY_ATTR:
+      case TAGS_ATTR:
+        this.filter_();
+        break;
     }
   }
 
@@ -99,22 +116,43 @@ class Cards extends HTMLElement {
    * @private
    */
   sort_() {
-    const sort = this.getAttribute(SORT_ATTR);
+    let sort = this.getAttribute(SORT_ATTR) || SORT_ALPHA;
     const cards = [...this.querySelectorAll('.card')];
     switch (sort) {
       case SORT_DURATION:
-        cards.sort(this.sortDuration_);
+        cards.sort(this.sortDuration_.bind(this));
         break;
       case SORT_RECENT:
-        cards.sort(this.sortRecent_);
+        cards.sort(this.sortRecent_.bind(this));
         break;
       case SORT_ALPHA:
       default:
-        cards.sort(this.sortAlpha_);
+        sort = SORT_ALPHA;
+        cards.sort(this.sortAlpha_.bind(this));
         break;
     }
 
     cards.forEach((card) => this.appendChild(card));
+
+    const url = new URL(document.location.toString());
+    if (!sort || sort === SORT_ALPHA) {
+      url.searchParams.delete(SORT_ATTR);
+    } else {
+      url.searchParams.set(SORT_ATTR, sort);
+    }
+
+    this.setNum_();
+
+    const path = `${url.pathname}${url.search}`;
+    window.history.replaceState({path}, document.title, path);
+  }
+
+  /**
+   * @private
+   */
+  setNum_() {
+    const num = this.querySelectorAll(`.card:not([${HIDDEN_ATTR}])`).length;
+    this.setAttribute(NUM_ATTR, num);
   }
 
   /**
@@ -126,8 +164,12 @@ class Cards extends HTMLElement {
   sortDuration_(a, b) {
     const aDuration = parseFloat(a.getAttribute(DURATION_ATTR)) || 0;
     const bDuration = parseFloat(b.getAttribute(DURATION_ATTR)) || 0;
-
-    return aDuration - bDuration;
+    const diff = aDuration - bDuration;
+    if (diff === 0) {
+      return this.sortRecent_(a, b);
+    } else {
+      return diff;
+    }
   }
 
   /**
@@ -139,7 +181,12 @@ class Cards extends HTMLElement {
   sortRecent_(a, b) {
     const aUpdated = new Date(a.getAttribute(UPDATED_ATTR) || 0);
     const bUpdated = new Date(b.getAttribute(UPDATED_ATTR) || 0);
-    return bUpdated - aUpdated;
+    const diff = bUpdated - aUpdated;
+    if (diff === 0) {
+      return this.sortAlpha_(a, b);
+    } else {
+      return diff;
+    }
   }
 
   /**
@@ -165,17 +212,80 @@ class Cards extends HTMLElement {
    */
   filter_() {
     const filter = this.normalizeValue_(this.getAttribute(FILTER_ATTR));
+    const tags = this.cleanStrings_(
+        (this.getAttribute(TAGS_ATTR) || '').split(','));
+    const categories = this.cleanStrings_(
+        (this.getAttribute(CATEGORY_ATTR) || '').split(','));
+
     const cards = [...this.querySelectorAll('.card')];
     cards.forEach((card) => {
       const title = this.normalizeValue_(card.getAttribute(TITLE_ATTR));
-      if (!filter || title.indexOf(filter) !== -1) {
+      const cardCategories = this.cleanStrings_(
+          (card.getAttribute(CATEGORY_ATTR) || '').split(','));
+      const cardTags = this.cleanStrings_(
+          (card.getAttribute(TAGS_ATTR) || '').split(','));
+
+      let matchesFilter = true;
+      let matchesTags = true;
+      let matchesCategory = true;
+
+      if (filter) {
+        matchesFilter = title.indexOf(filter) !== -1;
+      }
+      
+      if (tags.length) {
+        matchesTags = this.arrayContains_(cardTags, tags);
+      }
+
+      if (categories.length) {
+        matchesCategory = this.arrayContains_(cardCategories, categories);
+      }
+
+      if (matchesFilter && matchesTags && matchesCategory) {
         card.removeAttribute(HIDDEN_ATTR);
       } else {
         card.setAttribute(HIDDEN_ATTR, '');
-      }    
+      }
     });
 
-    // TODO: Update url with the filter
+    const url = new URL(document.location.toString());
+    if (tags.length) {
+      url.searchParams.set(TAGS_ATTR, tags.join(','));
+    } else {
+      url.searchParams.delete(TAGS_ATTR);
+    }
+
+    if (categories.length) {
+      url.searchParams.set(CATEGORY_PARAM, categories.join(','));
+    } else {
+      url.searchParams.delete(CATEGORY_PARAM);
+    }
+
+    if (filter) {
+      url.searchParams.set(FILTER_ATTR, filter);
+    } else {
+      url.searchParams.delete(FILTER_ATTR);
+    }
+
+    this.setNum_();
+
+    const path = `${url.pathname}${url.search}`;
+    window.history.replaceState({path}, document.title, path);
+  }
+
+  /**
+   * Returns true if any of the items in A are in B.
+   * @param {!Array<string>} a
+   * @param {!Array<string>} b
+   * @return {boolean}
+   */
+  arrayContains_(a, b) {
+    for (let i = 0; i < a.length; i++) {
+      if (b.includes(a[i])) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -207,15 +317,17 @@ class Cards extends HTMLElement {
    * @return {!Array<string>}
    * @private
    */
-  /*cleanStrings_(strings) {
+  cleanStrings_(strings) {
     strings = strings || [];
-    return strings.map((s) => {
+    const a = [];
+    strings.forEach((s) => {
       const v = this.normalizeValue_(s);
       if (v) {
-        return v;
+        a.push(v);
       }
-    }).sort();
-  }*/
+    });
+    return a.sort();
+  }
 
   /**
    * @param {!Element} link
@@ -227,7 +339,8 @@ class Cards extends HTMLElement {
       title: link.getAttribute(TITLE_ATTR) || '',
       duration: parseInt(link.getAttribute(DURATION_ATTR), 10) || 0,
       updated: this.prettyDate_(link.getAttribute(UPDATED_ATTR)) || '',
-      tags: link.getAttribute(TAGS_ATTR) || ''
+      tags: link.getAttribute(TAGS_ATTR) || '',
+      author: link.getAttribute(AUTHOR_ATTR) || ''
     };
     soy.renderElement(link, Templates.card, info);
     link.classList.add('card');
@@ -243,7 +356,8 @@ class Cards extends HTMLElement {
     if (!updated) {
       return '';
     }
-    const mNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const mNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug',
+        'Sep', 'Oct', 'Nov', 'Dec'];
     const d = new Date(updated);
     return mNames[d.getMonth()] + ' ' + d.getUTCDate() + ', ' + d.getFullYear();
   };
