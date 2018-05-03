@@ -103,11 +103,12 @@ class CodelabSurvey extends HTMLElement {
   }
 
   /**
-   * @param {!Element}
+   * @param {!Element} surveyQuestionEl
    * @private
    */
   handleSurveyClick_(surveyQuestionEl) {
-    const labelEl = surveyQuestionEl.querySelector('label');
+    const labelEl = /** @type {!Element} */ (
+      surveyQuestionEl.querySelector('label'));
     const inputEl = surveyQuestionEl.querySelector('input');
     const answer = labelEl.textContent;
     if (inputEl) {
@@ -177,12 +178,12 @@ class CodelabSurvey extends HTMLElement {
   }
 
   /**
-   * @param {string}
+   * @param {string} id
    * @return {string}
    * @private
    */
   normalizeIdAttr_(id) {
-    return id.replace(/\s+/g, '-').toLowerCase();
+    return id.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
   }
 
   /**
