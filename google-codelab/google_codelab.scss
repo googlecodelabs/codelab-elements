@@ -28,20 +28,20 @@ google-codelab #main {
   flex-direction: column;
   flex-grow: 1;
   position: relative;
-  background: #e0e0e0;
+  background: #F8F9FA;
 }
 
 google-codelab #codelab-title {
-  background: #1e88e5;
-  color: #fff;
+  background: #FFFFFF;
+  box-shadow: 0px 1px 2px 0px rgba(60, 64, 67, 0.3), 0px 2px 6px 2px rgba(60, 64, 67, 0.15);
+  color: #3C4043;
   display: flex;
-  padding: 0 16px;
   align-items: center;
-  font-size: 20px;
-  font-weight: 400;
-  flex-shrink: 0;
+  justify-content: space-between;
+  height: 64px;
+  padding: 0 16px;
   -webkit-font-smoothing: antialiased;
-  line-height: 64px;
+  z-index: 99;
 }
 
 google-codelab #codelab-title h1 {
@@ -63,7 +63,7 @@ google-codelab #codelab-title #time-remaining {
   display: flex;
   align-items: center;
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 400;
 }
 
 google-codelab #codelab-title #time-remaining i {
@@ -81,7 +81,7 @@ google-codelab #codelab-nav-buttons #arrow-back,
 google-codelab #codelab-nav-buttons #menu {
   display: flex;
   text-decoration: none;
-  color: #fff;
+  color: #3C4043;
   width: 40px;
   height: 40px;
   justify-content: center;
@@ -102,7 +102,7 @@ google-codelab #controls {
 google-codelab #fabs {
   display: flex;
   flex-grow: 1;
-  max-width: calc(800px + 175px);
+  max-width: 1025px;
 }
 
 google-codelab #fabs .spacer {
@@ -110,28 +110,35 @@ google-codelab #fabs .spacer {
 }
 
 #previous-step, #next-step, #done {
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #1976d2;
-  border-radius: 50%;
-  cursor: pointer;
-  height: 56px;
-  min-width: 0;
-  outline: none;
-  padding: 16px;
-  position: relative;
-  width: 56px;
-  user-select: none;
-  z-index: 0;
-  -webkit-tap-highlight-color: rgba(0,0,0,0);
-  -webkit-tap-highlight-color: transparent;
-  text-decoration: none;
-  color: #fff;
+  border-radius: 4px;
+  font-family: 'Google Sans', Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: .6px;
+  line-height: 24px;
+  padding-bottom: 6px;
+  padding-left: 24px;
+  padding-right: 24px;
+  padding-top: 6px;
+  pointer-events: initial;
+  text-transform: none;
+  background: #FFFFFF;
+  color: #1A73E8;
   transform: scale(1, 1);
   transition: transform 300ms ease-in-out;
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#next-step {
+  color: #fff;
+  background: #1A73E8;
+}
+
+#done {
+  background: #1E8E3E;
+  color: #fff;
 }
 
 google-codelab #fabs a[disappear] {

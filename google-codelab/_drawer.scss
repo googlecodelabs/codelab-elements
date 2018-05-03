@@ -1,15 +1,29 @@
 google-codelab #drawer {
-  background: #f5f5f5;
-  overflow-y: auto;
+  background: #fff;
   width: 256px;
   flex-shrink: 0;
+  position: relative;
+  border-right: 1px solid #DADCE0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+google-codelab #drawer .steps {
+  flex-shrink: 1;
+  flex-grow: 1;
+  overflow-x: visible;
+  display: flex;
 }
 
 google-codelab #drawer ol {
-  margin: 16px 16px 16px 12px;
-  padding: 0;
+  margin: 0;
+  padding: 16px 12px;
   counter-reset: li-count;
   list-style: none;
+  overflow-x: visible;
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 google-codelab #drawer ol li {
@@ -22,16 +36,17 @@ google-codelab #drawer ol li a {
   display: flex;
   align-items: center;
   font-size: 14px;
-  color: #9e9e9e;
+  color: #80868B;
   border-radius: 4px;
   padding: 6px 16px;
   min-height: 48px;
   font-weight: 400;
-  line-height: 24px;
+  line-height: 20px;
   box-sizing: content-box;
   position: relative;
   font-family: 'Roboto', 'Noto', sans-serif;
   -webkit-font-smoothing: antialiased;
+  transition: all 300ms ease-in-out;
 }
 
 google-codelab #drawer ol li a:active,
@@ -41,35 +56,41 @@ google-codelab #drawer ol li a:focus {
   outline: 0;
 }
 
-google-codelab #drawer ol li span:before {
+google-codelab #drawer ol li a .step {
+  display: flex;
+  align-items: center;
+}
+
+google-codelab #drawer ol li .step:before {
   content: counter(li-count);
   display: inline-block;
   font-style: normal;
-  width: 24px;
-  min-width: 24px;
-  background: #fff;
+  width: 26px;
+  min-width: 26px;
+  color: #fff;
+  background: #80868B;
   border-radius: 50%;
   text-align: center;
-  height: 24px;
+  height: 26px;
   vertical-align: middle;
-  line-height: 24px;
-  border: 2px solid #bdbdbd;
+  line-height: 26px;
   margin-right: 8px;
   font-weight: 400;
   position: relative;
   z-index: 2;
+  transition: all 300ms ease-in-out;
 }
 
 google-codelab #drawer ol li a:before,
 google-codelab #drawer ol li a:after {
   content: '';
   display: block;
-  border-left: 1px solid #bdbdbd;
-  width: 0;
+  background-color: #80868B;
+  width: 2px;
   height: 50%;
   z-index: 1;
   position: absolute;
-  margin-left: 14px;
+  margin-left: 12px;
 }
 
 google-codelab #drawer ol li a:before {
@@ -95,19 +116,54 @@ google-codelab #drawer ol li[selected] a {
   background-color: #e0e0e0;
 }
 
+google-codelab #drawer ol li[selected] .step:before {
+  font-weight: 600;
+}
+
 google-codelab #drawer ol li[completed] a {
   color: #212121;
 }
 
 google-codelab #drawer ol li[completed] a:before,
 google-codelab #drawer ol li[completed] a:after,
-google-codelab #drawer ol li[completed] span:before {
-  border-color: #2196f3;
+google-codelab #drawer ol li[completed] .step:before {
+  background-color: #1A73E8;
+  color: #fff;
+}
+
+google-codelab #drawer ol li[selected] a:after {
+  background-color: #80868B;
+}
+
+
+google-codelab #drawer .metadata {
+  color: #777;
+  font-size: 0.7em;
+  padding: 16px;
+  flex-shrink: 0;
+}
+
+google-codelab #drawer .metadata a {
+  color: currentcolor;
+  margin-left: 4px;
 }
 
 google-codelab #codelab-nav-buttons #menu {
   display: none;
 }
+
+google-codelab #drawer {
+  ::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+  }
+  ::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+  }
+}
+
 
 @media (max-width: 768px) {
   google-codelab {

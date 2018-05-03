@@ -29,4 +29,5 @@ google-codelab google-codelab-step[selected] {
 google-codelab google-codelab-step[animating] {
   pointer-events: none;
   position: absolute;
+  overflow: hidden;
 }

@@ -9,7 +9,7 @@ filegroup(
     name = "demo_files",
     srcs = glob([
         "*.html",
-        "*.png",
+        "img/*.png",
     ]),
 )
 
