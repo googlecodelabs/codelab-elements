@@ -11,18 +11,21 @@
     <div class="survey-question-wrapper">
       <h4>{$surveyQuestion.question}</h4>
       {if length($surveyQuestion.options)}
+      <div class="survey-question-options">
         {for $option in $surveyQuestion.options}
-          <div class="mdc-radio__wrapper survey-option">
-            <div class="mdc-radio">
-              <input class="mdc-radio__native-control" type="radio" id="{$option.radioId}" name="{$surveyQuestion.question}">
-              <div class="mdc-radio__background">
-                <div class="mdc-radio__outer-circle"></div>
-                <div class="mdc-radio__inner-circle"></div>
-              </div>
-            </div>
-            <label id="{$option.radioId}-label" for="{$option.radioId}">{$option.radioTitle}</label>
-          </div>
+        <label class="survey-option-wrapper"
+            id="{$option.radioId}-label"
+            for="{$option.radioId}">
+          <span class="option-text">
+            {$option.radioTitle}
+          </span>
+          <input type="radio"
+              id="{$option.radioId}"
+              name="{$surveyQuestion.question}">
+          <span class="custom-radio-button"></span>
+        </label>
         {/for}
+      </div>
       {/if}
     </div>
   {/for}

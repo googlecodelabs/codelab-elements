@@ -49,8 +49,10 @@ const DEFAULT_SURVEY_NAME = 'default-codelabs-survey';
 
 
 /** @enum {string} */
-const Selectors = {
-  'OPTIONS_WRAPPER': '.survey-option'
+const CssClass = {
+  'OPTIONS_WRAPPER': 'survey-question-options',
+  'RADIO_WRAPPER': 'survey-option-wrapper',
+  'RADIO_TEXT': 'option-text'
 };
 
 
@@ -93,24 +95,36 @@ class CodelabSurvey extends HTMLElement {
 
   /** @private */
   bindEvents_() {
-    const surveyQuestions = document.querySelectorAll(
-      Selectors.OPTIONS_WRAPPER);
-    surveyQuestions.forEach(el => {
-      this.eventHandler_.listen(el, events.EventType.CLICK, (e) => {
-        this.handleSurveyClick_(e.currentTarget);
-      });
+    this.eventHandler_.listen(document.body, events.EventType.CLICK, (e) => {
+      this.handleClick_(e.target);
     });
   }
 
   /**
-   * @param {!Element} surveyQuestionEl
+   * @param {!Element} el
    * @private
    */
-  handleSurveyClick_(surveyQuestionEl) {
-    const labelEl = /** @type {!Element} */ (
-      surveyQuestionEl.querySelector('label'));
-    const inputEl = surveyQuestionEl.querySelector('input');
-    const answer = labelEl.textContent;
+  handleClick_(el) {
+    const isOptionWrapper = el.classList.contains(
+      CssClass.RADIO_WRAPPER);
+    const elParent = /** @type {!Element} */ (el.parentElement);
+    const isOptionChild = elParent.classList.contains(CssClass.RADIO_WRAPPER);
+    if (isOptionWrapper || isOptionChild) {
+      let optionEl = el;
+      if (isOptionChild) optionEl = elParent;
+      this.handleOptionSelected_(optionEl);
+    }
+  }
+
+  /**
+   * @param {!Element} optionEl
+   * @private
+   */
+  handleOptionSelected_(optionEl) {
+    const optionTextEl = /** @type {!Element} */ (
+      optionEl.querySelector(`.${CssClass.RADIO_TEXT}`));
+    const inputEl = optionEl.querySelector('input');
+    const answer = optionTextEl.textContent;
     if (inputEl) {
       inputEl.checked = true;
       const question = inputEl.name;
