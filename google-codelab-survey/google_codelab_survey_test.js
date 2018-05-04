@@ -62,12 +62,13 @@ testSuite({
     const surveyCE = div.querySelector('google-codelab-survey');
     const radioInputEl = surveyCE.querySelector('input#title-text');
     const radioLabelEl = surveyCE.querySelector('label#title-text-label');
+    const radioTextEl = surveyCE.querySelector('.option-text');
     const surveyWrapperEl = surveyCE.querySelector('.survey-questions');
     assertNotNull(radioInputEl);
     assertEquals('Question?', radioInputEl.name);
     assertNotNull(radioLabelEl);
     assertEquals('test', surveyWrapperEl.getAttribute('survey-name', ''));
-    assertEquals('Title Text', radioLabelEl.textContent);
+    assertEquals('Title Text', radioTextEl.textContent);
     assertEquals('title-text', radioLabelEl.getAttribute('for', ''));
     assertTrue(surveyCE.hasAttribute('upgraded'));
   },
@@ -83,7 +84,7 @@ testSuite({
 
   testCodelabSurveyOptionClick() {
     document.body.appendChild(div);
-    const optionEls = div.querySelectorAll('.survey-option');
+    const optionEls = div.querySelectorAll('.survey-option-wrapper');
     // If nothing is in local storage no options should be set.
     assertFalse(optionEls[0].querySelector('input').checked);
     assertFalse(optionEls[1].querySelector('input').checked);
@@ -97,7 +98,7 @@ testSuite({
   testCodelabSurveyLoadsStoredAnswers() {
     localStorage.set('codelab-survey-test', '{"Question?":"Second Option"}');
     document.body.appendChild(div);
-    const optionEls = div.querySelectorAll('.survey-option');
+    const optionEls = div.querySelectorAll('.survey-option-wrapper');
 
     // Second option should be selected (answer loaded from local storage)
     assertFalse(optionEls[0].querySelector('input').checked);
