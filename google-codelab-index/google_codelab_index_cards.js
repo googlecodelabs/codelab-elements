@@ -16,6 +16,7 @@
 
 goog.module('googlecodelabs.CodelabIndex.Cards');
 
+const HTML5LocalStorage = goog.require('goog.storage.mechanism.HTML5LocalStorage');
 const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
 const soy = goog.require('goog.soy');
 
@@ -59,12 +60,26 @@ const SORT_DURATION = 'duration';
 const HIDDEN_ATTR = 'hidden';
 
 /** @const {string} */
+const PROGRESS_ATTR = 'progress';
+
+/** @const {string} */
+const STEPS_ATTR = 'steps';
+
+/** @const {string} */
 const NUM_ATTR = 'num';
 
 /**
  * @extends {HTMLElement}
  */
 class Cards extends HTMLElement {
+
+  constructor() {
+    super();
+
+    /** @private {!HTML5LocalStorage} */
+    this.storage_ = new HTML5LocalStorage();
+  }
+  
   /**
    * @export
    * @override
@@ -111,6 +126,7 @@ class Cards extends HTMLElement {
         break;
     }
   }
+
 
   /**
    * @private
@@ -344,7 +360,22 @@ class Cards extends HTMLElement {
     };
     soy.renderElement(link, Templates.card, info);
     link.classList.add('card');
+    this.showProgressForCard_(link);
     this.appendChild(link);
+  }
+
+  /**
+   * @param {!Element} link 
+   */
+  showProgressForCard_(link) {
+    const id = link.getAttribute('id');
+    if (id) {
+      const progress = this.storage_.get(`progress_${id}`);
+      const steps = link.getAttribute(STEPS_ATTR);
+      if (progress && steps) {
+        link.setAttribute(PROGRESS_ATTR, (parseFloat(progress) / parseFloat(steps)).toFixed(2));
+      }
+    }
   }
 
   /**
