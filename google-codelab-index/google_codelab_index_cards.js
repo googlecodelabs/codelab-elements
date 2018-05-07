@@ -373,7 +373,7 @@ class Cards extends HTMLElement {
       const progress = this.storage_.get(`progress_${id}`);
       const steps = link.getAttribute(STEPS_ATTR);
       if (progress && steps) {
-        link.setAttribute(PROGRESS_ATTR, (parseFloat(progress) / parseFloat(steps)).toFixed(2));
+        link.setAttribute(PROGRESS_ATTR, (parseFloat(progress) / parseFloat(steps - 1)).toFixed(2));
       }
     }
   }
