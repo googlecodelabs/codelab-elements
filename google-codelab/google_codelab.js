@@ -17,6 +17,7 @@
 goog.module('googlecodelabs.Codelab');
 
 const EventHandler = goog.require('goog.events.EventHandler');
+const HTML5LocalStorage = goog.require('goog.storage.mechanism.HTML5LocalStorage');
 const KeyCodes = goog.require('goog.events.KeyCodes');
 const Templates = goog.require('googlecodelabs.Codelab.Templates');
 const Transition = goog.require('goog.fx.css3.Transition');
@@ -128,6 +129,9 @@ class Codelab extends HTMLElement {
     /** @private {?Element} */
     this.doneBtn_ = null;
 
+    /** @private {string} */
+    this.id_ = '';
+
     /** @private {!Array<!Element>} */
     this.steps_ = [];
 
@@ -148,6 +152,12 @@ class Codelab extends HTMLElement {
 
     /** @private {?Transition} */
     this.transitionOut_ = null;
+
+    /** @private {boolean} */
+    this.resumed_ = false;
+
+    /** @private {!HTML5LocalStorage} */
+    this.storage_ = new HTML5LocalStorage();
   }
   /**
    * @export
@@ -169,6 +179,11 @@ class Codelab extends HTMLElement {
       document.body.removeAttribute('unresolved');
       this.fireEvent_(CODELAB_READY_EVENT);
     });
+
+    if (this.resumed_) {
+      console.log('resumed');
+      // TODO Show resume dialog
+    }
   }
 
   /**
@@ -615,6 +630,8 @@ class Codelab extends HTMLElement {
     if (!this.hasAttribute(DONT_SET_HISTORY_ATTR)) {
       this.updateHistoryState(`#${selected}`, true);
     }
+
+    this.storage_.set(`progress_${this.id_}`, String(this.currentSelectedStep_));
   }
 
   renderDrawer_() {
@@ -681,9 +698,19 @@ class Codelab extends HTMLElement {
     this.renderDrawer_();
 
     if (document.location.hash) {
-      this.setAttribute(SELECTED_ATTR, document.location.hash.substring(1));
+      const h = document.location.hash.substring(1);
+      if (h !== '0') {
+        this.setAttribute(SELECTED_ATTR, document.location.hash.substring(1));
+      }
     }
-    
+
+    this.id_ = this.getAttribute('id');
+    const progress = this.storage_.get(`progress_${this.id_}`);
+    if (progress && progress !== '0') {
+      this.resumed_ = true;
+      this.setAttribute(SELECTED_ATTR, progress);
+    }
+
     this.hasSetup_ = true;
   }
 }
