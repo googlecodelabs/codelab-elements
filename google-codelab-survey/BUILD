@@ -1,9 +1,12 @@
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+exports_files(["LICENSE"])
+
 load("//tools:defs.bzl",
     "closure_js_library", "closure_js_binary", "closure_js_test")
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_js_template_library")
-
-
-package(default_visibility = ["//visibility:public"])
 
 filegroup(
     name = "google_codelab_survey_files",

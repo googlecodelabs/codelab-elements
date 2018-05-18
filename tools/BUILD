@@ -1,8 +1,10 @@
 load("@io_bazel_rules_go//go:def.bzl", "go_binary")
 
+licenses(["notice"])
+
 # The gen_test_html.template is used by js_test rule.
 # See defs.bzl for details.
-exports_files(["gen_test_html.template"])
+exports_files(["LICENSE", "gen_test_html.template"])
 
 # The JS tests runner.
 # See defs.bzl for details.

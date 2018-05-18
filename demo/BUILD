@@ -1,7 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+exports_files(["LICENSE"])
+
 load("//tools:defs.bzl",
      "closure_js_library", "closure_js_binary", "closure_js_test")
-
-package(default_visibility = ["//visibility:public"])
 
 # All static artifacts needed for various demo files.
 # Used by //tools:server target.
