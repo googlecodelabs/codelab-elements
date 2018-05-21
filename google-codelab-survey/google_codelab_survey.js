@@ -197,7 +197,7 @@ class CodelabSurvey extends HTMLElement {
    * @private
    */
   normalizeIdAttr_(id) {
-    return id.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9 ]/g, '').toLowerCase();
+    return id.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9 \-]/g, '').toLowerCase();
   }
 
   /**
