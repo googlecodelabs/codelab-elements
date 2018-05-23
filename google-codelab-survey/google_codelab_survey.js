@@ -40,6 +40,7 @@ const SURVEY_ID_ATTR = 'survey-id';
 
 /**
  * The upgraded id (to prevent FUOC).
+ * @const {string}
  */
 const SURVEY_UPGRADED_ATTR = 'upgraded';
 
@@ -95,9 +96,8 @@ class CodelabSurvey extends HTMLElement {
 
   /** @private */
   bindEvents_() {
-    this.eventHandler_.listen(document.body, events.EventType.CLICK, (e) => {
-      this.handleClick_(e.target);
-    });
+    this.eventHandler_.listen(document.body, events.EventType.CLICK,
+      (e) => this.handleClick_(e.target));
   }
 
   /**
@@ -111,7 +111,9 @@ class CodelabSurvey extends HTMLElement {
     const isOptionChild = elParent.classList.contains(CssClass.RADIO_WRAPPER);
     if (isOptionWrapper || isOptionChild) {
       let optionEl = el;
-      if (isOptionChild) optionEl = elParent;
+      if (isOptionChild) {
+        optionEl = elParent;
+      }
       this.handleOptionSelected_(optionEl);
     }
   }
@@ -121,10 +123,12 @@ class CodelabSurvey extends HTMLElement {
    * @private
    */
   handleOptionSelected_(optionEl) {
-    const optionTextEl = /** @type {!Element} */ (
-      optionEl.querySelector(`.${CssClass.RADIO_TEXT}`));
+    const optionTextEl = optionEl.querySelector(`.${CssClass.RADIO_TEXT}`);
+    let answer = '';
+    if (optionTextEl) {
+      answer = optionTextEl.textContent;
+    }
     const inputEl = optionEl.querySelector('input');
-    const answer = optionTextEl.textContent;
     if (inputEl) {
       inputEl.checked = true;
       const question = inputEl.name;
@@ -186,7 +190,9 @@ class CodelabSurvey extends HTMLElement {
       Object.keys(surveyData).forEach(key => {
         const id = this.normalizeIdAttr_(surveyData[key]);
         const inp = this.querySelector(`#${id}`);
-        if (inp) inp.checked = true;
+        if (inp) {
+          inp.checked = true;
+        }
       });
     }
   }
