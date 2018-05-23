@@ -107,8 +107,12 @@ class CodelabSurvey extends HTMLElement {
   handleClick_(el) {
     const isOptionWrapper = el.classList.contains(
       CssClass.RADIO_WRAPPER);
-    const elParent = /** @type {!Element} */ (el.parentElement);
-    const isOptionChild = elParent.classList.contains(CssClass.RADIO_WRAPPER);
+    const elParent = el.parentElement;
+    let isOptionChild = false;
+    if (elParent) {
+      isOptionChild = elParent.classList.contains(CssClass.RADIO_WRAPPER);
+    }
+
     if (isOptionWrapper || isOptionChild) {
       let optionEl = el;
       if (isOptionChild) {
