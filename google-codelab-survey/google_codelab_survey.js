@@ -17,9 +17,45 @@
 
 goog.module('googlecodelabs.CodelabSurvey');
 
+const EventHandler = goog.require('goog.events.EventHandler');
+const HTML5LocalStorage =
+    goog.require('goog.storage.mechanism.HTML5LocalStorage');
 const Templates = goog.require('googlecodelabs.CodelabSurvey.Templates');
 const dom = goog.require('goog.dom');
+const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
+
+
+/**
+ * The prefix for all survey keys in local storage.
+ * @const {string}
+ */
+const STORAGE_KEY_PREFIX = 'codelab-survey-';
+
+/**
+ * The id for the current survey.
+ * @const {string}
+ */
+const SURVEY_ID_ATTR = 'survey-id';
+
+
+/**
+ * The upgraded id (to prevent FUOC).
+ * @const {string}
+ */
+const SURVEY_UPGRADED_ATTR = 'upgraded';
+
+
+/** @const {string} */
+const DEFAULT_SURVEY_NAME = 'default-codelabs-survey';
+
+
+/** @enum {string} */
+const CssClass = {
+  'OPTIONS_WRAPPER': 'survey-question-options',
+  'RADIO_WRAPPER': 'survey-option-wrapper',
+  'RADIO_TEXT': 'option-text'
+};
 
 
 /**
@@ -34,7 +70,19 @@ class CodelabSurvey extends HTMLElement {
      * The name of the survey
      * @private {string}
      */
-    this.surveyName_ = this.getAttribute('survey-id') || '';
+    this.surveyName_ = this.getAttribute(SURVEY_ID_ATTR) || DEFAULT_SURVEY_NAME;
+
+    /** @private {!HTML5LocalStorage} */
+    this.storage_ = new HTML5LocalStorage();
+
+    /** @private {string} */
+    this.storageKey_ = STORAGE_KEY_PREFIX + this.surveyName_;
+
+    /** @private {!Object<string, !Object>} */
+    this.storedData_ = {};
+
+    /** @private {!EventHandler} */
+    this.eventHandler_ = new EventHandler();
   }
 
   /**
@@ -42,25 +90,133 @@ class CodelabSurvey extends HTMLElement {
    * @override
    */
   connectedCallback() {
+    this.checkStoredData_();
     this.updateDom_();
+    this.bindEvents_();
   }
 
+  /** @private */
+  bindEvents_() {
+    this.eventHandler_.listen(document.body, events.EventType.CLICK,
+      (e) => this.handleClick_(e.target));
+  }
+
+  /**
+   * @param {!Element} el
+   * @private
+   */
+  handleClick_(el) {
+    const isOptionWrapper = el.classList.contains(
+      CssClass.RADIO_WRAPPER);
+    const elParent = el.parentElement;
+    let isOptionChild = false;
+    if (elParent) {
+      isOptionChild = elParent.classList.contains(CssClass.RADIO_WRAPPER);
+    }
+
+    if (isOptionWrapper || isOptionChild) {
+      let optionEl = el;
+      if (isOptionChild) {
+        optionEl = elParent;
+      }
+      this.handleOptionSelected_(optionEl);
+    }
+  }
+
+  /**
+   * @param {!Element} optionEl
+   * @private
+   */
+  handleOptionSelected_(optionEl) {
+    const optionTextEl = optionEl.querySelector(`.${CssClass.RADIO_TEXT}`);
+    let answer = '';
+    if (optionTextEl) {
+      answer = optionTextEl.textContent;
+    }
+    const inputEl = optionEl.querySelector('input');
+    if (inputEl) {
+      inputEl.checked = true;
+      const question = inputEl.name;
+      this.storedData_[this.surveyName_][question] = answer;
+      this.storage_.set(
+        this.storageKey_, JSON.stringify(this.storedData_[this.surveyName_]));
+    }
+  }
+
+  /** @private */
+  checkStoredData_() {
+    const storedData = this.storage_.get(this.storageKey_);
+    if (storedData) {
+      this.storedData_[this.surveyName_] = /** @type {!Object} */ (
+        JSON.parse(storedData));
+    } else {
+      this.storedData_[this.surveyName_] = {};
+    }
+  }
+
+  /** @private */
   updateDom_() {
-    const paperRadioGroupEl = this.querySelector('paper-radio-group');
-    if (paperRadioGroupEl) {
-      const polymerRadioEls = paperRadioGroupEl.querySelectorAll(
-        'paper-radio-button');
-      dom.removeNode(paperRadioGroupEl);
-      polymerRadioEls.forEach(radioEl => {
-        const title = radioEl.textContent;
-        const updatedRadioEl = soy.renderAsElement(Templates.radioButton, {
-          radioGroupName: this.surveyName_,
-          radioId: title.replace(/\s+/g, '-').toLowerCase(),
-          radioTitle: title
+    const radioGroupEls = this.querySelectorAll('paper-radio-group');
+    const questionEls = this.querySelectorAll('h4');
+    const surveyQuestions = [];
+    if (radioGroupEls.length && (questionEls.length == radioGroupEls.length)) {
+      radioGroupEls.forEach((radioGroupEl, index) => {
+        const surveyOptions = [];
+        const polymerRadioEls = radioGroupEl.querySelectorAll(
+          'paper-radio-button');
+        dom.removeNode(radioGroupEl);
+        polymerRadioEls.forEach(radioEl => {
+          const title = radioEl.textContent;
+          surveyOptions.push({
+            radioId: this.normalizeIdAttr_(title),
+            radioTitle: title
+          });
         });
-        this.appendChild(updatedRadioEl);
+        surveyQuestions.push({
+          question: questionEls[index].textContent,
+          options: surveyOptions
+        });
+        dom.removeNode(questionEls[index]);
+      });
+      const updatedDom = soy.renderAsElement(Templates.survey, {
+        surveyName: this.surveyName_,
+        surveyQuestions: surveyQuestions
+      });
+      this.appendChild(updatedDom);
+    }
+    this.setAnsweredQuestions_();
+    this.setAttribute(SURVEY_UPGRADED_ATTR, '');
+  }
+
+  /** @private */
+  setAnsweredQuestions_() {
+    const surveyData = this.storedData_[this.surveyName_];
+    if (surveyData) {
+      Object.keys(surveyData).forEach(key => {
+        const id = this.normalizeIdAttr_(surveyData[key]);
+        const inp = this.querySelector(`#${id}`);
+        if (inp) {
+          inp.checked = true;
+        }
       });
     }
+  }
+
+  /**
+   * @param {string} id
+   * @return {string}
+   * @private
+   */
+  normalizeIdAttr_(id) {
+    return id.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9 \-]/g, '').toLowerCase();
+  }
+
+  /**
+   * @export
+   * @override
+   */
+  disconnectedCallback() {
+    this.eventHandler_.removeAll();
   }
 }
 

@@ -18,18 +18,33 @@
 {namespace googlecodelabs.CodelabSurvey.Templates}
 
 /**
- * Renders a material component radio button for a codelab survey.
+ * Renders questions with mdc radio groups for a codelabs survey.
  */
-{template .radioButton}
-  {@param radioGroupName: string}
-  {@param radioId: string}
-  {@param radioTitle: string}
-  <div class="mdc-radio">
-    <input class="mdc-radio__native-control" type="radio" id="{$radioId}" name="{$radioGroupName}">
-    <div class="mdc-radio__background">
-      <div class="mdc-radio__outer-circle"></div>
-      <div class="mdc-radio__inner-circle"></div>
+{template .survey}
+  {@param surveyName: string }
+  {@param surveyQuestions: list<[question:string, options:list<[radioId:string, radioTitle:string]>]>}
+  <div class="survey-questions" survey-name={$surveyName}>
+  {for $surveyQuestion in $surveyQuestions}
+    <div class="survey-question-wrapper">
+      <h4>{$surveyQuestion.question}</h4>
+      {if length($surveyQuestion.options)}
+      <div class="survey-question-options">
+        {for $option in $surveyQuestion.options}
+        <label class="survey-option-wrapper"
+            id="{$option.radioId}-label"
+            for="{$option.radioId}">
+          <span class="option-text">
+            {$option.radioTitle}
+          </span>
+          <input type="radio"
+              id="{$option.radioId}"
+              name="{$surveyQuestion.question}">
+          <span class="custom-radio-button"></span>
+        </label>
+        {/for}
+      </div>
+      {/if}
     </div>
+  {/for}
   </div>
-  <label id="{$radioId}-label" for="{$radioId}">{$radioTitle}</label>
 {/template}
