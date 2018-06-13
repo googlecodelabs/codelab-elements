@@ -4,6 +4,41 @@ The next generation of the codelab elements without any framework or library
 dependencies, only the [Custom Elements](https://html.spec.whatwg.org/multipage/custom-elements.html)
 standard spec.
 
+If this is a release bundle, produced with a `bazel build :bundle` command,
+you should see `codelab-elements.js`, `codelab-elements.css` and other files,
+ready to be added to an HTML page like the following. Only relevant parts are shown:
+
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <title>A codelab demo</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="codelab-elements.css">
+</head>
+<body>
+  <google-codelab id="codelab-demo" title="A codelab demo">
+    <google-codelab-step label="Overview" duration="1">
+      Contents of the first step.
+    </google-codelab-step>
+    <google-codelab-step label="Second" duration="10">
+      Contents of the second step.
+    </google-codelab-step>
+  </google-codelab>
+  <script src="native-shim.js"></script>
+  <script src="custom-elements.min.js"></script>
+  <script src="prettify.js"></script>
+  <script src="codelab-elements.js"></script>
+</body>
+</html>
+```
+
+You can download the latest version
+from https://github.com/googlecodelabs/codelab-elements.
+
 ## Dev environment
 
 All you need is [bazel](https://docs.bazel.build/versions/master/install.html).
