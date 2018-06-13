@@ -20,6 +20,10 @@ load("@io_bazel_rules_closure//closure:defs.bzl",
      _closure_js_library_alias="closure_js_library")
 load("@io_bazel_rules_webtesting//web:web.bzl", "web_test_suite")
 
+def concat(ext):
+    """Returns a genrule command to concat files with the extension ext."""
+    return "ls $(SRCS) | grep -E '\.{ext}$$' | xargs cat > $@".format(ext=ext)
+
 def closure_js_library(**kwargs):
   """Invokes actual closure_js_library with defaults suitable
   for non-test JS source files.
