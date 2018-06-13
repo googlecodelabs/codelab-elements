@@ -481,7 +481,10 @@ class Codelab extends HTMLElement {
     let time = 0;
     for (let i = this.currentSelectedStep_; i < this.steps_.length; i++) {
       const step = /** @type {!Element} */ (this.steps_[i]);
-      time += parseInt(step.getAttribute(DURATION_ATTR), 10);
+      let n = parseInt(step.getAttribute(DURATION_ATTR), 10);
+      if (n) {
+        time += n;
+      }
     }
 
     const newTimeEl =  soy.renderAsElement(Templates.timeRemaining, {time});
