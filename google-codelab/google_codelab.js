@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2018 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
 
-/** 
+/**
  * Deprecated. Title causes the bowser to display a tooltip over the whole codelab.
  * Use codelab-title instead.
  * @const {string}
@@ -86,20 +86,32 @@ const ANIMATION_DURATION = .5;
 const DRAWER_OPEN_ATTR = 'drawer--open';
 
 /**
- * Fired when the codelab steps have been fully initialized.
+ * The general codelab action event fired for trackable interactions.
  */
-const CODELAB_READY_EVENT = 'google-codelab-ready';
+const CODELAB_ACTION_EVENT = 'google-codelab-action';
 
 /**
- * Fired when user advances a codelab step or goes backwards.
+ * The event category detail for any codelab action event fired.
+ */
+const CODELAB_CUSTOM_EVENT_CATEGORY = 'Codelab Custom Event';
+
+/**
+ * The event action detail for when the codelab steps have been fully
+ * initialized.
+ */
+const CODELAB_READY_EVENT_ID = 'google-codelab-ready';
+
+/**
+ * The event action detail for when user advances a codelab step or goes
+ * backwards.
  * detail {{index: Number}}
  */
-const CODELAB_STEP_EVENT = 'google-codelab-step';
+const CODELAB_STEP_EVENT_ID = 'google-codelab-step';
 
 /**
- * Fired when user reaches the last step of the codelab.
+ * The event action detail for when user reaches the last step of the codelab.
  */
-const CODELAB_COMPLETE_EVENT = 'google-codelab-complete';
+const CODELAB_COMPLETE_EVENT_ID = 'google-codelab-complete';
 
 /**
  * @extends {HTMLElement}
@@ -178,7 +190,10 @@ class Codelab extends HTMLElement {
 
     window.requestAnimationFrame(() => {
       document.body.removeAttribute('unresolved');
-      this.fireEvent_(CODELAB_READY_EVENT);
+      this.fireEvent_(CODELAB_ACTION_EVENT, {
+        'category': CODELAB_CUSTOM_EVENT_CATEGORY,
+        'action': CODELAB_READY_EVENT_ID
+      });
     });
 
     if (this.resumed_) {
@@ -254,7 +269,7 @@ class Codelab extends HTMLElement {
 
   /**
    * @export
-   * @param {number} index 
+   * @param {number} index
    */
   select(index) {
     this.setAttribute(SELECTED_ATTR, index);
@@ -347,8 +362,8 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {!events.BrowserEvent} e 
+   *
+   * @param {!events.BrowserEvent} e
    */
   handleDrawerKeyDown_(e) {
     if (!this.drawer_) {
@@ -383,8 +398,8 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {!events.BrowserEvent} e 
+   *
+   * @param {!events.BrowserEvent} e
    */
   handleKeyDown_(e) {
     if (e.keyCode == KeyCodes.LEFT) {
@@ -526,8 +541,10 @@ class Codelab extends HTMLElement {
       return;
     }
 
-    this.fireEvent_(CODELAB_STEP_EVENT, {
-      index: selected
+    this.fireEvent_(CODELAB_ACTION_EVENT, {
+      'category': CODELAB_CUSTOM_EVENT_CATEGORY,
+      'action': CODELAB_STEP_EVENT_ID,
+      'label': selected
     });
 
     if (this.currentSelectedStep_ === -1) {
@@ -606,7 +623,10 @@ class Codelab extends HTMLElement {
       if (selected === this.steps_.length - 1) {
         this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
         this.doneBtn_.removeAttribute(HIDDEN_ATTR);
-        this.fireEvent_(CODELAB_COMPLETE_EVENT);
+        this.fireEvent_(CODELAB_ACTION_EVENT, {
+          'category': CODELAB_CUSTOM_EVENT_CATEGORY,
+          'action': CODELAB_COMPLETE_EVENT_ID,
+        });
       } else {
         this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
         this.doneBtn_.setAttribute(HIDDEN_ATTR, '');
@@ -670,13 +690,15 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {string} eventName 
-   * @param {!Object=} detail 
+   *
+   * @param {string} eventName
+   * @param {!Object=} detail
    */
   fireEvent_(eventName, detail={}) {
-    const event = new CustomEvent(eventName, detail);
-    this.dispatchEvent(event);
+    const event = new CustomEvent(eventName, {
+      detail: detail
+    });
+    document.body.dispatchEvent(event);
   }
 
   /**
@@ -688,7 +710,7 @@ class Codelab extends HTMLElement {
     soy.renderElement(this, Templates.structure, {
       homeUrl: this.getHomeUrl_()
     });
-    
+
     this.drawer_ = this.querySelector('#drawer');
     this.titleContainer_ = this.querySelector('#codelab-title');
     this.stepsContainer_ = this.querySelector('#steps');
