@@ -140,6 +140,14 @@ class CodelabSurvey extends HTMLElement {
       this.storedData_[this.surveyName_][question] = answer;
       this.storage_.set(
         this.storageKey_, JSON.stringify(this.storedData_[this.surveyName_]));
+      const event = new CustomEvent('google-codelab-action', {
+        detail: {
+          'category': 'survey',
+          'action': question.substring(0, 500),
+          'label': answer.substring(0, 500)
+        }
+      });
+      document.body.dispatchEvent(event);
     }
   }
 

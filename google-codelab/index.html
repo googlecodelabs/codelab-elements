@@ -21,6 +21,7 @@ the License.
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
   <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="/google-codelab-step/google_codelab_step_scss_bin.css">
+  <link rel="stylesheet" href="/google-codelab-survey/google_codelab_survey_scss_bin.css">
   <link rel="stylesheet" href="google_codelab_scss_bin.css">
   <style>
     body {
@@ -37,8 +38,8 @@ the License.
 </head>
 
 <body unresolved>
-  <google-codelab-analytics></google-codelab-analytics>
-  <google-codelab id="accelerated-mobile-pages-advanced" title="Accelerated Mobile Pages Advanced Concepts" environment="web" feedback-link="mailto:tomgreenaway@google.com">
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-49880327-15" id="accelerated-mobile-pages-advanced" title="Accelerated Mobile Pages Advanced Concepts" environment="web" feedback-link="mailto:tomgreenaway@google.com">
     <google-codelab-step label="Overview" duration="1">
       <p>This codelab is a continuation of the concepts introduced in Accelerated Mobile Pages Foundations. You should already
         have completed the previous code lab before starting this lab or at least have a basic understanding AMP&#39;s core
@@ -935,15 +936,32 @@ ga(&#39;send&#39;, &#39;pageview&#39;);
         </li>
       </ul>
 
+      <google-codelab-survey survey-id="polymer-maps-1">
+        <h4>How would rate your experience with Polymer?</h4>
+        <paper-radio-group>
+          <paper-radio-button>Novice</paper-radio-button>
+          <paper-radio-button>Intermediate</paper-radio-button>
+          <paper-radio-button>Advanced</paper-radio-button>
+        </paper-radio-group>
+
+        <h4>How will you use use this tutorial?</h4>
+        <paper-radio-group>
+          <paper-radio-button>I won't</paper-radio-button>
+          <paper-radio-button>Complete it</paper-radio-button>
+        </paper-radio-group>
+      </google-codelab-survey>
+
 
     </google-codelab-step>
 
   </google-codelab>
+  <script async="" src="https://www.google-analytics.com/analytics.js"></script>
   <script src="/external/polyfill/src/native-shim.js"></script>
   <script src="/external/polyfill/custom-elements.min.js"></script>
   <script src="/external/prettify/src/prettify.js"></script>
   <script src="/google-codelab-analytics/google_codelab_analytics_bin.js"></script>
   <script src="/google-codelab-step/google_codelab_step_bin.js"></script>
+  <script src="/google-codelab-survey/google_codelab_survey_bin.js"></script>
   <script src="/google-codelab/google_codelab_bin.js"></script>
 </body>
 

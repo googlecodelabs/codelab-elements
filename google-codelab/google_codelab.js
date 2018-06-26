@@ -44,6 +44,9 @@ const ENVIRONMENT_ATTR = 'environment';
 const CATEGORY_ATTR = 'category';
 
 /** @const {string} */
+const GAID_ATTR = 'codelab-gaid';
+
+/** @const {string} */
 const FEEDBACK_LINK_ATTR = 'feedback-link';
 
 /** @const {string} */
@@ -91,27 +94,9 @@ const DRAWER_OPEN_ATTR = 'drawer--open';
 const CODELAB_ACTION_EVENT = 'google-codelab-action';
 
 /**
- * The event category detail for any codelab action event fired.
+ * The general codelab action event fired for trackable interactions.
  */
-const CODELAB_CUSTOM_EVENT_CATEGORY = 'Codelab Custom Event';
-
-/**
- * The event action detail for when the codelab steps have been fully
- * initialized.
- */
-const CODELAB_READY_EVENT_ID = 'google-codelab-ready';
-
-/**
- * The event action detail for when user advances a codelab step or goes
- * backwards.
- * detail {{index: Number}}
- */
-const CODELAB_STEP_EVENT_ID = 'google-codelab-step';
-
-/**
- * The event action detail for when user reaches the last step of the codelab.
- */
-const CODELAB_COMPLETE_EVENT_ID = 'google-codelab-complete';
+const CODELAB_PAGEVIEW_EVENT = 'google-codelab-pageview';
 
 /**
  * @extends {HTMLElement}
@@ -183,16 +168,22 @@ class Codelab extends HTMLElement {
 
     this.addEvents_();
 
+    this.configureAnalytics_();
     this.showSelectedStep_();
     this.updateTitle_();
     this.toggleArrows_();
     this.toggleToolbar_();
 
+    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
+      'page': location.pathname,
+      'title': this.getAttribute(CODELAB_TITLE_ATTR) || ''
+    });
+
     window.requestAnimationFrame(() => {
       document.body.removeAttribute('unresolved');
       this.fireEvent_(CODELAB_ACTION_EVENT, {
-        'category': CODELAB_CUSTOM_EVENT_CATEGORY,
-        'action': CODELAB_READY_EVENT_ID
+        'category': 'codelab',
+        'action': 'ready'
       });
     });
 
@@ -250,6 +241,20 @@ class Codelab extends HTMLElement {
       case NO_ARROWS_ATTR:
         this.toggleArrows_();
         break;
+    }
+  }
+
+  configureAnalytics_() {
+    const analytics = document.querySelector('google-codelab-analytics');
+    if (analytics) {
+      const gaid = this.getAttribute(GAID_ATTR);
+      if (gaid) {
+        analytics.setAttribute(GAID_ATTR, gaid);
+      }
+
+      analytics.setAttribute(
+        ENVIRONMENT_ATTR, this.getAttribute(ENVIRONMENT_ATTR));
+      analytics.setAttribute(CATEGORY_ATTR, this.getAttribute(CATEGORY_ATTR));
     }
   }
 
@@ -541,10 +546,13 @@ class Codelab extends HTMLElement {
       return;
     }
 
-    this.fireEvent_(CODELAB_ACTION_EVENT, {
-      'category': CODELAB_CUSTOM_EVENT_CATEGORY,
-      'action': CODELAB_STEP_EVENT_ID,
-      'label': selected
+    const stepTitleEl = this.steps_[selected].querySelector('.step-title');
+    const stepTitle = stepTitleEl ? stepTitleEl.textContent : '';
+    const stepTitlePrefix = (selected + 1) + '.';
+    const re = new RegExp(stepTitlePrefix, 'g');
+    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
+      'page': location.pathname + '#' + selected,
+      'title': stepTitle.replace(re, '').trim()
     });
 
     if (this.currentSelectedStep_ === -1) {
@@ -624,8 +632,9 @@ class Codelab extends HTMLElement {
         this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
         this.doneBtn_.removeAttribute(HIDDEN_ATTR);
         this.fireEvent_(CODELAB_ACTION_EVENT, {
-          'category': CODELAB_CUSTOM_EVENT_CATEGORY,
-          'action': CODELAB_COMPLETE_EVENT_ID,
+          'category': 'codelab',
+          'action': 'complete',
+          'label': this.getAttribute(TITLE_ATTR)
         });
       } else {
         this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
