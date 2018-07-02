@@ -116,7 +116,7 @@ class CodelabAnalytics extends HTMLElement {
     this.hasSetup_ = true;
     this.initGAScript_();
     // Now track a page view and add the rest of the event listeners...
-    this.trackPageView_();
+    this.trackPageview_();
     this.addEventListeners_();
   }
 
@@ -132,8 +132,9 @@ class CodelabAnalytics extends HTMLElement {
 
     this.pageviewEventHandler_.listen(document.body, PAGEVIEW_EVENT,
       (e) => {
-        const detail = e.getBrowserEvent().detail;
-        this.trackPageView_(detail.page, detail.title);
+        const detail = /** @type {AnalyticsPageview} */ (
+          e.getBrowserEvent().detail);
+        this.trackPageview_(detail.page, detail.title);
       });
   }
 
@@ -199,7 +200,7 @@ class CodelabAnalytics extends HTMLElement {
    * @param {?string=} opt_page The page to track.
    * @param {?string=} opt_title The codelabs title.
    */
-  trackPageView_(opt_page, opt_title) {
+  trackPageview_(opt_page, opt_title) {
     const params = {
       'hitType': 'pageview',
       'dimension1': this.codelabEnv_,
@@ -259,7 +260,7 @@ class CodelabAnalytics extends HTMLElement {
    * @return {!Promise}
    * @export
    */
-  static injectGAscript() {
+  static injectGAScript() {
     const resource = document.createElement('script');
     resource.src = '//www.google-analytics.com/analytics.js';
     resource.async = false;
@@ -293,7 +294,7 @@ class CodelabAnalytics extends HTMLElement {
       window['ga']['l'] = (new Date()).valueOf();
 
       try {
-        await CodelabAnalytics.injectGAscript();
+        await CodelabAnalytics.injectGAScript();
       } catch(e) {
         console.log(`Failed to load GA Script: ${e.message}`);
       }
@@ -316,9 +317,17 @@ class CodelabAnalytics extends HTMLElement {
   /**
    * @param {string} trackerId The tracker ID to check for.
    * @return {boolean}
+   * @private
    */
   isTrackerCreated_(trackerId) {
-    return this.trackerIds_.indexOf(trackerId) > -1;
+    const allTrackers = window['ga'].getAll();
+    let isCreated = false;
+    allTrackers.forEach((tracker) => {
+      if (tracker.get('trackingId') == trackerId) {
+        isCreated = true;
+      }
+    });
+    return isCreated;
   }
 }
 
