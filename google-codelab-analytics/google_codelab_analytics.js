@@ -317,17 +317,9 @@ class CodelabAnalytics extends HTMLElement {
   /**
    * @param {string} trackerId The tracker ID to check for.
    * @return {boolean}
-   * @private
    */
   isTrackerCreated_(trackerId) {
-    const allTrackers = window['ga'].getAll();
-    let isCreated = false;
-    allTrackers.forEach((tracker) => {
-      if (tracker.get('trackingId') == trackerId) {
-        isCreated = true;
-      }
-    });
-    return isCreated;
+    return this.trackerIds_.indexOf(trackerId) > -1;
   }
 }
 
