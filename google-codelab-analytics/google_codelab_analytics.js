@@ -50,7 +50,7 @@ const CODELAB_CATEGORY_ATTR = 'category';
 
 
 /**
- * Event detail passed when firing GOOGLE_CODELAB_ACTION_EVENT.
+ * Event detail passed when firing ACTION_EVENT.
  *
  * @typedef {{
  *  category: string,
@@ -60,6 +60,16 @@ const CODELAB_CATEGORY_ATTR = 'category';
  * }}
  */
 let AnalyticsTrackingEvent;
+
+/**
+ * Event detail passed when firing ACTION_EVENT.
+ *
+ * @typedef {{
+ *  page: string,
+ *  title: string,
+ * }}
+ */
+let AnalyticsPageview;
 
 
 /**
@@ -74,13 +84,16 @@ class CodelabAnalytics extends HTMLElement {
     this.hasSetup_ = false;
 
     /** @private {?string} */
-    this.gaid_ = this.getAttribute(GAID_ATTR) || '';
+    this.gaid_ = '';
 
     /** @private {!EventHandler} */
     this.eventHandler_ = new EventHandler();
 
     /** @private {!EventHandler} */
     this.pageviewEventHandler_ = new EventHandler();
+
+    /** @private {!Array<string>} */
+    this.trackerIds_ = [];
 
     /** @private {?string} */
     this.codelabCategory_ = this.getAttribute(CODELAB_CATEGORY_ATTR) || '';
@@ -94,12 +107,15 @@ class CodelabAnalytics extends HTMLElement {
    * @override
    */
   connectedCallback() {
+    this.gaid_ = this.getAttribute(GAID_ATTR) || '';
+
     if (this.hasSetup_ || !this.gaid_) {
       return;
     }
 
     this.hasSetup_ = true;
     this.initGAScript_();
+    // Now track a page view and add the rest of the event listeners...
     this.trackPageView_();
     this.addEventListeners_();
   }
@@ -139,6 +155,9 @@ class CodelabAnalytics extends HTMLElement {
    */
   attributeChangedCallback(attr, oldValue, newValue, namespace) {
     switch (attr) {
+      case GAID_ATTR:
+        this.gaid_ = newValue;
+        break;
       case CODELAB_GAID_ATTR:
         if (newValue) {
           this.createCodelabGATracker_(newValue);
@@ -173,7 +192,6 @@ class CodelabAnalytics extends HTMLElement {
       'eventLabel': opt_label || '',
       'eventValue': opt_value || '',
     };
-    console.log('event params: ', params);
     this.gaSend_(params);
   }
 
@@ -189,7 +207,6 @@ class CodelabAnalytics extends HTMLElement {
       'page': opt_page || '',
       'title': opt_title || ''
     };
-    console.log('pageview params: ', params);
     this.gaSend_(params);
   }
 
@@ -221,8 +238,9 @@ class CodelabAnalytics extends HTMLElement {
       this.initGAScript_();
     }
 
-    if (!window['ga']['getByName']('codelabAccount')) {
+    if (!this.isTrackerCreated_(codelabGAId)) {
       window['ga']('create', codelabGAId, 'auto', 'codelabAccount');
+      this.trackerIds_.push(codelabGAId);
     }
   }
 
@@ -237,30 +255,70 @@ class CodelabAnalytics extends HTMLElement {
     return '';
   }
 
-  initGAScript_() {
+  /**
+   * @return {!Promise}
+   * @export
+   */
+  static injectGAscript() {
+    const resource = document.createElement('script');
+    resource.src = '//www.google-analytics.com/analytics.js';
+    resource.async = false;
+
+    const p = new Promise((resolve, reject) => {
+      resource.onload = () => resolve(resource);
+      resource.onerror = (event) => {
+        // remove on error
+        if (resource.parentNode) {
+          resource.parentNode.removeChild(resource);
+        }
+        reject(event);
+      };
+      if (document.head) {
+        document.head.appendChild(resource);
+      }
+    });
+    return p;
+  }
+
+  async initGAScript_() {
     // Make sure sure that tracker gets created only once per session.
     // Also makes sure the script wasn't already included in the html.
-    if (goog.isDef(window['ga'])) {
-      return;
+    if (!goog.isDef(window['ga'])) {
+      // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
+      // provided by Google Analytics.
+      window['GoogleAnalyticsObject'] = 'ga';
+      window['ga'] = window['ga'] || function() {
+        (window['ga']['q'] = window['ga']['q'] || []).push(arguments);
+      };
+      window['ga']['l'] = (new Date()).valueOf();
+
+      try {
+        await CodelabAnalytics.injectGAscript();
+      } catch(e) {
+        console.log(`Failed to load GA Script: ${e.message}`);
+      }
     }
 
-    // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
-    // provided by Google Analytics.
-    window['GoogleAnalyticsObject'] = 'ga';
-    window['ga'] = window['ga'] || function() {
-      (window['ga']['q'] = window['ga']['q'] || []).push(arguments);
-    };
-    window['ga']['l'] = (new Date()).valueOf();
-
-    if (this.gaid_) {
+    // The default tracker is given name 't0' per analytics.js dev docs.
+    if (this.gaid_ && !this.isTrackerCreated_(this.gaid_)) {
       window['ga']('create', this.gaid_, 'auto');
+      this.trackerIds_.push(this.gaid_);
     }
 
     const gaView = this.getGAView_();
-    if (gaView) {
-      window['ga']('create', gaView, 'auto', {name: 'view'});
+    if (gaView && !this.isTrackerCreated_(gaView)) {
+      window['ga']('create', gaView, 'auto', 'view');
+      this.trackerIds_.push(gaView);
       window['ga']('view.send', 'pageview');
     }
+  }
+
+  /**
+   * @param {string} trackerId The tracker ID to check for.
+   * @return {boolean}
+   */
+  isTrackerCreated_(trackerId) {
+    return this.trackerIds_.indexOf(trackerId) > -1;
   }
 }
 
