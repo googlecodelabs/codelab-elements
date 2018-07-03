@@ -115,12 +115,16 @@ class CodelabAnalytics extends HTMLElement {
 
     this.initGAScript_().then((response) => {
       if (response) {
-        this.createTrackers_();
-        this.trackPageview_();
-        this.addEventListeners_();
-        this.hasSetup_ = true;
+        this.init_();
       }
     });
+  }
+
+  init_() {
+    this.createTrackers_();
+    this.trackPageview_();
+    this.addEventListeners_();
+    this.hasSetup_ = true;
   }
 
   addEventListeners_() {
@@ -281,7 +285,9 @@ class CodelabAnalytics extends HTMLElement {
         return null;
       }
     }
-    return Promise.resolve();
+
+    this.init_();
+    return null;
   }
 
   createTrackers_() {
