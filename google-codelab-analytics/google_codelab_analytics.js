@@ -163,7 +163,7 @@ class CodelabAnalytics extends HTMLElement {
         this.gaid_ = newValue;
         break;
       case CODELAB_GAID_ATTR:
-        if (newValue & this.hasSetup_) {
+        if (newValue && this.hasSetup_) {
           this.createCodelabGATracker_();
         }
         break;
