@@ -48,7 +48,10 @@ testSuite({
   testGAIDAttr_InitsTracker() {
     const mockGa = mockControl.createFunctionMock('ga');
     const analytics = new CodelabAnalytics();
+    // const mockInitGA = mockControl.createMethodMock(analytics, 'initGAScript_');
     analytics.setAttribute('gaid', 'UA-123');
+    // mockInitGA().$returns(Promise.resolve()).$once();
+    mockGa('getAll').$returns([]).$once();
     mockGa('create', 'UA-123', 'auto').$once();
     window['ga'] = mockGa;
     mockControl.$replayAll();
@@ -62,7 +65,9 @@ testSuite({
     analytics.setAttribute('gaid', 'UA-123');
     const locationSearchSaved = location.search;
     location.search = '?viewga=testView&param2=hi';
+    mockGa('getAll').$returns([]).$once();
     mockGa('create', 'UA-123', 'auto').$once();
+    mockGa('getAll').$returns([]).$once();
     mockGa('create', 'testView', 'auto', 'view').$once();
     window['ga'] = mockGa;
     mockControl.$replayAll();
@@ -77,7 +82,9 @@ testSuite({
     const mockGa = mockControl.createFunctionMock('ga');
     const analytics = new CodelabAnalytics();
     analytics.setAttribute('gaid', 'UA-123');
+    mockGa('getAll').$returns([]).$once();
     mockGa('create', 'UA-123', 'auto').$once();
+    mockGa('getAll').$returns([]).$once();
     mockGa('create', 'UA-456', 'auto', 'codelabAccount').$once();
     window['ga'] = mockGa;
     mockControl.$replayAll();

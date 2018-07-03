@@ -113,11 +113,14 @@ class CodelabAnalytics extends HTMLElement {
       return;
     }
 
-    this.hasSetup_ = true;
-    this.initGAScript_();
-    // Now track a page view and add the rest of the event listeners...
-    this.trackPageview_();
-    this.addEventListeners_();
+    this.initGAScript_().then((response) => {
+      if (response) {
+        this.createTrackers_();
+        this.trackPageview_();
+        this.addEventListeners_();
+        this.hasSetup_ = true;
+      }
+    });
   }
 
   addEventListeners_() {
@@ -160,8 +163,8 @@ class CodelabAnalytics extends HTMLElement {
         this.gaid_ = newValue;
         break;
       case CODELAB_GAID_ATTR:
-        if (newValue) {
-          this.createCodelabGATracker_(newValue);
+        if (newValue & this.hasSetup_) {
+          this.createCodelabGATracker_();
         }
         break;
       case CODELAB_ENV_ATTR:
@@ -228,23 +231,6 @@ class CodelabAnalytics extends HTMLElement {
     this.eventHandler_.removeAll();
   }
 
-  /**
-   * Creates a GA tracker.
-   * @param {string} codelabGAId A GAID for an account.
-   */
-  createCodelabGATracker_(codelabGAId) {
-    // Make sure sure that tracker gets created only once per session.
-    // Also makes sure the script wasn't already included in the html.
-    if (!goog.isDef(window['ga'])) {
-      this.initGAScript_();
-    }
-
-    if (!this.isTrackerCreated_(codelabGAId)) {
-      window['ga']('create', codelabGAId, 'auto', 'codelabAccount');
-      this.trackerIds_.push(codelabGAId);
-    }
-  }
-
   getGAView_() {
     let parts = location.search.substring(1).split('&');
     for (let i = 0; i < parts.length; i++) {
@@ -264,26 +250,22 @@ class CodelabAnalytics extends HTMLElement {
     const resource = document.createElement('script');
     resource.src = '//www.google-analytics.com/analytics.js';
     resource.async = false;
-
-    const p = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       resource.onload = () => resolve(resource);
       resource.onerror = (event) => {
         // remove on error
         if (resource.parentNode) {
           resource.parentNode.removeChild(resource);
         }
-        reject(event);
+        reject();
       };
       if (document.head) {
         document.head.appendChild(resource);
       }
     });
-    return p;
   }
 
   async initGAScript_() {
-    // Make sure sure that tracker gets created only once per session.
-    // Also makes sure the script wasn't already included in the html.
     if (!goog.isDef(window['ga'])) {
       // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
       // provided by Google Analytics.
@@ -294,12 +276,15 @@ class CodelabAnalytics extends HTMLElement {
       window['ga']['l'] = (new Date()).valueOf();
 
       try {
-        await CodelabAnalytics.injectGAScript();
+        return await CodelabAnalytics.injectGAScript();
       } catch(e) {
-        console.log(`Failed to load GA Script: ${e.message}`);
+        return null;
       }
     }
+    return Promise.resolve();
+  }
 
+  createTrackers_() {
     // The default tracker is given name 't0' per analytics.js dev docs.
     if (this.gaid_ && !this.isTrackerCreated_(this.gaid_)) {
       window['ga']('create', this.gaid_, 'auto');
@@ -312,14 +297,35 @@ class CodelabAnalytics extends HTMLElement {
       this.trackerIds_.push(gaView);
       window['ga']('view.send', 'pageview');
     }
+
+    this.createCodelabGATracker_();
+  }
+
+  /**
+   * Creates a GA tracker specific to the codelab.
+   */
+  createCodelabGATracker_() {
+    const codelabGAId = this.getAttribute(CODELAB_GAID_ATTR);
+    if (codelabGAId && !this.isTrackerCreated_(codelabGAId)) {
+      window['ga']('create', codelabGAId, 'auto', 'codelabAccount');
+      this.trackerIds_.push(codelabGAId);
+    }
   }
 
   /**
    * @param {string} trackerId The tracker ID to check for.
    * @return {boolean}
+   * @private
    */
   isTrackerCreated_(trackerId) {
-    return this.trackerIds_.indexOf(trackerId) > -1;
+    const allTrackers = window['ga'].getAll();
+    let isCreated = false;
+    allTrackers.forEach((tracker) => {
+      if (tracker.get('trackingId') == trackerId) {
+        isCreated = true;
+      }
+    });
+    return isCreated;
   }
 }
 
