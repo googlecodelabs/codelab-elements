@@ -187,12 +187,11 @@ class CodelabAnalytics extends HTMLElement {
 
   /**
    * Fires an analytics tracking event to all configured trackers.
-   *
    * @param {string} category The event category.
    * @param {string=} opt_action The event action.
    * @param {?string=} opt_label The event label.
    * @param {?number=} opt_value The event value.
-   * @export
+   * @private
    */
   trackEvent_(category, opt_action, opt_label, opt_value) {
     const params = {
@@ -211,6 +210,7 @@ class CodelabAnalytics extends HTMLElement {
   /**
    * @param {?string=} opt_page The page to track.
    * @param {?string=} opt_title The codelabs title.
+   * @private
    */
   trackPageview_(opt_page, opt_title) {
     const params = {
@@ -223,6 +223,7 @@ class CodelabAnalytics extends HTMLElement {
     this.gaSend_(params);
   }
 
+  /** @private */
   gaSend_(params) {
     window['ga'](function() {
       const trackers = window['ga'].getAll();
@@ -240,6 +241,7 @@ class CodelabAnalytics extends HTMLElement {
     this.eventHandler_.removeAll();
   }
 
+  /** @private */
   getGAView_() {
     let parts = location.search.substring(1).split('&');
     for (let i = 0; i < parts.length; i++) {
@@ -274,6 +276,7 @@ class CodelabAnalytics extends HTMLElement {
     });
   }
 
+  /** @private */
   async initGAScript_() {
     // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
     // provided by Google Analytics.
@@ -290,6 +293,7 @@ class CodelabAnalytics extends HTMLElement {
     }
   }
 
+  /** @private */
   createTrackers_() {
     // The default tracker is given name 't0' per analytics.js dev docs.
     if (this.gaid_ && !this.isTrackerCreated_(this.gaid_)) {
@@ -307,6 +311,7 @@ class CodelabAnalytics extends HTMLElement {
 
   /**
    * Creates a GA tracker specific to the codelab.
+   * @private
    */
   createCodelabGATracker_() {
     const codelabGAId = this.getAttribute(CODELAB_GAID_ATTR);
