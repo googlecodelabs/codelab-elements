@@ -21,11 +21,13 @@ const EventHandler = goog.require('goog.events.EventHandler');
 
 /**
  * The general codelab action event fired for trackable interactions.
+ * @const string
  */
 const ACTION_EVENT = 'google-codelab-action';
 
 /**
  * The general codelab pageview event fired for trackable pageviews.
+ * @const string
  */
 const PAGEVIEW_EVENT = 'google-codelab-pageview';
 
@@ -84,16 +86,13 @@ class CodelabAnalytics extends HTMLElement {
     this.hasSetup_ = false;
 
     /** @private {?string} */
-    this.gaid_ = '';
+    this.gaid_;
 
     /** @private {!EventHandler} */
     this.eventHandler_ = new EventHandler();
 
     /** @private {!EventHandler} */
     this.pageviewEventHandler_ = new EventHandler();
-
-    /** @private {!Array<string>} */
-    this.trackerIds_ = [];
 
     /** @private {?string} */
     this.codelabCategory_ = this.getAttribute(CODELAB_CATEGORY_ATTR) || '';
@@ -113,13 +112,18 @@ class CodelabAnalytics extends HTMLElement {
       return;
     }
 
-    this.initGAScript_().then((response) => {
-      if (response) {
-        this.init_();
-      }
-    });
+    if (!goog.isDef(window['ga'])) {
+      this.initGAScript_().then((response) => {
+        if (response) {
+          this.init_();
+        }
+      });
+    } else {
+      this.init_();
+    }
   }
 
+  /** @private */
   init_() {
     this.createTrackers_();
     this.trackPageview_();
@@ -127,6 +131,7 @@ class CodelabAnalytics extends HTMLElement {
     this.hasSetup_ = true;
   }
 
+  /** @private */
   addEventListeners_() {
     this.eventHandler_.listen(document.body, ACTION_EVENT,
       (e) => {
@@ -270,37 +275,30 @@ class CodelabAnalytics extends HTMLElement {
   }
 
   async initGAScript_() {
-    if (!goog.isDef(window['ga'])) {
-      // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
-      // provided by Google Analytics.
-      window['GoogleAnalyticsObject'] = 'ga';
-      window['ga'] = window['ga'] || function() {
-        (window['ga']['q'] = window['ga']['q'] || []).push(arguments);
-      };
-      window['ga']['l'] = (new Date()).valueOf();
+    // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
+    // provided by Google Analytics.
+    window['GoogleAnalyticsObject'] = 'ga';
+    window['ga'] = window['ga'] || function() {
+      (window['ga']['q'] = window['ga']['q'] || []).push(arguments);
+    };
+    window['ga']['l'] = (new Date()).valueOf();
 
-      try {
-        return await CodelabAnalytics.injectGAScript();
-      } catch(e) {
-        return null;
-      }
+    try {
+      return await CodelabAnalytics.injectGAScript();
+    } catch(e) {
+      return;
     }
-
-    this.init_();
-    return null;
   }
 
   createTrackers_() {
     // The default tracker is given name 't0' per analytics.js dev docs.
     if (this.gaid_ && !this.isTrackerCreated_(this.gaid_)) {
       window['ga']('create', this.gaid_, 'auto');
-      this.trackerIds_.push(this.gaid_);
     }
 
     const gaView = this.getGAView_();
     if (gaView && !this.isTrackerCreated_(gaView)) {
       window['ga']('create', gaView, 'auto', 'view');
-      this.trackerIds_.push(gaView);
       window['ga']('view.send', 'pageview');
     }
 
@@ -314,7 +312,6 @@ class CodelabAnalytics extends HTMLElement {
     const codelabGAId = this.getAttribute(CODELAB_GAID_ATTR);
     if (codelabGAId && !this.isTrackerCreated_(codelabGAId)) {
       window['ga']('create', codelabGAId, 'auto', 'codelabAccount');
-      this.trackerIds_.push(codelabGAId);
     }
   }
 

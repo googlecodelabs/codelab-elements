@@ -46,30 +46,46 @@ testSuite({
   },
 
   testGAIDAttr_InitsTracker() {
-    const mockGa = mockControl.createFunctionMock('ga');
     const analytics = new CodelabAnalytics();
-    // const mockInitGA = mockControl.createMethodMock(analytics, 'initGAScript_');
+
+    // Need to mock as we don't have window.ga.getAll()
+    const mockGetAll = mockControl.createFunctionMock('getAll');
+    const mockCreate = mockControl.createFunctionMock('create');
+    mockGetAll().$returns([]).$anyTimes();
+    mockCreate().$once();
+
     analytics.setAttribute('gaid', 'UA-123');
-    // mockInitGA().$returns(Promise.resolve()).$once();
-    mockGa('getAll').$returns([]).$once();
-    mockGa('create', 'UA-123', 'auto').$once();
-    window['ga'] = mockGa;
+
+    window['ga'] = (...args) => {
+      window['ga'][args[0]]();
+    };
+    window['ga']['getAll'] = mockGetAll;
+    window['ga']['create'] = mockCreate;
+
     mockControl.$replayAll();
     document.body.appendChild(analytics);
     mockControl.$verifyAll();
   },
 
   testViewParam_InitsViewTracker() {
-    const mockGa = mockControl.createFunctionMock('ga');
     const analytics = new CodelabAnalytics();
     analytics.setAttribute('gaid', 'UA-123');
     const locationSearchSaved = location.search;
     location.search = '?viewga=testView&param2=hi';
-    mockGa('getAll').$returns([]).$once();
-    mockGa('create', 'UA-123', 'auto').$once();
-    mockGa('getAll').$returns([]).$once();
-    mockGa('create', 'testView', 'auto', 'view').$once();
-    window['ga'] = mockGa;
+
+    // Need to mock as we don't have window.ga.getAll()
+    const mockGetAll = mockControl.createFunctionMock('getAll');
+    const mockCreate = mockControl.createFunctionMock('create');
+    mockGetAll().$returns([]).$anyTimes();
+    // Creates 2 trackers (because of view param).
+    mockCreate().$times(2);
+
+    window['ga'] = (...args) => {
+      window['ga'][args[0]]();
+    };
+    window['ga']['getAll'] = mockGetAll;
+    window['ga']['create'] = mockCreate;
+
     mockControl.$replayAll();
 
     document.body.appendChild(analytics);
@@ -79,14 +95,21 @@ testSuite({
   },
 
   testCodelabGAIDAttr_InitsCodelabTracker() {
-    const mockGa = mockControl.createFunctionMock('ga');
     const analytics = new CodelabAnalytics();
     analytics.setAttribute('gaid', 'UA-123');
-    mockGa('getAll').$returns([]).$once();
-    mockGa('create', 'UA-123', 'auto').$once();
-    mockGa('getAll').$returns([]).$once();
-    mockGa('create', 'UA-456', 'auto', 'codelabAccount').$once();
-    window['ga'] = mockGa;
+    // Need to mock as we don't have window.ga.getAll()
+    const mockGetAll = mockControl.createFunctionMock('getAll');
+    const mockCreate = mockControl.createFunctionMock('create');
+    mockGetAll().$returns([]).$anyTimes();
+    // Creates 2 trackers (because of codelab gaid attribute).
+    mockCreate().$times(2);
+
+    window['ga'] = (...args) => {
+      window['ga'][args[0]]();
+    };
+    window['ga']['getAll'] = mockGetAll;
+    window['ga']['create'] = mockCreate;
+
     mockControl.$replayAll();
 
     document.body.appendChild(analytics);
