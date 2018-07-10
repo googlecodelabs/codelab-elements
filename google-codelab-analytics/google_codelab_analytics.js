@@ -241,7 +241,10 @@ class CodelabAnalytics extends HTMLElement {
     this.eventHandler_.removeAll();
   }
 
-  /** @private */
+  /**
+   * @return {string}
+   * @private
+   */
   getGAView_() {
     let parts = location.search.substring(1).split('&');
     for (let i = 0; i < parts.length; i++) {
@@ -276,7 +279,10 @@ class CodelabAnalytics extends HTMLElement {
     });
   }
 
-  /** @private */
+  /**
+   * @return {!Promise}
+   * @private
+   */
   async initGAScript_() {
     // This is a pretty-printed version of the function(i,s,o,g,r,a,m) script
     // provided by Google Analytics.
