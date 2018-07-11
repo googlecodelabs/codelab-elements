@@ -20,7 +20,8 @@ ready to be added to an HTML page like the following. Only relevant parts are sh
   <link rel="stylesheet" href="codelab-elements.css">
 </head>
 <body>
-  <google-codelab id="codelab-demo" title="A codelab demo">
+  <google-codelab-analytics gaid="UA-123"></google-codelab-analytics>
+  <google-codelab codelab-gaid="UA-345" id="codelab-demo" title="A codelab demo">
     <google-codelab-step label="Overview" duration="1">
       Contents of the first step.
     </google-codelab-step>
