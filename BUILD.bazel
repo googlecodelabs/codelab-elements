@@ -34,6 +34,7 @@ genrule(
     name = "codelab_elements_js",
     outs = ["codelab-elements.js"],
     srcs = [
+        "//google-codelab-analytics:google_codelab_analytics_bin",
         "//google-codelab:google_codelab_bin",
         "//google-codelab-step:google_codelab_step_bin",
         "//google-codelab-survey:google_codelab_survey_bin",

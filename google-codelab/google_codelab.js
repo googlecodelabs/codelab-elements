@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2018 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ const dom = goog.require('goog.dom');
 const events = goog.require('goog.events');
 const soy = goog.require('goog.soy');
 
-/** 
+/**
  * Deprecated. Title causes the bowser to display a tooltip over the whole codelab.
  * Use codelab-title instead.
  * @const {string}
@@ -42,6 +42,9 @@ const ENVIRONMENT_ATTR = 'environment';
 
 /** @const {string} */
 const CATEGORY_ATTR = 'category';
+
+/** @const {string} */
+const GAID_ATTR = 'codelab-gaid';
 
 /** @const {string} */
 const FEEDBACK_LINK_ATTR = 'feedback-link';
@@ -86,20 +89,14 @@ const ANIMATION_DURATION = .5;
 const DRAWER_OPEN_ATTR = 'drawer--open';
 
 /**
- * Fired when the codelab steps have been fully initialized.
+ * The general codelab action event fired for trackable interactions.
  */
-const CODELAB_READY_EVENT = 'google-codelab-ready';
+const CODELAB_ACTION_EVENT = 'google-codelab-action';
 
 /**
- * Fired when user advances a codelab step or goes backwards.
- * detail {{index: Number}}
+ * The general codelab action event fired for trackable interactions.
  */
-const CODELAB_STEP_EVENT = 'google-codelab-step';
-
-/**
- * Fired when user reaches the last step of the codelab.
- */
-const CODELAB_COMPLETE_EVENT = 'google-codelab-complete';
+const CODELAB_PAGEVIEW_EVENT = 'google-codelab-pageview';
 
 /**
  * @extends {HTMLElement}
@@ -171,14 +168,23 @@ class Codelab extends HTMLElement {
 
     this.addEvents_();
 
+    this.configureAnalytics_();
     this.showSelectedStep_();
     this.updateTitle_();
     this.toggleArrows_();
     this.toggleToolbar_();
 
+    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
+      'page': location.pathname,
+      'title': this.getAttribute(CODELAB_TITLE_ATTR) || ''
+    });
+
     window.requestAnimationFrame(() => {
       document.body.removeAttribute('unresolved');
-      this.fireEvent_(CODELAB_READY_EVENT);
+      this.fireEvent_(CODELAB_ACTION_EVENT, {
+        'category': 'codelab',
+        'action': 'ready'
+      });
     });
 
     if (this.resumed_) {
@@ -238,6 +244,20 @@ class Codelab extends HTMLElement {
     }
   }
 
+  configureAnalytics_() {
+    const analytics = document.querySelector('google-codelab-analytics');
+    if (analytics) {
+      const gaid = this.getAttribute(GAID_ATTR);
+      if (gaid) {
+        analytics.setAttribute(GAID_ATTR, gaid);
+      }
+
+      analytics.setAttribute(
+        ENVIRONMENT_ATTR, this.getAttribute(ENVIRONMENT_ATTR));
+      analytics.setAttribute(CATEGORY_ATTR, this.getAttribute(CATEGORY_ATTR));
+    }
+  }
+
   /**
    * @export
    */
@@ -254,7 +274,7 @@ class Codelab extends HTMLElement {
 
   /**
    * @export
-   * @param {number} index 
+   * @param {number} index
    */
   select(index) {
     this.setAttribute(SELECTED_ATTR, index);
@@ -347,8 +367,8 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {!events.BrowserEvent} e 
+   *
+   * @param {!events.BrowserEvent} e
    */
   handleDrawerKeyDown_(e) {
     if (!this.drawer_) {
@@ -383,8 +403,8 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {!events.BrowserEvent} e 
+   *
+   * @param {!events.BrowserEvent} e
    */
   handleKeyDown_(e) {
     if (e.keyCode == KeyCodes.LEFT) {
@@ -526,8 +546,13 @@ class Codelab extends HTMLElement {
       return;
     }
 
-    this.fireEvent_(CODELAB_STEP_EVENT, {
-      index: selected
+    const stepTitleEl = this.steps_[selected].querySelector('.step-title');
+    const stepTitle = stepTitleEl ? stepTitleEl.textContent : '';
+    const stepTitlePrefix = (selected + 1) + '.';
+    const re = new RegExp(stepTitlePrefix, 'g');
+    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
+      'page': location.pathname + '#' + selected,
+      'title': stepTitle.replace(re, '').trim()
     });
 
     if (this.currentSelectedStep_ === -1) {
@@ -606,7 +631,11 @@ class Codelab extends HTMLElement {
       if (selected === this.steps_.length - 1) {
         this.nextStepBtn_.setAttribute(HIDDEN_ATTR, '');
         this.doneBtn_.removeAttribute(HIDDEN_ATTR);
-        this.fireEvent_(CODELAB_COMPLETE_EVENT);
+        this.fireEvent_(CODELAB_ACTION_EVENT, {
+          'category': 'codelab',
+          'action': 'complete',
+          'label': this.getAttribute(TITLE_ATTR)
+        });
       } else {
         this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
         this.doneBtn_.setAttribute(HIDDEN_ATTR, '');
@@ -670,13 +699,15 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   * 
-   * @param {string} eventName 
-   * @param {!Object=} detail 
+   *
+   * @param {string} eventName
+   * @param {!Object=} detail
    */
   fireEvent_(eventName, detail={}) {
-    const event = new CustomEvent(eventName, detail);
-    this.dispatchEvent(event);
+    const event = new CustomEvent(eventName, {
+      detail: detail
+    });
+    document.body.dispatchEvent(event);
   }
 
   /**
@@ -688,7 +719,7 @@ class Codelab extends HTMLElement {
     soy.renderElement(this, Templates.structure, {
       homeUrl: this.getHomeUrl_()
     });
-    
+
     this.drawer_ = this.querySelector('#drawer');
     this.titleContainer_ = this.querySelector('#codelab-title');
     this.stepsContainer_ = this.querySelector('#steps');
