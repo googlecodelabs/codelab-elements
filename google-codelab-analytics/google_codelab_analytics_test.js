@@ -57,7 +57,7 @@ testSuite({
     analytics.setAttribute('gaid', 'UA-123');
 
     window['ga'] = (...args) => {
-      if (['create', 'getAll'].indexOf(args[0]) > -1) {
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
         window['ga'][args[0]]();
       }
     };
@@ -86,7 +86,7 @@ testSuite({
     mockCreate().$times(2);
 
     window['ga'] = (...args) => {
-      if (['create', 'getAll'].indexOf(args[0]) > -1) {
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
         window['ga'][args[0]]();
       }
     };
@@ -112,7 +112,7 @@ testSuite({
     mockCreate().$times(2);
 
     window['ga'] = (...args) => {
-      if (['create', 'getAll'].indexOf(args[0]) > -1) {
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
         window['ga'][args[0]]();
       }
     };
