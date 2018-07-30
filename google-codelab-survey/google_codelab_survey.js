@@ -62,6 +62,8 @@ const CssClass = {
  * @extends {HTMLElement}
  */
 class CodelabSurvey extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab-survey'; }
 
   constructor() {
     super();
@@ -119,7 +121,9 @@ class CodelabSurvey extends HTMLElement {
       if (isOptionChild) {
         optionEl = elParent;
       }
-      this.handleOptionSelected_(optionEl);
+      if (optionEl) {
+        this.handleOptionSelected_(optionEl);
+      }
     }
   }
 
@@ -227,7 +231,5 @@ class CodelabSurvey extends HTMLElement {
     this.eventHandler_.removeAll();
   }
 }
-
-window.customElements.define('google-codelab-survey', CodelabSurvey);
 
 exports = CodelabSurvey;

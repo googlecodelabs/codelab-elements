@@ -24,7 +24,10 @@ filegroup(
 # Codelab step.
 closure_js_library(
     name = "google_codelab_step",
-    srcs = ["google_codelab_step.js"],
+    srcs = [
+        "google_codelab_step.js",
+        "google_codelab_step_def.js"
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
         ":google_codelab_step_soy",
@@ -34,7 +37,7 @@ closure_js_library(
 # Compiled version of GoogleCodelabStep element, suitable for distribution.
 closure_js_binary(
     name = "google_codelab_step_bin",
-    entry_points = ["googlecodelabs.CodelabStep"],
+    entry_points = ["googlecodelabs.CodelabStepDef"],
     deps = [":google_codelab_step"],
 )
 

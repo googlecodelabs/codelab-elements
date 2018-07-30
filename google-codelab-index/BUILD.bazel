@@ -22,7 +22,10 @@ filegroup(
 # Codelabs
 closure_js_library(
     name = "google_codelab_index",
-    srcs = ["google_codelab_index.js"],
+    srcs = [
+        "google_codelab_index.js",
+        "google_codelab_index_def.js"
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
         ":google_codelab_index_soy",
@@ -32,7 +35,10 @@ closure_js_library(
 
 closure_js_library(
     name = "google_codelab_index_cards",
-    srcs = ["google_codelab_index_cards.js"],
+    srcs = [
+        "google_codelab_index_cards.js",
+        "google_codelab_index_cards_def.js"
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
         ":google_codelab_index_soy",
@@ -42,7 +48,7 @@ closure_js_library(
 # Compiled version of GoogleCodelabStep element, suitable for distribution.
 closure_js_binary(
     name = "google_codelab_index_bin",
-    entry_points = ["googlecodelabs.CodelabIndex"],
+    entry_points = ["googlecodelabs.CodelabIndexDef"],
     deps = [":google_codelab_index"],
 )
 

@@ -79,6 +79,9 @@ let AnalyticsPageview;
  * @suppress {reportUnknownTypes}
  */
 class CodelabAnalytics extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab-analytics'; }
+  
   constructor() {
     super();
 
@@ -342,7 +345,5 @@ class CodelabAnalytics extends HTMLElement {
     return isCreated;
   }
 }
-
-window.customElements.define('google-codelab-analytics', CodelabAnalytics);
 
 exports = CodelabAnalytics;

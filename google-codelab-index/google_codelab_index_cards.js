@@ -73,6 +73,8 @@ const NUM_ATTR = 'num';
  * @extends {HTMLElement}
  */
 class Cards extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab-index-cards'; }
 
   constructor() {
     super();
@@ -394,7 +396,5 @@ class Cards extends HTMLElement {
     return mNames[d.getMonth()] + ' ' + d.getUTCDate() + ', ' + d.getFullYear();
   };
 }
-
-window.customElements.define('google-codelab-index-cards', Cards);
 
 exports = Cards;
