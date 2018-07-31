@@ -29,7 +29,7 @@
   <div class="card-header {$category}-bg">
     <span class="category-icon {$category}-icon"></span>
     <span class="card-duration">
-      {if $duration}  
+      {if $duration}
         <img src="//codelabs.developers.google.com/images/schedule.svg">
         {$duration} min
       {/if}
@@ -59,9 +59,9 @@
   <div class="sort-by-inner">
     <select id="codelab-categories">
       <option value="">Category</option>
-      {foreach $category in $categories}
-        <option value="{$category}">{$category}</option>
-      {/foreach}
+      {for $i in range(length($categories))}
+        <option value="{$categories[$i]}">{$categories[$i]}</option>
+      {/for}
     </select>
   </div>
 {/template}

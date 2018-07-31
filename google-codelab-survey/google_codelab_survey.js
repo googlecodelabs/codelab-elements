@@ -117,7 +117,7 @@ class CodelabSurvey extends HTMLElement {
     if (isOptionWrapper || isOptionChild) {
       let optionEl = el;
       if (isOptionChild) {
-        optionEl = elParent;
+        optionEl = /** @type {!Element} */ (elParent);
       }
       this.handleOptionSelected_(optionEl);
     }

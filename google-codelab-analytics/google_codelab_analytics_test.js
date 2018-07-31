@@ -57,7 +57,9 @@ testSuite({
     analytics.setAttribute('gaid', 'UA-123');
 
     window['ga'] = (...args) => {
-      window['ga'][args[0]]();
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
+        window['ga'][args[0]]();
+      }
     };
     window['ga']['getAll'] = mockGetAll;
     window['ga']['create'] = mockCreate;
@@ -70,8 +72,11 @@ testSuite({
   testViewParam_InitsViewTracker() {
     const analytics = new CodelabAnalytics();
     analytics.setAttribute('gaid', 'UA-123');
-    const locationSearchSaved = location.search;
-    location.search = '?viewga=testView&param2=hi';
+
+    const loc = window.location;
+    var newurl = loc.protocol + '//' + loc.host + loc.pathname +
+        '?viewga=testView&param2=hi';
+    window.history.pushState({ path: newurl }, '', newurl);
 
     // Need to mock as we don't have window.ga.getAll()
     const mockGetAll = mockControl.createFunctionMock('getAll');
@@ -81,7 +86,9 @@ testSuite({
     mockCreate().$times(2);
 
     window['ga'] = (...args) => {
-      window['ga'][args[0]]();
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
+        window['ga'][args[0]]();
+      }
     };
     window['ga']['getAll'] = mockGetAll;
     window['ga']['create'] = mockCreate;
@@ -91,7 +98,7 @@ testSuite({
     document.body.appendChild(analytics);
 
     mockControl.$verifyAll();
-    location.search = locationSearchSaved;
+    window.history.back();
   },
 
   testCodelabGAIDAttr_InitsCodelabTracker() {
@@ -105,7 +112,9 @@ testSuite({
     mockCreate().$times(2);
 
     window['ga'] = (...args) => {
-      window['ga'][args[0]]();
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
+        window['ga'][args[0]]();
+      }
     };
     window['ga']['getAll'] = mockGetAll;
     window['ga']['create'] = mockCreate;
