@@ -19,6 +19,7 @@ goog.module('googlecodelabs.CodelabSurveyTest');
 goog.setTestOnly();
 
 const CodelabSurvey = goog.require('googlecodelabs.CodelabSurvey');
+window.customElements.define(CodelabSurvey.getTagName(), CodelabSurvey);
 const HTML5LocalStorage =
     goog.require('goog.storage.mechanism.HTML5LocalStorage');
 const testSuite = goog.require('goog.testing.testSuite');

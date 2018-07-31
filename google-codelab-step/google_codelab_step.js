@@ -32,6 +32,9 @@ const STEP_ATTR = 'step';
  * @suppress {reportUnknownTypes}
  */
 class CodelabStep extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab-step'; }
+
   constructor() {
     super();
 
@@ -154,7 +157,5 @@ class CodelabStep extends HTMLElement {
     this.hasSetup_ = true;
   }
 }
-
-window.customElements.define('google-codelab-step', CodelabStep);
 
 exports = CodelabStep;

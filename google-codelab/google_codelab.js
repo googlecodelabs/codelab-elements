@@ -102,6 +102,8 @@ const CODELAB_PAGEVIEW_EVENT = 'google-codelab-pageview';
  * @extends {HTMLElement}
  */
 class Codelab extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab'; }
 
   constructor() {
     super();
@@ -749,7 +751,5 @@ class Codelab extends HTMLElement {
     this.hasSetup_ = true;
   }
 }
-
-window.customElements.define('google-codelab', Codelab);
 
 exports = Codelab;

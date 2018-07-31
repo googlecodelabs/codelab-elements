@@ -23,7 +23,10 @@ filegroup(
 # Codelab survey.
 closure_js_library(
     name = "google_codelab_survey",
-    srcs = ["google_codelab_survey.js"],
+    srcs = [
+        "google_codelab_survey.js",
+        "google_codelab_survey_def.js"
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
         ":google_codelab_survey_soy",
@@ -33,7 +36,7 @@ closure_js_library(
 # Compiled version of CodelabSurvey element, suitable for distribution.
 closure_js_binary(
     name = "google_codelab_survey_bin",
-    entry_points = ["googlecodelabs.CodelabSurvey"],
+    entry_points = ["googlecodelabs.CodelabSurveyDef"],
     deps = [":google_codelab_survey"],
 )
 

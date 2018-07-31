@@ -19,6 +19,7 @@ goog.module('googlecodelabs.CodelabStepTest');
 goog.setTestOnly();
 
 const CodelabStep = goog.require('googlecodelabs.CodelabStep');
+window.customElements.define(CodelabStep.getTagName(), CodelabStep);
 const MockControl = goog.require('goog.testing.MockControl');
 const testSuite = goog.require('goog.testing.testSuite');
 goog.require('goog.testing.asserts');

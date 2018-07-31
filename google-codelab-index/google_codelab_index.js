@@ -50,6 +50,9 @@ const SEARCH_DEBOUNCE_INTERVAL = 20;
  * @extends {HTMLElement}
  */
 class CodelabIndex extends HTMLElement {
+  /** @return {string} */
+  static getTagName() { return 'google-codelab-index'; }
+
   constructor() {
     super();
 
@@ -286,7 +289,5 @@ class CodelabIndex extends HTMLElement {
     this.hasSetup_ = true;
   }
 }
-
-window.customElements.define('google-codelab-index', CodelabIndex);
 
 exports = CodelabIndex;

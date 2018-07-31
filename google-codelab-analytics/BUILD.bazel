@@ -18,7 +18,10 @@ filegroup(
 # Codelab Analytics.
 closure_js_library(
     name = "google_codelab_analytics",
-    srcs = ["google_codelab_analytics.js"],
+    srcs = [
+        "google_codelab_analytics.js",
+        "google_codelab_analytics_def.js"
+    ],
     deps = [
         "@io_bazel_rules_closure//closure/library",
     ],
@@ -38,6 +41,6 @@ closure_js_test(
 # Compiled version of GoogleCodelabAnalytics element, suitable for distribution.
 closure_js_binary(
     name = "google_codelab_analytics_bin",
-    entry_points = ["googlecodelabs.CodelabAnalytics"],
+    entry_points = ["googlecodelabs.CodelabAnalyticsDef"],
     deps = [":google_codelab_analytics"],
 )
