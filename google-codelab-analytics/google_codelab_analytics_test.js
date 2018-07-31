@@ -19,6 +19,7 @@ goog.module('googlecodelabs.CodelabAnalyticsTest');
 goog.setTestOnly();
 
 const CodelabAnalytics = goog.require('googlecodelabs.CodelabAnalytics');
+window.customElements.define(CodelabAnalytics.getTagName(), CodelabAnalytics);
 const MockControl = goog.require('goog.testing.MockControl');
 const dom = goog.require('goog.dom');
 const testSuite = goog.require('goog.testing.testSuite');
