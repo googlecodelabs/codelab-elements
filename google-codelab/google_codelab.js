@@ -159,6 +159,7 @@ class Codelab extends HTMLElement {
     /** @private {!HTML5LocalStorage} */
     this.storage_ = new HTML5LocalStorage();
   }
+
   /**
    * @export
    * @override
@@ -246,6 +247,9 @@ class Codelab extends HTMLElement {
     }
   }
 
+  /**
+   * @private
+   */
   configureAnalytics_() {
     const analytics = document.querySelector('google-codelab-analytics');
     if (analytics) {
@@ -282,6 +286,9 @@ class Codelab extends HTMLElement {
     this.setAttribute(SELECTED_ATTR, index);
   }
 
+  /**
+   * @private
+   */
   addEvents_() {
     if (this.prevStepBtn_) {
       this.eventHandler_.listen(this.prevStepBtn_, events.EventType.CLICK,
@@ -371,6 +378,7 @@ class Codelab extends HTMLElement {
   /**
    *
    * @param {!events.BrowserEvent} e
+   * @private
    */
   handleDrawerKeyDown_(e) {
     if (!this.drawer_) {
@@ -405,8 +413,8 @@ class Codelab extends HTMLElement {
   }
 
   /**
-   *
    * @param {!events.BrowserEvent} e
+   * @private
    */
   handleKeyDown_(e) {
     if (e.keyCode == KeyCodes.LEFT) {
@@ -669,6 +677,9 @@ class Codelab extends HTMLElement {
     this.storage_.set(`progress_${this.id_}`, String(this.currentSelectedStep_));
   }
 
+  /**
+   * @private
+   */
   renderDrawer_() {
     const feedback = this.getAttribute(FEEDBACK_LINK_ATTR);
     const steps = this.steps_.map((step) => step.getAttribute(LABEL_ATTR));
@@ -680,30 +691,20 @@ class Codelab extends HTMLElement {
    * @return {string}
    */
   getHomeUrl_() {
-    let index;
-    let parts = location.search.substring(1).split('&');
-    for (let i = 0; i < parts.length; i++) {
-      let param = parts[i].split('=');
-      if (param[0] === 'index') {
-        index = param[1];
-        break;
-      }
-    }
-    // decode and extract index name from the search param
-    // default index is 'index'
-    index = index ? decodeURIComponent(index) : '';
-    index = index.replace(/[^a-z0-9\-]+/ig, '');
-    if (index === 'index') {
-      index = '';
+    const url = new URL(document.location.toString());
+    const index = url.searchParams.get('index').replace(/[^a-z0-9\-]+/ig, '');
+    if (!index || index.trim() === '') {
+      return '/';
     }
 
-    return index;
+    const u = new URL(index, document.location.origin);
+    return u.pathname;
   }
 
   /**
-   *
    * @param {string} eventName
    * @param {!Object=} detail
+   * @private
    */
   fireEvent_(eventName, detail={}) {
     const event = new CustomEvent(eventName, {
@@ -735,8 +736,8 @@ class Codelab extends HTMLElement {
     this.renderDrawer_();
 
     if (document.location.hash) {
-      const h = document.location.hash.substring(1);
-      if (h !== '0') {
+      const h = parseInt(document.location.hash.substring(1), 10);
+      if (!isNaN(h) && h) {
         this.setAttribute(SELECTED_ATTR, document.location.hash.substring(1));
       }
     }

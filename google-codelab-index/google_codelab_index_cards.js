@@ -82,7 +82,7 @@ class Cards extends HTMLElement {
     /** @private {!HTML5LocalStorage} */
     this.storage_ = new HTML5LocalStorage();
   }
-  
+
   /**
    * @export
    * @override
@@ -137,6 +137,11 @@ class Cards extends HTMLElement {
   sort_() {
     let sort = this.getAttribute(SORT_ATTR) || SORT_ALPHA;
     const cards = [...this.querySelectorAll('.card')];
+    if (cards.length < 2) {
+      // No point sorting 0 or 1 items.
+      return;
+    }
+
     switch (sort) {
       case SORT_DURATION:
         cards.sort(this.sortDuration_.bind(this));
@@ -181,6 +186,9 @@ class Cards extends HTMLElement {
    * @private
    */
   sortDuration_(a, b) {
+    if (!a || !b) {
+      return 0;
+    }
     const aDuration = parseFloat(a.getAttribute(DURATION_ATTR)) || 0;
     const bDuration = parseFloat(b.getAttribute(DURATION_ATTR)) || 0;
     const diff = aDuration - bDuration;
@@ -198,6 +206,9 @@ class Cards extends HTMLElement {
    * @private
    */
   sortRecent_(a, b) {
+    if (!a || !b) {
+      return 0;
+    }
     const aUpdated = new Date(a.getAttribute(UPDATED_ATTR) || 0);
     const bUpdated = new Date(b.getAttribute(UPDATED_ATTR) || 0);
     const diff = bUpdated - aUpdated;
@@ -215,6 +226,9 @@ class Cards extends HTMLElement {
    * @private
    */
   sortAlpha_(a, b) {
+    if (!a || !b) {
+      return 0;
+    }
     const aTitle = a.getAttribute(TITLE_ATTR);
     const bTitle = b.getAttribute(TITLE_ATTR);
     if (aTitle < bTitle) {
@@ -251,7 +265,7 @@ class Cards extends HTMLElement {
       if (filter) {
         matchesFilter = title.indexOf(filter) !== -1;
       }
-      
+
       if (tags.length) {
         matchesTags = this.arrayContains_(cardTags, tags);
       }
@@ -363,12 +377,26 @@ class Cards extends HTMLElement {
     };
     soy.renderElement(link, Templates.card, info);
     link.classList.add('card');
+    this.addHomeLinkForCard_(link);
     this.showProgressForCard_(link);
     this.appendChild(link);
   }
 
   /**
-   * @param {!Element} link 
+   * @param {!Element} link
+   * @private
+   */
+  addHomeLinkForCard_(link) {
+    const url = new URL(link.href, document.location.origin);
+    if (!url.searchParams.has('index')) {
+      url.searchParams.set('index', document.location.pathname);
+    }
+    link.href = url.href;
+  }
+
+  /**
+   * @param {!Element} link
+   * @private
    */
   showProgressForCard_(link) {
     const id = link.getAttribute('id');
@@ -376,15 +404,16 @@ class Cards extends HTMLElement {
       const progress = this.storage_.get(`progress_${id}`);
       const steps = link.getAttribute(STEPS_ATTR);
       if (progress && steps) {
-        link.setAttribute(PROGRESS_ATTR, (parseFloat(progress) / parseFloat(steps - 1)).toFixed(2));
+        link.setAttribute(PROGRESS_ATTR,
+            (parseFloat(progress) / parseFloat(steps - 1)).toFixed(2));
       }
     }
   }
 
   /**
-   * 
-   * @param {string} updated 
+   * @param {string} updated
    * @returns {string}
+   * @private
    */
   prettyDate_(updated) {
     if (!updated) {

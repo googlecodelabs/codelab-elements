@@ -1,13 +1,13 @@
 /**
  * @license
  * Copyright 2018 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -215,9 +215,10 @@ class CodelabIndex extends HTMLElement {
     this.clearSearchBtn_ = document.querySelector('#clear-icon');
 
     const list = this.querySelector('main ul');
-    let cards = new Cards();
+    let cards = /** @type {!Cards} */ (
+        document.createElement('google-codelab-index-cards'));
 
-    const url = new URL(document.location.toString());    
+    const url = new URL(document.location.toString());
     if (url.searchParams.has(TAGS_ATTR)) {
       cards.setAttribute(TAGS_ATTR,
         url.searchParams.getAll(TAGS_ATTR).join(','));
@@ -238,12 +239,12 @@ class CodelabIndex extends HTMLElement {
 
     if (list) {
       [...list.querySelectorAll('a')].forEach((link) => {
-        cards.addCard(link);
+        cards['addCard'](link);
       });
       dom.removeNode(list);
       dom.appendChild(mainInner, cards);
     } else {
-      cards = mainInner.querySelector('google-codelabs-cards');
+      cards = mainInner.querySelector('google-codelab-index-cards');
     }
 
     if (cards) {
