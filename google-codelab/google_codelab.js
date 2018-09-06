@@ -692,7 +692,12 @@ class Codelab extends HTMLElement {
    */
   getHomeUrl_() {
     const url = new URL(document.location.toString());
-    const index = url.searchParams.get('index').replace(/[^a-z0-9\-]+/ig, '');
+    let index = url.searchParams.get('index');
+    if (!index) {
+      return '/';
+    }
+
+    index = index.replace(/[^a-z0-9\-]+/ig, '');
     if (!index || index.trim() === '') {
       return '/';
     }
