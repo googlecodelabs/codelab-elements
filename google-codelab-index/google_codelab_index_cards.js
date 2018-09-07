@@ -19,6 +19,7 @@ goog.module('googlecodelabs.CodelabIndex.Cards');
 
 const HTML5LocalStorage = goog.require('goog.storage.mechanism.HTML5LocalStorage');
 const Templates = goog.require('googlecodelabs.CodelabIndex.Templates');
+const dom = goog.require('goog.dom');
 const soy = goog.require('goog.soy');
 
 /** @const {string} */
@@ -311,6 +312,7 @@ class Cards extends HTMLElement {
    * @param {!Array<string>} a
    * @param {!Array<string>} b
    * @return {boolean}
+   * @private
    */
   arrayContains_(a, b) {
     for (let i = 0; i < a.length; i++) {
@@ -391,7 +393,7 @@ class Cards extends HTMLElement {
     if (!url.searchParams.has('index')) {
       url.searchParams.set('index', document.location.pathname);
     }
-    link.href = url.href;
+    dom.safe.setAnchorHref(link, url.href);
   }
 
   /**
