@@ -80,7 +80,10 @@ class Cards extends HTMLElement {
   constructor() {
     super();
 
-    /** @private {!HTML5LocalStorage} */
+    /**
+     * @private {!HTML5LocalStorage}
+     * @const
+     */
     this.storage_ = new HTML5LocalStorage();
   }
 
@@ -212,7 +215,7 @@ class Cards extends HTMLElement {
     }
     const aUpdated = new Date(a.getAttribute(UPDATED_ATTR) || 0);
     const bUpdated = new Date(b.getAttribute(UPDATED_ATTR) || 0);
-    const diff = bUpdated - aUpdated;
+    const diff = bUpdated.getTime() - aUpdated.getTime();
     if (diff === 0) {
       return this.sortAlpha_(a, b);
     } else {
@@ -389,11 +392,11 @@ class Cards extends HTMLElement {
    * @private
    */
   addHomeLinkForCard_(link) {
-    const url = new URL(link.href, document.location.origin);
+    const url = new URL(link['href'], document.location.origin);
     if (!url.searchParams.has('index')) {
       url.searchParams.set('index', document.location.pathname);
     }
-    dom.safe.setAnchorHref(link, url.href);
+    dom.safe.setAnchorHref(/** @type {!HTMLAnchorElement} */(link), url.href);
   }
 
   /**
@@ -407,7 +410,7 @@ class Cards extends HTMLElement {
       const steps = link.getAttribute(STEPS_ATTR);
       if (progress && steps) {
         link.setAttribute(PROGRESS_ATTR,
-            (parseFloat(progress) / parseFloat(steps - 1)).toFixed(2));
+            (parseFloat(progress) / parseFloat(steps) - 1).toFixed(2));
       }
     }
   }

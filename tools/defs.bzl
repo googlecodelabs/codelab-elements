@@ -30,7 +30,7 @@ def closure_js_library(**kwargs):
   """
   kwargs.setdefault("convention", "GOOGLE")
   suppress = kwargs.pop("suppress", [])
-  suppress.append("JSC_NTI_UNKNOWN_EXPR_TYPE")
+  suppress.append("JSC_UNKNOWN_EXPR_TYPE")
   kwargs.update(dict(suppress=suppress))
   _closure_js_library_alias(**kwargs)
 

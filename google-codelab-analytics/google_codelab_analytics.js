@@ -91,10 +91,16 @@ class CodelabAnalytics extends HTMLElement {
     /** @private {?string} */
     this.gaid_;
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.eventHandler_ = new EventHandler();
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.pageviewEventHandler_ = new EventHandler();
 
     /** @private {?string} */
@@ -265,8 +271,8 @@ class CodelabAnalytics extends HTMLElement {
    */
   static injectGAScript() {
     const resource = document.createElement('script');
-    resource.src = '//www.google-analytics.com/analytics.js';
-    resource.async = false;
+    resource.setAttribute('src', '//www.google-analytics.com/analytics.js');
+    resource.setAttribute('async', false);
     return new Promise((resolve, reject) => {
       resource.onload = () => resolve(resource);
       resource.onerror = (event) => {

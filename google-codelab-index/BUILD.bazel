@@ -48,7 +48,10 @@ closure_js_library(
 # Compiled version of GoogleCodelabStep element, suitable for distribution.
 closure_js_binary(
     name = "google_codelab_index_bin",
-    entry_points = ["googlecodelabs.CodelabIndexDef"],
+    entry_points = [
+        "googlecodelabs.CodelabIndex.CardsDef",
+        "googlecodelabs.CodelabIndexDef",
+    ],
     deps = [":google_codelab_index"],
 )
 
