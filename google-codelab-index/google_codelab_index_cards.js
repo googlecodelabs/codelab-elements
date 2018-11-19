@@ -368,7 +368,7 @@ class Cards extends HTMLElement {
   }
 
   /**
-   * @param {!Element} link
+   * @param {!HTMLAnchorElement} link
    * @export
    */
   addCard(link) {
@@ -388,15 +388,15 @@ class Cards extends HTMLElement {
   }
 
   /**
-   * @param {!Element} link
+   * @param {!HTMLAnchorElement} link
    * @private
    */
   addHomeLinkForCard_(link) {
-    const url = new URL(link['href'], document.location.origin);
+    const url = new URL(link.href, document.location.origin);
     if (!url.searchParams.has('index')) {
       url.searchParams.set('index', document.location.pathname);
     }
-    dom.safe.setAnchorHref(/** @type {!HTMLAnchorElement} */(link), url.href);
+    dom.safe.setAnchorHref(link, url.href);
   }
 
   /**

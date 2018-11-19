@@ -71,13 +71,13 @@ class CodelabIndex extends HTMLElement {
     /** @private {?Element} */
     this.sortBy_ = null;
 
-    /** @private {?Element} */
+    /** @private {?HTMLInputElement} */
     this.search_ = null;
 
     /** @private {?Element} */
     this.clearSearchBtn_ = null;
 
-    /** @private {?Element} */
+    /** @private {?HTMLSelectElement} */
     this.categoriesSelect_ = null;
 
     /**
@@ -149,7 +149,7 @@ class CodelabIndex extends HTMLElement {
    */
   selectCategories_() {
     if (this.cards_ && this.categoriesSelect_) {
-      this.cards_.setAttribute(CATEGORY_ATTR, this.categoriesSelect_['value']);
+      this.cards_.setAttribute(CATEGORY_ATTR, this.categoriesSelect_.value);
     }
   }
 
@@ -158,7 +158,7 @@ class CodelabIndex extends HTMLElement {
    */
   clearSearch_() {
     if (this.search_) {
-      this.search_.setAttribute('value', '');
+      this.search_.value = '';
     }
     this.handleSearch_();
   }
@@ -174,8 +174,8 @@ class CodelabIndex extends HTMLElement {
    * @private
    */
   handleSearchDebounced_() {
-    const search = /** @type {!Element} */ (this.search_);
-    const val = search['value'].trim();
+    const search = /** @type {!HTMLInputElement} */ (this.search_);
+    const val = search.value.trim();
     if (this.clearSearchBtn_) {
       if (val === '') {
         this.clearSearchBtn_.setAttribute('hide', '');
@@ -215,7 +215,8 @@ class CodelabIndex extends HTMLElement {
       return;
     }
 
-    this.search_ = document.querySelector('#search-field');
+    this.search_ = /** @type {?HTMLInputElement} */ (
+        document.querySelector('#search-field'));
     this.clearSearchBtn_ = document.querySelector('#clear-icon');
 
     const list = this.querySelector('main ul');
@@ -272,10 +273,11 @@ class CodelabIndex extends HTMLElement {
 
       this.sortBy_ = sortBy;
       this.cards_ = /** @type {!Cards} */ (cards);
-      this.categoriesSelect_ = this.sortBy_.querySelector('#codelab-categories');
+      this.categoriesSelect_ = /** @type {?HTMLSelectElement} */ (
+          this.sortBy_.querySelector('#codelab-categories'));
 
       if (selectedCategory && this.categoriesSelect_) {
-        [...this.categoriesSelect_['options']].forEach((option) => {
+        [...this.categoriesSelect_.options].forEach((option) => {
           if (option.value.toLowerCase() === selectedCategory) {
             option.selected = true;
           }
@@ -286,7 +288,7 @@ class CodelabIndex extends HTMLElement {
     if (url.searchParams.has(FILTER_ATTR)) {
       const filter = /** @type {string} */ (url.searchParams.get(FILTER_ATTR));
       if (this.search_) {
-        this.search_['value'] = filter;
+        this.search_.value = filter;
         this.handleSearch_();
       }
     }

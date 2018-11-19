@@ -150,9 +150,11 @@ class CodelabSurvey extends HTMLElement {
     if (optionTextEl) {
       answer = optionTextEl.textContent;
     }
-    const inputEl = optionEl.querySelector('input');
+    /** @type {?HTMLInputElement} */
+    const inputEl = /** @type {?HTMLInputElement} */ (
+        optionEl.querySelector('input'));
     if (inputEl) {
-      inputEl.setAttribute('checked', true);
+      inputEl.checked = true;
       const question = inputEl.name;
       this.storedData_[this.surveyName_][question] = answer;
       this.storage_.set(
@@ -219,9 +221,11 @@ class CodelabSurvey extends HTMLElement {
     if (surveyData) {
       Object.keys(surveyData).forEach(key => {
         const id = this.normalizeIdAttr_(surveyData[key]);
-        const inp = this.querySelector(`#${id}`);
+        /** @type {?HTMLInputElement} */
+        const inp = /** @type {?HTMLInputElement} */ (
+            this.querySelector(`#${id}`));
         if (inp) {
-          inp.setAttribute('checked', true);
+          inp.checked = true;
         }
       });
     }
