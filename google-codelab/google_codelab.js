@@ -138,10 +138,16 @@ class Codelab extends HTMLElement {
     /** @private {number}  */
     this.currentSelectedStep_ = -1;
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.eventHandler_ = new EventHandler();
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.transitionEventHandler_ = new EventHandler();
 
     /** @private {boolean} */
@@ -156,7 +162,10 @@ class Codelab extends HTMLElement {
     /** @private {boolean} */
     this.resumed_ = false;
 
-    /** @private {!HTML5LocalStorage} */
+    /**
+     * @private {!HTML5LocalStorage}
+     * @const
+     */
     this.storage_ = new HTML5LocalStorage();
   }
 
@@ -542,7 +551,7 @@ class Codelab extends HTMLElement {
   showSelectedStep_() {
     let selected = 0;
     if (this.hasAttribute(SELECTED_ATTR)) {
-      selected = this.getAttribute(SELECTED_ATTR);
+      selected = parseInt(this.getAttribute(SELECTED_ATTR), 0);
     } else {
       this.setAttribute(SELECTED_ATTR, selected);
       return;

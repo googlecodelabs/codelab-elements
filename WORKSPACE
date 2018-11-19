@@ -11,12 +11,12 @@ http_archive(
     ],
 )
 
-rules_closure_ver = "dbb96841cc0a5fb2664c37822803b06dab20c7d1"
+rules_closure_ver = "0.9.0"
 http_archive(
     name = "io_bazel_rules_closure",
-    sha256 = "6c493fc2ebc7b05be63171e8d5d57ebe5a73e8b0c57a14f477147af3f4dba1c2",
+    sha256 = "054717a2e6a415001bc4c608b208723526bdf6cace3592ca6efb3749ba18ce21",
     strip_prefix = "rules_closure-{v}".format(v=rules_closure_ver),
-    url = "https://github.com/bazelbuild/rules_closure/archive/{v}.zip".format(v=rules_closure_ver),
+    url = "https://github.com/shawnbuso/rules_closure/archive/{v}.zip".format(v=rules_closure_ver),
 )
 load("@io_bazel_rules_closure//closure:defs.bzl", "closure_repositories")
 closure_repositories()

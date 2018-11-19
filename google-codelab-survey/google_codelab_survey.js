@@ -71,19 +71,32 @@ class CodelabSurvey extends HTMLElement {
     /**
      * The name of the survey
      * @private {string}
+     * @const
      */
     this.surveyName_ = this.getAttribute(SURVEY_ID_ATTR) || DEFAULT_SURVEY_NAME;
 
-    /** @private {!HTML5LocalStorage} */
+    /**
+     * @private {!HTML5LocalStorage}
+     * @const
+     */
     this.storage_ = new HTML5LocalStorage();
 
-    /** @private {string} */
+    /**
+     * @private {string}
+     * @const
+     */
     this.storageKey_ = STORAGE_KEY_PREFIX + this.surveyName_;
 
-    /** @private {!Object<string, !Object>} */
+    /**
+     * @private {!Object<string, !Object>}
+     * @const
+     */
     this.storedData_ = {};
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.eventHandler_ = new EventHandler();
   }
 
@@ -139,7 +152,7 @@ class CodelabSurvey extends HTMLElement {
     }
     const inputEl = optionEl.querySelector('input');
     if (inputEl) {
-      inputEl.checked = true;
+      inputEl.setAttribute('checked', true);
       const question = inputEl.name;
       this.storedData_[this.surveyName_][question] = answer;
       this.storage_.set(
@@ -208,7 +221,7 @@ class CodelabSurvey extends HTMLElement {
         const id = this.normalizeIdAttr_(surveyData[key]);
         const inp = this.querySelector(`#${id}`);
         if (inp) {
-          inp.checked = true;
+          inp.setAttribute('checked', true);
         }
       });
     }

@@ -56,7 +56,10 @@ class CodelabIndex extends HTMLElement {
   constructor() {
     super();
 
-    /** @private {!EventHandler} */
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
     this.eventHandler_ = new EventHandler();
 
     /** @private {boolean} */
@@ -79,6 +82,7 @@ class CodelabIndex extends HTMLElement {
 
     /**
      * @private {!Debouncer}
+     * @const
      */
     this.searchDebouncer_ = new Debouncer(
       () => this.handleSearchDebounced_(), SEARCH_DEBOUNCE_INTERVAL);
@@ -145,7 +149,7 @@ class CodelabIndex extends HTMLElement {
    */
   selectCategories_() {
     if (this.cards_ && this.categoriesSelect_) {
-      this.cards_.setAttribute(CATEGORY_ATTR, this.categoriesSelect_.value);
+      this.cards_.setAttribute(CATEGORY_ATTR, this.categoriesSelect_['value']);
     }
   }
 
@@ -154,7 +158,7 @@ class CodelabIndex extends HTMLElement {
    */
   clearSearch_() {
     if (this.search_) {
-      this.search_.value = '';
+      this.search_.setAttribute('value', '');
     }
     this.handleSearch_();
   }
@@ -171,7 +175,7 @@ class CodelabIndex extends HTMLElement {
    */
   handleSearchDebounced_() {
     const search = /** @type {!Element} */ (this.search_);
-    const val = search.value.trim();
+    const val = search['value'].trim();
     if (this.clearSearchBtn_) {
       if (val === '') {
         this.clearSearchBtn_.setAttribute('hide', '');
@@ -271,7 +275,7 @@ class CodelabIndex extends HTMLElement {
       this.categoriesSelect_ = this.sortBy_.querySelector('#codelab-categories');
 
       if (selectedCategory && this.categoriesSelect_) {
-        [...this.categoriesSelect_.options].forEach((option) => {
+        [...this.categoriesSelect_['options']].forEach((option) => {
           if (option.value.toLowerCase() === selectedCategory) {
             option.selected = true;
           }
@@ -282,7 +286,7 @@ class CodelabIndex extends HTMLElement {
     if (url.searchParams.has(FILTER_ATTR)) {
       const filter = /** @type {string} */ (url.searchParams.get(FILTER_ATTR));
       if (this.search_) {
-        this.search_.value = filter;
+        this.search_['value'] = filter;
         this.handleSearch_();
       }
     }
