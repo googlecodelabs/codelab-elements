@@ -81,7 +81,7 @@ let AnalyticsPageview;
 class CodelabAnalytics extends HTMLElement {
   /** @return {string} */
   static getTagName() { return 'google-codelab-analytics'; }
-  
+
   constructor() {
     super();
 
@@ -270,9 +270,11 @@ class CodelabAnalytics extends HTMLElement {
    * @export
    */
   static injectGAScript() {
-    const resource = document.createElement('script');
-    resource.setAttribute('src', '//www.google-analytics.com/analytics.js');
-    resource.setAttribute('async', false);
+    /** @type {!HTMLScriptElement} */
+    const resource = /** @type {!HTMLScriptElement} */ (
+        document.createElement('script'));
+    resource.src = '//www.google-analytics.com/analytics.js';
+    resource.async = false;
     return new Promise((resolve, reject) => {
       resource.onload = () => resolve(resource);
       resource.onerror = (event) => {
