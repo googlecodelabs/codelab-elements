@@ -148,14 +148,15 @@ class CodelabAnalytics extends HTMLElement {
           e.getBrowserEvent().detail);
         // Add tracking...
         this.trackEvent_(
-          detail.category, detail.action, detail.label, detail.value);
+          detail['category'], detail['action'], detail['label'],
+          detail['value']);
       });
 
     this.pageviewEventHandler_.listen(document.body, PAGEVIEW_EVENT,
       (e) => {
         const detail = /** @type {AnalyticsPageview} */ (
           e.getBrowserEvent().detail);
-        this.trackPageview_(detail.page, detail.title);
+        this.trackPageview_(detail['page'], detail['title']);
       });
   }
 
