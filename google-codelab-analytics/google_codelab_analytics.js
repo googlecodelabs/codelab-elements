@@ -50,6 +50,15 @@ const CODELAB_ENV_ATTR = 'environment';
 /** @const {string} */
 const CODELAB_CATEGORY_ATTR = 'category';
 
+/** @const {string} */
+const ANALYTICS_READY_ATTR = 'anayltics-ready';
+
+/**
+ * A list of selectors whose elements are waiting for this to be set up.
+ * @const Array<string>
+ */
+const DEPENDENT_SELECTORS = ['google-codelab'];
+
 
 /**
  * Event detail passed when firing ACTION_EVENT.
@@ -135,8 +144,8 @@ class CodelabAnalytics extends HTMLElement {
   /** @private */
   init_() {
     this.createTrackers_();
-    this.trackPageview_();
     this.addEventListeners_();
+    this.setAnalyticsReadyAttrs_();
     this.hasSetup_ = true;
   }
 
@@ -230,6 +239,17 @@ class CodelabAnalytics extends HTMLElement {
       'title': opt_title || ''
     };
     this.gaSend_(params);
+  }
+
+  /**
+   * Sets analytics ready attributes on dependent elements.
+   */
+  setAnalyticsReadyAttrs_() {
+    DEPENDENT_SELECTORS.forEach((selector) => {
+      document.querySelectorAll(selector).forEach((element) => {
+        element.setAttribute(ANALYTICS_READY_ATTR, ANALYTICS_READY_ATTR);
+      });
+    });
   }
 
   /** @private */

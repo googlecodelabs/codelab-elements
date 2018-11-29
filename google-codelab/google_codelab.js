@@ -88,6 +88,9 @@ const ANIMATION_DURATION = .5;
 /** @const {string} */
 const DRAWER_OPEN_ATTR = 'drawer--open';
 
+/** @const {string} */
+const ANALYTICS_READY_ATTR = 'anayltics-ready';
+
 /**
  * The general codelab action event fired for trackable interactions.
  */
@@ -131,6 +134,9 @@ class Codelab extends HTMLElement {
 
     /** @private {string} */
     this.id_ = '';
+
+    /** @private {string} */
+    this.title_ = '';
 
     /** @private {!Array<!Element>} */
     this.steps_ = [];
@@ -186,19 +192,6 @@ class Codelab extends HTMLElement {
     this.toggleArrows_();
     this.toggleToolbar_();
 
-    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
-      'page': location.pathname,
-      'title': this.getAttribute(CODELAB_TITLE_ATTR) || ''
-    });
-
-    window.requestAnimationFrame(() => {
-      document.body.removeAttribute('unresolved');
-      this.fireEvent_(CODELAB_ACTION_EVENT, {
-        'category': 'codelab',
-        'action': 'ready'
-      });
-    });
-
     if (this.resumed_) {
       console.log('resumed');
       // TODO Show resume dialog
@@ -221,7 +214,7 @@ class Codelab extends HTMLElement {
   static get observedAttributes() {
     return [TITLE_ATTR, CODELAB_TITLE_ATTR, ENVIRONMENT_ATTR, CATEGORY_ATTR,
         FEEDBACK_LINK_ATTR, SELECTED_ATTR, LAST_UPDATED_ATTR, NO_TOOLBAR_ATTR,
-        NO_ARROWS_ATTR];
+        NO_ARROWS_ATTR, ANALYTICS_READY_ATTR];
   }
 
   /**
@@ -236,12 +229,13 @@ class Codelab extends HTMLElement {
     switch (attr) {
       case TITLE_ATTR:
         if (this.hasAttribute(TITLE_ATTR)) {
-          const title = this.getAttribute(TITLE_ATTR);
+          this.title_ = this.getAttribute(TITLE_ATTR);
           this.removeAttribute(TITLE_ATTR);
-          this.setAttribute(CODELAB_TITLE_ATTR, title);
+          this.setAttribute(CODELAB_TITLE_ATTR, this.title_);
         }
         break;
       case CODELAB_TITLE_ATTR:
+        this.title_ = this.getAttribute(CODELAB_TITLE_ATTR);
         this.updateTitle_();
         break;
       case SELECTED_ATTR:
@@ -252,6 +246,11 @@ class Codelab extends HTMLElement {
         break;
       case NO_ARROWS_ATTR:
         this.toggleArrows_();
+        break;
+      case ANALYTICS_READY_ATTR:
+        if (this.hasAttribute(ANALYTICS_READY_ATTR)) {
+          this.firePageLoadEvents_();
+        }
         break;
     }
   }
@@ -494,12 +493,12 @@ class Codelab extends HTMLElement {
    * @private
    */
   updateTitle_() {
-    const title = this.getAttribute(CODELAB_TITLE_ATTR);
-    if (!title || !this.titleContainer_) {
+    if (!this.title_ || !this.titleContainer_) {
       return;
     }
-    const newTitleEl =  soy.renderAsElement(Templates.title, {title});
-    document.title = title;
+    const newTitleEl =
+        soy.renderAsElement(Templates.title, {title: this.title_});
+    document.title = this.title_;
     const oldTitleEl = this.titleContainer_.querySelector('h1');
     const buttons = this.titleContainer_.querySelector('#codelab-nav-buttons');
     if (oldTitleEl) {
@@ -653,7 +652,7 @@ class Codelab extends HTMLElement {
         this.fireEvent_(CODELAB_ACTION_EVENT, {
           'category': 'codelab',
           'action': 'complete',
-          'label': this.getAttribute(TITLE_ATTR)
+          'label': this.title_
         });
       } else {
         this.nextStepBtn_.removeAttribute(HIDDEN_ATTR);
@@ -725,6 +724,24 @@ class Codelab extends HTMLElement {
       detail: detail
     });
     document.body.dispatchEvent(event);
+  }
+
+  /**
+   * Fires events for initial page load.
+   */
+  firePageLoadEvents_() {
+    this.fireEvent_(CODELAB_PAGEVIEW_EVENT, {
+      'page': location.pathname,
+      'title': this.title_
+    });
+
+    window.requestAnimationFrame(() => {
+      document.body.removeAttribute('unresolved');
+      this.fireEvent_(CODELAB_ACTION_EVENT, {
+        'category': 'codelab',
+        'action': 'ready'
+      });
+    });
   }
 
   /**
