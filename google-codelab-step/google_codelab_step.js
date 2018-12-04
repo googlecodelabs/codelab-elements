@@ -17,6 +17,7 @@
 
 goog.module('googlecodelabs.CodelabStep');
 
+const EventHandler = goog.require('goog.events.EventHandler');
 const Templates = goog.require('googlecodelabs.CodelabStep.Templates');
 const dom = goog.require('goog.dom');
 const soy = goog.require('goog.soy');
@@ -26,6 +27,12 @@ const LABEL_ATTR = 'label';
 
 /** @const {string} */
 const STEP_ATTR = 'step';
+
+/**
+ * The general codelab action event fired for trackable interactions.
+ * @const {string}
+ */
+const CODELAB_ACTION_EVENT = 'google-codelab-action';
 
 /**
  * @extends {HTMLElement}
@@ -65,6 +72,12 @@ class CodelabStep extends HTMLElement {
      * @private {?Element}
      */
     this.title_ = null;
+
+    /**
+     * @private {!EventHandler}
+     * @const
+     */
+    this.eventHandler_ = new EventHandler();
   }
 
   /**
@@ -149,12 +162,31 @@ class CodelabStep extends HTMLElement {
     codeElements.forEach((el) => {
       const code = window['prettyPrintOne'](el.innerHTML);
       el.innerHTML = code;
+      this.eventHandler_.listen(
+        el, 'copy', () => this.handleSnippetCopy_(el));
     });
 
     dom.appendChild(this.instructions_, this.inner_);
     dom.appendChild(this, this.instructions_);
 
     this.hasSetup_ = true;
+  }
+
+  /**
+   * @param {!Element} el The element on which we added this event listener.
+   *     This is not the same as the target of the event, because the event
+   *     target can be a child of this element.
+   * @private
+   */
+  handleSnippetCopy_(el) {
+    const event = new CustomEvent(CODELAB_ACTION_EVENT, {
+      detail: {
+        'category': 'codelab',
+        'action': 'copy',
+        'label': el.textContent.substring(0, 500)
+      }
+    });
+    document.body.dispatchEvent(event);
   }
 }
 
