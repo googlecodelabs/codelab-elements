@@ -127,6 +127,40 @@ testSuite({
     mockControl.$verifyAll();
   },
 
+  async testSetAnalyticsReadyAttrs() {
+    const analytics = new CodelabAnalytics();
+    analytics.setAttribute('gaid', 'UA-123');
+    // Need to mock as we don't have window.ga.getAll()
+    const mockGetAll = mockControl.createFunctionMock('getAll');
+    const mockCreate = mockControl.createFunctionMock('create');
+    mockGetAll().$returns([]).$anyTimes();
+    // Creates 2 trackers (because of codelab gaid attribute).
+    mockCreate().$times(2);
+
+    window['ga'] = (...args) => {
+      if (['create', 'getAll'].indexOf(args[0]) !== -1) {
+        window['ga'][args[0]]();
+      }
+    };
+    window['ga']['getAll'] = mockGetAll;
+    window['ga']['create'] = mockCreate;
+
+    mockControl.$replayAll();
+
+    const codelabElement = document.createElement('google-codelab');
+    document.body.appendChild(codelabElement);
+    document.body.appendChild(analytics);
+
+    // This is obviously awful, but for some reason
+    // mockControl.$waitAndVerifyAll() isn't working with closure_js_test. See
+    // https://github.com/bazelbuild/rules_closure/issues/316. Once that's
+    // resolved we can use it in place of the timeout.
+    setTimeout(() => {
+      assertEquals('', codelabElement.getAttribute('analytics-ready'));
+    }, 5000);
+
+  },
+
   testPageviewEventDispatch_SendsPageViewTracking() {
 
   },
