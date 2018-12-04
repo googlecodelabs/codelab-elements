@@ -74,6 +74,28 @@ testSuite({
     document.body.removeChild(codelabStep);
   },
 
+  testSnippetCopy() {
+    const codelabStep = new CodelabStep();
+    codelabStep.innerHTML = '<h1>Testing</h1><pre><code class="test-code">Code</code></pre>';
+    document.body.appendChild(codelabStep);
+
+    document.body.addEventListener('google-codelab-action', (e) => {
+      const detail = e.detail;
+      assertEquals('codelab', detail['category']);
+      assertEquals('copy', detail['action']);
+      assertEquals('Code', detail['label']);
+    });
+
+    const copyEvent = new ClipboardEvent('copy', {
+      view: window,
+      bubbles: true,
+      cancelable: true
+    });
+    document.body.querySelector('.test-code').dispatchEvent(copyEvent);
+
+    document.body.removeChild(codelabStep);
+  },
+
   testUpdateTitle() {
     const codelabStep = new CodelabStep();
 
