@@ -1,3 +1,7 @@
+# DEPRECATED
+This repository is deprecated - make needed changes to codelab-elements code in
+[googlecodelabs/tools/codelab-elements](https://github.com/googlecodelabs/tools/tree/master/codelab-elements).
+
 # Codelab Custom Elements
 
 The next generation of the codelab elements without any framework or library
